@@ -9,4 +9,5 @@ class IngredientGroup{
   // Getter and Setter
   int get id => _id;
   String get name => _name;
+  static String get tableName => 'Ingredient_Group';
 }

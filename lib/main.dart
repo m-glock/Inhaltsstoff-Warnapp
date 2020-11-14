@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'database/database_helper.dart';
+import 'database/tables/IngredientGroup.dart';
 
 void main() {
   runApp(MyApp());
@@ -119,14 +120,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text('query', style: TextStyle(fontSize: 20),),
                 onPressed: () {_query();},
               ),
-              RaisedButton(
+              /*RaisedButton(
                 child: Text('update', style: TextStyle(fontSize: 20),),
                 onPressed: () {_update();},
               ),
               RaisedButton(
                 child: Text('delete', style: TextStyle(fontSize: 20),),
                 onPressed: () {_delete();},
-              ),
+              ),*/
             ],
         ),
       ),
@@ -142,11 +143,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _insert() async {
     // row to insert
-    Map<String, dynamic> row = {
-      DatabaseHelper.columnName : 'Bob',
-      DatabaseHelper.columnAge  : 23
-    };
-    final id = await dbHelper.insert(row);
+    IngredientGroup testGroup = IngredientGroup(1, 'vegan');
+    final id = await dbHelper.insert(testGroup);
     print('inserted row id: $id');
   }
 
@@ -156,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
     allRows.forEach((row) => print(row));
   }
 
-  void _update() async {
+  /*void _update() async {
     // row to update
     Map<String, dynamic> row = {
       DatabaseHelper.columnId   : 1,
@@ -172,5 +170,5 @@ class _MyHomePageState extends State<MyHomePage> {
     final id = await dbHelper.queryRowCount();
     final rowsDeleted = await dbHelper.delete(id);
     print('deleted $rowsDeleted row(s): row $id');
-  }
+  }*/
 }
