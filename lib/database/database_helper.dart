@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 // code adapted from https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
 class DatabaseHelper {
 
-  static final _databaseName = "MyDatabase8-1.db";
+  static final _databaseName = "MyDatabase9.db";
   static final _databaseVersion = 1;
 
   // make this a singleton class

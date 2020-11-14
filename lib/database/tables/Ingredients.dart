@@ -6,14 +6,15 @@ import 'IngredientGroup.dart';
 class Ingredient implements DbObject{
 
   // TODO: one ingredient can belong to more than one group
+  int _id;
   String _name;
   IngredientGroup _group;
 
-  Ingredient(this._group, this._name, {int id});
+  Ingredient(this._group, this._name, {int id}) : _id = id;
 
   // Getter and Setter
   @override
-  int get id => id;
+  int get id => _id;
 
   String get name => _name;
 
@@ -30,7 +31,7 @@ class Ingredient implements DbObject{
     final map = new Map<String, dynamic>();
     map['group_id'] = _group.id;
     map['name'] = _name;
-    if(withId) map['id'] = id;
+    if(withId) map['id'] = _id;
     return map;
   }
 

@@ -4,14 +4,15 @@ import 'package:Inhaltsstoff_Warnapp/database/tables/DbTables.dart';
 
 class IngredientGroup implements DbObject{
 
+  int _id;
   String _name;
 
   // Constructor
-  IngredientGroup(this._name, {int id});
+  IngredientGroup(this._name, {int id}) : _id = id;
 
   // Getter and Setter
   @override
-  int get id => id;
+  int get id => _id;
 
   String get name => _name;
 
@@ -22,7 +23,7 @@ class IngredientGroup implements DbObject{
   Map<String, dynamic> toMap({bool withId: true}){
     final map = new Map<String, dynamic>();
     map['name'] = _name;
-    if(withId) map['id'] = id;
+    if(withId) map['id'] = _id;
     return map;
   }
 
