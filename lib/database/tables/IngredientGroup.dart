@@ -1,13 +1,27 @@
 
-class IngredientGroup{
+import 'package:Inhaltsstoff_Warnapp/database/tables/DbTable.dart';
 
-  int _id;
+class IngredientGroup extends DbTable{
+
   String _name;
 
-  IngredientGroup(this._id, this._name);
+  // Constructor
+  IngredientGroup(id, this._name) : super(id);
 
   // Getter and Setter
-  int get id => _id;
   String get name => _name;
-  static String get tableName => 'Ingredient_Group';
+
+  // used when inserting a row in the table
+  Map<String, dynamic> toMap({bool withId: true}){
+    final map = new Map<String, dynamic>();
+    map["name"] = _name;
+    if(withId) map["id"] = super.id;
+    return map;
+  }
+
+  // used when converting the row into an object
+  factory IngredientGroup.fromMap(Map<String, dynamic> data) =>   new IngredientGroup(
+      data['id'],
+      data['name']
+  );
 }
