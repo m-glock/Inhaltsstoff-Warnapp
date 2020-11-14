@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/database/tables/DbTables.dart';
 import 'package:flutter/material.dart';
 
 import 'database/database_helper.dart';
@@ -120,14 +121,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text('query', style: TextStyle(fontSize: 20),),
                 onPressed: () {_query();},
               ),
-              /*RaisedButton(
+              RaisedButton(
                 child: Text('update', style: TextStyle(fontSize: 20),),
                 onPressed: () {_update();},
               ),
               RaisedButton(
                 child: Text('delete', style: TextStyle(fontSize: 20),),
                 onPressed: () {_delete();},
-              ),*/
+              ),
             ],
         ),
       ),
@@ -143,32 +144,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _insert() async {
     // row to insert
-    IngredientGroup testGroup = IngredientGroup(1, 'vegan');
-    final id = await dbHelper.insert(testGroup);
+    IngredientGroup testGroup = IngredientGroup('vegan');
+    final id = await dbHelper.saveNewObjectToDb(testGroup);
     print('inserted row id: $id');
   }
 
   void _query() async {
-    final allRows = await dbHelper.queryAllRows();
+    final IngredientGroup object = await dbHelper.getItemById(1, DbTables.ingredientGroup);
     print('query all rows:');
-    allRows.forEach((row) => print(row));
+    print(object.name);
   }
 
-  /*void _update() async {
+  void _update() async {
     // row to update
-    Map<String, dynamic> row = {
-      DatabaseHelper.columnId   : 1,
-      DatabaseHelper.columnName : 'Mary',
-      DatabaseHelper.columnAge  : 32
-    };
-    final rowsAffected = await dbHelper.update(row);
+    IngredientGroup testGroup = IngredientGroup('vegetarian', id: 2);
+    final rowsAffected = await dbHelper.updateItem(testGroup);
     print('updated $rowsAffected row(s)');
   }
 
   void _delete() async {
     // Assuming that the number of rows is the id for the last row.
-    final id = await dbHelper.queryRowCount();
-    final rowsDeleted = await dbHelper.delete(id);
-    print('deleted $rowsDeleted row(s): row $id');
-  }*/
+    final rowsDeleted = await dbHelper.deleteItemById(2, DbTables.ingredientGroup);
+    print('deleted $rowsDeleted row(s)');
+  }
 }
