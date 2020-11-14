@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:Inhaltsstoff_Warnapp/database/tables/IngredientGroup.dart';
+import 'package:Inhaltsstoff_Warnapp/database/tables/DbObject.dart';
+import 'package:Inhaltsstoff_Warnapp/database/tables/DbTables.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 // code adapted from https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
 class DatabaseHelper {
 
-  static final _databaseName = "MyDatabase.db";
+  static final _databaseName = "MyDatabase8-1.db";
   static final _databaseVersion = 1;
 
   // make this a singleton class
@@ -52,36 +53,28 @@ class DatabaseHelper {
           ''');
   }
 
-  // Inserts a row in the database where each key in the Map is a column name
-  // and the value is the column value. The return value is the id of the
-  // inserted row.
-  Future<int> create(IngredientGroup ingredientGroup) async {
+  Future<int> saveNewObjectToDb(DbObject object) async {
     Database db = await instance.database;
-    IngredientGroup newGroup = IngredientGroup(1, 'vegan');
-    Map<String, dynamic> row = newGroup.toMap(withId: true);
+    Map<String, dynamic> row = object.toMap(withId: false);
 
-    return await db.insert('Ingredient_Group', row);
+    return await db.insert(object.getTableType().name, row);
   }
 
-  // All of the rows are returned as a list of maps, where each map is
-  // a key-value list of columns.
-  Future<IngredientGroup> getItemById(int id) async {
+  Future<DbObject> getItemById(int id, DbTables tableType) async {
     Database db = await instance.database;
-    List<Map> list = await db.rawQuery('SELECT * FROM Ingredient_Group WHERE id = ?', [id]);
-    return list.length > 0 ? IngredientGroup.fromMap(list[0]) : null;
+    List<Map> list = await db.query(tableType.name, where: 'id = ?', whereArgs: [id]);
+    //List<Map> list = await db.rawQuery('SELECT * FROM Ingredient_Group WHERE id = ?', [id]);
+    int length = list.length;
+    return length > 0 ? tableType.fromMap(list[0]) : null;
   }
 
-  // We are assuming here that the id column in the map is set. The other
-  // column values will be used to update the row.
-  Future<int> updateItem(IngredientGroup group) async {
+  Future<int> updateItem(DbObject object) async {
     Database db = await instance.database;
-    return await db.update('Ingredient_Group', group.toMap(), where: 'id = ?', whereArgs: [group.id]);
+    return await db.update(object.getTableType().name, object.toMap(), where: 'id = ?', whereArgs: [object.id]);
   }
 
-  // Deletes the row specified by the id. The number of affected rows is
-  // returned. This should be 1 as long as the row exists.
-  Future<int> deleteById(int id) async {
+  Future<int> deleteItemById(int id, DbTables tableType) async {
     Database db = await instance.database;
-    return await db.delete('Ingredient_Group', where: 'id = ?', whereArgs: [id]);
+    return await db.delete(tableType.name, where: 'id = ?', whereArgs: [id]);
   }
 }
