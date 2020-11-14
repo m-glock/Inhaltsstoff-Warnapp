@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 // code adapted from https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
 class DatabaseHelper {
 
-  static final _databaseName = "MyDatabase3.db";
+  static final _databaseName = "MyDatabase.db";
   static final _databaseVersion = 1;
 
   // make this a singleton class
@@ -33,18 +33,20 @@ class DatabaseHelper {
         onCreate: _onCreate);
   }
 
+  // TODO how to insert all necessary tables with few lines?
+  // TODO how to insert content of tables with few lines?
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
     await db.execute('''
           CREATE TABLE Ingredients (
-            ingredient_id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY,
             group_id INTEGER NOT NULL,
             name TEXT NOT NULL
           );
           ''');
     await db.execute('''
           CREATE TABLE Ingredient_Group (
-            group_id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY,
             name TEXT NOT NULL
           );
           ''');
@@ -53,41 +55,33 @@ class DatabaseHelper {
   // Inserts a row in the database where each key in the Map is a column name
   // and the value is the column value. The return value is the id of the
   // inserted row.
-  Future<int> insert(IngredientGroup ingredientGroup) async {
+  Future<int> create(IngredientGroup ingredientGroup) async {
     Database db = await instance.database;
-    Map<String, dynamic> row = {
-      'group_id' : ingredientGroup.id,
-      'name' : ingredientGroup.name
-    };
-    return await db.insert(IngredientGroup.tableName, row);
+    IngredientGroup newGroup = IngredientGroup(1, 'vegan');
+    Map<String, dynamic> row = newGroup.toMap(withId: true);
+
+    return await db.insert('Ingredient_Group', row);
   }
 
   // All of the rows are returned as a list of maps, where each map is
   // a key-value list of columns.
-  Future<List<Map<String, dynamic>>> queryAllRows() async {
+  Future<IngredientGroup> getItemById(int id) async {
     Database db = await instance.database;
-    return await db.query(IngredientGroup.tableName);
-  }
-
-  // All of the methods (insert, query, update, delete) can also be done using
-  // raw SQL commands. This method uses a raw query to give the row count.
-  Future<int> queryRowCount() async {
-    Database db = await instance.database;
-    return Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $IngredientGroup.tableName'));
+    List<Map> list = await db.rawQuery('SELECT * FROM Ingredient_Group WHERE id = ?', [id]);
+    return list.length > 0 ? IngredientGroup.fromMap(list[0]) : null;
   }
 
   // We are assuming here that the id column in the map is set. The other
   // column values will be used to update the row.
-  /*Future<int> update(Map<String, dynamic> row) async {
+  Future<int> updateItem(IngredientGroup group) async {
     Database db = await instance.database;
-    int id = row[columnId];
-    return await db.update('Ingredient_Group', row, where: '$columnId = ?', whereArgs: [id]);
+    return await db.update('Ingredient_Group', group.toMap(), where: 'id = ?', whereArgs: [group.id]);
   }
 
   // Deletes the row specified by the id. The number of affected rows is
   // returned. This should be 1 as long as the row exists.
-  Future<int> delete(int id) async {
+  Future<int> deleteById(int id) async {
     Database db = await instance.database;
-    return await db.delete('Ingredient_Group', where: '$columnId = ?', whereArgs: [id]);
-  }*/
+    return await db.delete('Ingredient_Group', where: 'id = ?', whereArgs: [id]);
+  }
 }
