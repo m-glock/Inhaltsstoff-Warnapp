@@ -30,12 +30,15 @@ class FoodApiAccess{
     }
 
     // create Product object
-    return Product.fromJson(decodedJson);
+    return Product.fromJson(decodedJson['product']);
   }
 
-  static List<String> getContentForTag(String tag){
+  static Future<List<String>> getContentForTag(String tag) async {
     // TODO how to make sure tag is something that is in the api?
-    String request = '$_apiUrl/$_taxonomyEndpoint/$tag.json';
+    String requestUrl = '$_apiUrl/$_taxonomyEndpoint/$tag.json';
+
+    http.Response response = await _getRequest(requestUrl);
+    int status = response.statusCode;
   }
 
   static Future<http.Response> _getRequest(String url) {

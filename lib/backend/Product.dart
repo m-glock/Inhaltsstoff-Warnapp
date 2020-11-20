@@ -16,7 +16,7 @@ class Product{
   }
 
   factory Product.fromJson(Map<String, dynamic> json) {
-    String name = json.containsKey('generic_name_de') ? json['generic_name_de'] : json['product_name'];
+    String name = json['product_name'];
     String imageUrl = json['image_url'];
     String barcode = json['code'];
     DateTime scanDate = DateTime.now();
