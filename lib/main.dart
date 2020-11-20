@@ -15,6 +15,7 @@ import 'pages/comparison/main.dart';
 import 'pages/analysis/main.dart';
 import 'pages/scanning/main.dart';
 import 'pages/history/main.dart';
+import 'theme/style.dart';
 
 class Destination {
   const Destination(this.title, this.icon, this.color, this.page);
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
+      theme: appTheme(),
       home: MyStatefulWidget(),
     );
   }
@@ -80,7 +82,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white.withOpacity(.6),
