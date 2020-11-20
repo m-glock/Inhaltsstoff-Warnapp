@@ -10,20 +10,27 @@
 // bar items. The first one is selected.](https://flutter.github.io/assets-for-api-docs/assets/material/bottom_navigation_bar.png)
 
 import 'package:flutter/material.dart';
+import 'pages/lists/main.dart';
+import 'pages/comparison/main.dart';
+import 'pages/analysis/main.dart';
+import 'pages/scanning/main.dart';
+import 'pages/history/main.dart';
 
 class Destination {
-  const Destination(this.title, this.icon, this.color);
+  const Destination(this.title, this.icon, this.color, this.page);
   final String title;
   final IconData icon;
   final MaterialColor color;
+  final StatefulWidget page;
 }
 
 const List<Destination> allDestinations = <Destination>[
-  Destination('Favoriten', Icons.favorite, Colors.blue),
-  Destination('Verlauf', Icons.history, Colors.blue),
-  Destination('Scannen', Icons.camera_alt, Colors.blue),
-  Destination('Vergleich', Icons.compare_arrows, Colors.blue),
-  Destination('Analyse', Icons.bar_chart, Colors.blue)
+  Destination('Favoriten', Icons.favorite, Colors.blue, FavouritesPage()),
+  Destination('Verlauf', Icons.history, Colors.blue, HistoryPage()),
+  Destination('Scannen', Icons.camera_alt, Colors.blue, ScanningPage()),
+  Destination('Vergleich', Icons.compare_arrows, Colors.blue, ComparisonPage()),
+  Destination('Analyse', Icons.bar_chart, Colors.blue, AnalysisPage())
+
 ];
 
 void main() => runApp(MyApp());
@@ -52,30 +59,6 @@ class MyStatefulWidget extends StatefulWidget {
 /// This is the private State class that goes with MyStatefulWidget.
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 2;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Favoriten',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Verlauf',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: Scannen',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 3: Vergleich',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 3: Analyse',
-      style: optionStyle,
-    ),
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -86,11 +69,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(allDestinations[_selectedIndex].title),
-      ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: SafeArea(
+        top: false,
+        child: IndexedStack(
+          index: _selectedIndex,
+          children: allDestinations.map<Widget>((Destination destination) {
+            return destination.page;
+          }).toList(),
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
