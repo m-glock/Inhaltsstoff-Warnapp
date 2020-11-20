@@ -18,9 +18,9 @@ class FoodApiAccess{
     int status = response.statusCode;
 
     // check if API returned a valid response
-    // TODO: better handling than just throwing exceptions? Just return null?
+    // TODO: better handling than just throwing exceptions?
     if(status == 502 || status == 503 || status == 500) throw Exception('Open Food Facts API Server is down.');
-    else if(status != 200) throw Exception('Failed to access Open Food Facts API');
+    else if(status != 200) return null;
 
     // handle if product does not exist in the food API database
     Map<String, dynamic> decodedJson = jsonDecode(response.body);
@@ -33,12 +33,27 @@ class FoodApiAccess{
     return Product.fromJson(decodedJson['product']);
   }
 
-  static Future<List<String>> getContentForTag(String tag) async {
-    // TODO how to make sure tag is something that is in the api?
+  static Future<List<String>> getValuesForTag(String tag) async {
     String requestUrl = '$_apiUrl/$_taxonomyEndpoint/$tag.json';
 
     http.Response response = await _getRequest(requestUrl);
     int status = response.statusCode;
+
+    //TODO: error handling for wrong status: body is html instead of json when searching for something that does not exist
+    Map<String, dynamic> decodedJson = jsonDecode(response.body);
+    List<String> possibleValuesForTag = new List();
+
+    // if requested tag does not exist, the response body will be html and the decoding will reutrn null
+    if(status == 502 || status == 503 || status == 500) throw Exception('Open Food Facts API Server is down.');
+    else if(status == 404) return null;
+
+    decodedJson.forEach((key, value) {
+      String tagValue = value['name']['de']; //TODO: encoding for umlaute
+      if(tagValue == null) tagValue = value['name']['en'];
+      possibleValuesForTag.add(tagValue);
+    });
+
+    return possibleValuesForTag;
   }
 
   static Future<http.Response> _getRequest(String url) {
