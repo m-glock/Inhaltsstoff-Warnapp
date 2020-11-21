@@ -23,7 +23,8 @@ class FoodApiAccess{
     else if(status != 200) return null;
 
     // handle if product does not exist in the food API database
-    Map<String, dynamic> decodedJson = jsonDecode(response.body);
+    // utf8 decoding for umlaute
+    Map<String, dynamic> decodedJson = json.decode(utf8.decode(response.bodyBytes));
     if(decodedJson['status'] == '0'){
       log('Product with Barcode $barcode does not exist in the database.');
       return null;
@@ -40,7 +41,8 @@ class FoodApiAccess{
     int status = response.statusCode;
 
     //TODO: error handling for wrong status: body is html instead of json when searching for something that does not exist
-    Map<String, dynamic> decodedJson = jsonDecode(response.body);
+    // utf8 decoding for umlaute
+    Map<String, dynamic> decodedJson = json.decode(utf8.decode(response.bodyBytes));
     List<String> possibleValuesForTag = new List();
 
     // if requested tag does not exist, the response body will be html and the decoding will reutrn null
@@ -48,7 +50,7 @@ class FoodApiAccess{
     else if(status == 404) return null;
 
     decodedJson.forEach((key, value) {
-      String tagValue = value['name']['de']; //TODO: encoding for umlaute
+      String tagValue = value['name']['de'];
       if(tagValue == null) tagValue = value['name']['en'];
       possibleValuesForTag.add(tagValue);
     });
