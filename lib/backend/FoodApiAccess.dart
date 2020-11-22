@@ -68,6 +68,44 @@ class FoodApiAccess{
   }
 
   /*
+  * sends a GET request to the food database API to get the translation of a certain tag value
+  * @param tag: the tag from the product json that the value to translate belongs to
+  * @param tagValue: the name of the value to translate
+  * @param languageCode: the ISO 639-1 language code for the target language
+  * @return the translation of the tag Value according to the API
+  * */
+  static Future<List<String>> translateTagNames(String tag, List<dynamic> tagValues, {String languageCode:'de'}) async {
+    String requestUrl = '$_foodDbApiUrl/$_taxonomyEndpoint/$tag.json';
+
+    http.Response response = await _getRequest(requestUrl);
+    int status = response.statusCode;
+
+    //TODO: error handling for wrong status: body is html instead of json when searching for something that does not exist
+    // utf8 decoding for umlaute
+    Map<String, dynamic> decodedJson = json.decode(utf8.decode(response.bodyBytes));
+    List<String> translatedTagValues = List();
+
+    // if requested tag does not exist, the response body will be html and the decoding will reutrn null
+    if(status == 502 || status == 503 || status == 500) throw Exception('Open Food Facts API Server is down.');
+    else if(status == 404) return null;
+
+    tagValues.forEach((element) {
+      String translatedName;
+      if(decodedJson.containsKey(element)){
+        var tagValueTranslations = decodedJson[element]['name'];
+        translatedName = tagValueTranslations[languageCode] != null ? tagValueTranslations[languageCode] : tagValueTranslations['en'];
+      } else {
+        String name = element.toString();
+        translatedName = name.substring(name.indexOf(':') + 1);
+      }
+
+      translatedTagValues.add(translatedName);
+    });
+
+    return translatedTagValues;
+  }
+
+  /*
   * builds a GET request
   * @param url: the url to send the request to
   * @return: the http response that the GET call returned
