@@ -1,3 +1,5 @@
+import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
+
 import 'ScanResult.dart';
 
 class Product{
@@ -8,19 +10,19 @@ class Product{
   String _barcode;
   DateTime _scanDate;
 
-  String _ingredients; //ingredients_text TODO enum or DB with possibilities, can be requested with https://de.openfoodfacts.org/data/taxonomies/ingredients.json
-  Map<String, String> _nutriments; //nutrients
-  Map<String, String> _allergens; //ingredients_text_with_allergens_de, allergens_tags, allergens
-  List<String> _vitamins; //vitamins_tags
-  DateTime _lastUpdated; //last_modified_datetime
-  String _traces; //traces_from_ingredients, traces
-  String _nutriscore; //nutriscore_score (int), nutriscore_grade (char)
-  List<String> _additives; //additives_tags TODO isVegan, isVegetarian, parent, additive_classes, can be requested by https://de.openfoodfacts.org/data/taxonomies/additives.json
+  List<dynamic>  _ingredients;
+  Map<String, dynamic> _nutriments;
+  List<dynamic> _allergens;
+  List<dynamic> _vitamins;
+  DateTime _lastUpdated;
+  List<dynamic> _traces;
+  String _nutriscore;
+  List<dynamic> _additives;
 
-  double _quantity; //quantity
-  String _origin; //origins
-  String _manufacturingPlaces; //manufacturing_places
-  String _stores; //stores
+  double _quantity;
+  String _origin;
+  String _manufacturingPlaces;
+  String _stores;
 
   // Getter
   String get name => _name;
@@ -29,14 +31,14 @@ class Product{
   String get barcode => _barcode;
   DateTime get scanDate => _scanDate;
 
-  String get ingredients => _ingredients;
-  Map<String, String> get nutriments => _nutriments;
-  Map<String, String> get allergens => _allergens;
-  List<String> get vitamins => _vitamins;
+  List<dynamic> get ingredients => _ingredients;
+  Map<String, dynamic> get nutriments => _nutriments;
+  List<dynamic> get allergens => _allergens;
+  List<dynamic> get vitamins => _vitamins;
   DateTime get lastUpdated => _lastUpdated;
-  String get traces => _traces;
+  List<dynamic> get traces => _traces;
   String get nutriscore => _nutriscore;
-  List<String> get additives => _additives;
+  List<dynamic> get additives => _additives;
 
   double get quantity => _quantity;
   String get origin => _origin;
@@ -54,7 +56,28 @@ class Product{
     DateTime scanDate = DateTime.now();
 
     Product newProduct = Product(name, null, imageUrl, barcode, scanDate);
-    //TODO add other important stuff from json
+
+    // TODO: handle that not all information is in german.
+    // ingredients -> ingredients.json for ingredients_tags
+    // allergens -> allergens.json for allergens_tags
+    // vitamins -> vitamins.json for vitamins_tags
+    // traces -> allergens.json for tranes_tags
+    // additives -> additives.json for additives_tags
+    newProduct._ingredients = json['ingredients_tags'];
+    newProduct._nutriments = json['nutriments'];
+    newProduct._allergens = json['allergens_tags'];
+    newProduct._vitamins = json['vitamins_tags'];
+    var dateTime = json['last_modified_t'] * 1000;
+    newProduct._lastUpdated = DateTime.fromMillisecondsSinceEpoch(dateTime);
+    newProduct._traces = json['traces_tags'];
+    newProduct._nutriscore = json['nutriscore_grade']; //nutriscore_score (int)
+    newProduct._additives = json['additives_tags'];
+
+    String quantityString = (json['quantity'] as String).trim().replaceAll(new RegExp('[a-zA-Z]'), '');
+    newProduct._quantity = double.parse(quantityString);
+    newProduct._origin = json['origins'];
+    newProduct._manufacturingPlaces = json['manufacturing_places'];
+    newProduct._stores = json['stores'];
 
     return newProduct;
   }
