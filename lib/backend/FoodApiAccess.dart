@@ -6,13 +6,17 @@ import 'package:http/http.dart' as http;
 
 class FoodApiAccess{
 
-  static final String _apiUrl = 'https://de-de.openfoodfacts.org';
+  static final String _foodDbApiUrl = 'https://de-de.openfoodfacts.org';
   static final String _taxonomyEndpoint = 'data/taxonomies';
   static final String _productEndpoint = 'api/v0/product';
 
-
+  /*
+  * sends an GET request to the food database API with the scanned barcode and creates a Product object containing the relevant information
+  * @param barcode: the scanned barcode from a product
+  * @return: an object for the scanned product with the relevant information
+  * */
   static Future<Product> scanProduct(String barcode) async{
-    String requestUrl = '$_apiUrl/$_productEndpoint/$barcode.json';
+    String requestUrl = '$_foodDbApiUrl/$_productEndpoint/$barcode.json';
 
     http.Response response = await _getRequest(requestUrl);
     int status = response.statusCode;
@@ -34,8 +38,13 @@ class FoodApiAccess{
     return Product.fromJson(decodedJson['product']);
   }
 
+  /*
+  * sends a GET request to the food database API to get all possible values for a tag in a product json
+  * @param tag: the tag name from the product json
+  * @return a List of all possible values that exist in the API for this specific tag
+  * */
   static Future<List<String>> getValuesForTag(String tag) async {
-    String requestUrl = '$_apiUrl/$_taxonomyEndpoint/$tag.json';
+    String requestUrl = '$_foodDbApiUrl/$_taxonomyEndpoint/$tag.json';
 
     http.Response response = await _getRequest(requestUrl);
     int status = response.statusCode;
@@ -58,6 +67,11 @@ class FoodApiAccess{
     return possibleValuesForTag;
   }
 
+  /*
+  * builds a GET request
+  * @param url: the url to send the request to
+  * @return: the http response that the GET call returned
+  * */
   static Future<http.Response> _getRequest(String url) {
     return http.get(
         url,
@@ -66,6 +80,5 @@ class FoodApiAccess{
         },
     );
   }
-
 
 }
