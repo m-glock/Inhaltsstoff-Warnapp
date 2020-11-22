@@ -1,110 +1,121 @@
-/// Flutter code sample for BottomNavigationBar
-
-// This example shows a [BottomNavigationBar] as it is used within a [Scaffold]
-// widget. The [BottomNavigationBar] has three [BottomNavigationBarItem]
-// widgets and the [currentIndex] is set to index 0. The selected item is
-// amber. The `_onItemTapped` function changes the selected item's index
-// and displays a corresponding message in the center of the [Scaffold].
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
 //
-// ![A scaffold with a bottom navigation bar containing three bottom navigation
-// bar items. The first one is selected.](https://flutter.github.io/assets-for-api-docs/assets/material/bottom_navigation_bar.png)
+// void main() => runApp(MyApp());
+//
+// final dummySnapshot = [
+//   {"name": "Filip", "votes": 15},
+//   {"name": "Abraham", "votes": 14},
+//   {"name": "Richard", "votes": 11},
+//   {"name": "Ike", "votes": 10},
+//   {"name": "Justin", "votes": 1},
+// ];
+//
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Baby Names',
+//       home: MyHomePage(),
+//     );
+//   }
+// }
+//
+// class MyHomePage extends StatefulWidget {
+//   @override
+//   _MyHomePageState createState() {
+//     return _MyHomePageState();
+//   }
+// }
+//
+// class _MyHomePageState extends State<MyHomePage> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text('Baby Name Votes')),
+//       body: _buildBody(context),
+//     );
+//   }
+//
+//   Widget _buildBody(BuildContext context) {
+//     Widget _buildBody(BuildContext context) {
+//       return StreamBuilder<QuerySnapshot>(
+//         stream: Firestore.instance.collection('baby').snapshots(),
+//         builder: (context, snapshot) {
+//           if (!snapshot.hasData) return LinearProgressIndicator();
+//
+//           return _buildList(context, snapshot.data.documents);
+//         },
+//       );
+//     }
+//
+//
+//     //return _buildList(context, dummySnapshot);
+//   }
+//
+//   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+//     return ListView(
+//       padding: const EdgeInsets.only(top: 20.0),
+//       children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+//     );
+//   }
+//
+//   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+//     final record = Record.fromSnapshot(data);
+//
+//     return Padding(
+//       key: ValueKey(record.name),
+//       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+//       child: Container(
+//         decoration: BoxDecoration(
+//           border: Border.all(color: Colors.grey),
+//           borderRadius: BorderRadius.circular(5.0),
+//         ),
+//         child: ListTile(
+//           title: Text(record.name),
+//           trailing: Text(record.votes.toString()),
+//           onTap: () => record.reference.updateData({'votes': record.votes + 1}),
+//         ),
+//       ),
+//     );
+//   }
+// }
+//
+// class Record {
+//   final String name;
+//   final int votes;
+//   final DocumentReference reference;
+//
+//   Record.fromMap(Map<String, dynamic> map, {this.reference})
+//       : assert(map['name'] != null),
+//         assert(map['votes'] != null),
+//         name = map['name'],
+//         votes = map['votes'];
+//
+//   Record.fromSnapshot(DocumentSnapshot snapshot)
+//       : this.fromMap(snapshot.data(), reference: snapshot.reference);
+//
+//   @override
+//   String toString() => "Record<$name:$votes>";
+// }
 
 import 'package:flutter/material.dart';
-import 'pages/lists/main.dart';
-import 'pages/comparison/main.dart';
-import 'pages/analysis/main.dart';
-import 'pages/scanning/main.dart';
-import 'pages/history/main.dart';
+import 'package:flutter_app_demo/firebase_realtime_demo.dart';
+import 'package:flutter_app_demo/splash_screen.dart';
 
-class Destination {
-  const Destination(this.title, this.icon, this.color, this.page);
-  final String title;
-  final IconData icon;
-  final MaterialColor color;
-  final StatefulWidget page;
+void main() {
+  runApp(MyApp());
 }
 
-const List<Destination> allDestinations = <Destination>[
-  Destination('Favoriten', Icons.favorite, Colors.blue, FavouritesPage()),
-  Destination('Verlauf', Icons.history, Colors.blue, HistoryPage()),
-  Destination('Scannen', Icons.camera_alt, Colors.blue, ScanningPage()),
-  Destination('Vergleich', Icons.compare_arrows, Colors.blue, ComparisonPage()),
-  Destination('Analyse', Icons.bar_chart, Colors.blue, AnalysisPage())
-
-];
-
-void main() => runApp(MyApp());
-
-/// This is the main application widget.
 class MyApp extends StatelessWidget {
-  static const String _title = 'Inhaltsstoff Warnapp';
-
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: _title,
-      home: MyStatefulWidget(),
-    );
-  }
-}
+      debugShowCheckedModeBanner: false,
 
-/// This is the stateful widget that the main application instantiates.
-class MyStatefulWidget extends StatefulWidget {
-  MyStatefulWidget({Key key}) : super(key: key);
-
-  @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
-}
-
-/// This is the private State class that goes with MyStatefulWidget.
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  int _selectedIndex = 2;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        top: false,
-        child: IndexedStack(
-          index: _selectedIndex,
-          children: allDestinations.map<Widget>((Destination destination) {
-            return destination.page;
-          }).toList(),
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.blue,
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white.withOpacity(.6),
-        selectedFontSize: 12,
-        unselectedFontSize: 10,
-        unselectedIconTheme: IconThemeData(
-          color: Colors.white,
-          opacity: 0.6,
-          size: 16,
-        ),
-        selectedIconTheme: IconThemeData(
-          color: Colors.white,
-          opacity: 1,
-          size: 20,
-        ),
-        onTap: _onItemTapped,
-        items: allDestinations.map((Destination destination) {
-          return BottomNavigationBarItem(
-            icon: Icon(destination.icon),
-            backgroundColor: destination.color,
-            label: destination.title,
-          );
-        }).toList(),
-      ),
+      theme: ThemeData.dark(),
+      home: Splash(),
     );
   }
 }

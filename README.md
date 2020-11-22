@@ -1,4 +1,16 @@
-# Substance-Check App
+# flutter_app_demo
 
-Prototype of an App that allows the user to scan the barcode or the ingredient list of a product in the supermarket. Based on preferences (vegetarian/vegan) and/or health issues (allergies, vitamin deficiency) the app will show whether the product is eligible for eating. In addition there is the possibility to get more detailed information on a product, compare two products or to analyse the long term usage of certain substances.
-Focus were Usability and quick yes/no information so that it is not a necessity to go deeper into the app for a quick elegibility check.
+A new Flutter application.
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+
+For help getting started with Flutter, view our
+[online documentation](https://flutter.dev/docs), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
