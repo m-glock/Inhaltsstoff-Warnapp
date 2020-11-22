@@ -54,7 +54,7 @@ class FoodApiAccess{
     Map<String, dynamic> decodedJson = json.decode(utf8.decode(response.bodyBytes));
     List<String> possibleValuesForTag = new List();
 
-    // if requested tag does not exist, the response body will be html and the decoding will reutrn null
+    // if requested tag does not exist, the response body will be html and the decoding will return null
     if(status == 502 || status == 503 || status == 500) throw Exception('Open Food Facts API Server is down.');
     else if(status == 404) return null;
 
@@ -93,7 +93,7 @@ class FoodApiAccess{
       String translatedName;
       if(decodedJson.containsKey(element)){
         var tagValueTranslations = decodedJson[element]['name'];
-        translatedName = tagValueTranslations[languageCode] != null ? tagValueTranslations[languageCode] : tagValueTranslations['en'];
+        translatedName = tagValueTranslations.contains(languageCode) ? tagValueTranslations[languageCode] : tagValueTranslations['en'];
       } else {
         String name = element.toString();
         translatedName = name.substring(name.indexOf(':') + 1);

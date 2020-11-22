@@ -1,5 +1,3 @@
-import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
-
 import 'ScanResult.dart';
 
 class Product{
@@ -49,6 +47,9 @@ class Product{
   // constructor with minimal necessary information
   Product(this._name, this._scanResult, this._imageUrl, this._barcode, this._scanDate);
 
+  // factory to create an object from a json file from the food DB API
+  // information is saved as-is, but can be translated with FoodApiAccess.translateTagNames()
+  // currently the app is only available in german, but in the future it would be possible to translate the ingredients according to a language the user chooses
   factory Product.fromJson(Map<String, dynamic> json) {
     String name = json['product_name'];
     String imageUrl = json['image_url'];
