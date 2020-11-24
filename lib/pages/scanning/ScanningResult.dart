@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class ScanningRoot extends StatefulWidget {
-  const ScanningRoot({ Key key }) : super(key: key);
+class ScanningResult extends StatefulWidget {
+  const ScanningResult({ Key key }) : super(key: key);
 
   @override
-  _ScanningRootState createState() => _ScanningRootState();
+  _ScanningResultState createState() => _ScanningResultState();
 }
 
-class _ScanningRootState extends State<ScanningRoot> {
+class _ScanningResultState extends State<ScanningResult> {
   TextEditingController _textController;
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(
-      text: "ScanningRoot",
+      text: "Scanning Result",
     );
   }
 
@@ -22,20 +22,14 @@ class _ScanningRootState extends State<ScanningRoot> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ScanningRoot'),
+        title: Text('Scanning Result'),
         backgroundColor: Colors.blue,
       ),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(32.0),
         alignment: Alignment.center,
-        child: ElevatedButton(
-          child: Text('Go to scan result screen'),
-          onPressed: () {
-            // Navigate to the second screen using a named route.
-            Navigator.pushNamed(context, '/result');
-          },
-        ),
+        child: TextField(controller: _textController),
       ),
     );
   }

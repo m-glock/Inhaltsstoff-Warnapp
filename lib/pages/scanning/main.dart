@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'ScanningResult.dart';
 import 'ScanningRoot.dart';
 
 class ScanningPage extends StatefulWidget {
@@ -19,6 +20,8 @@ class _ScanningPageState extends State<ScanningPage> {
             switch(settings.name) {
               case '/':
                 return ScanningRoot();
+              case '/result':
+                return ScanningResult();
             }
           },
         );
