@@ -1,7 +1,22 @@
-import 'package:Inhaltsstoff_Warnapp/pages/HomePage.dart';
-import 'package:Inhaltsstoff_Warnapp/pages/onboarding/OnboardingTitleWidget.dart';
+import '../HomePage.dart';
+import './OnboardingTitleWidget.dart';
+import './OnboardingSwitchList.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
+
+List<PreferenzesListTile> allergenePreferenceList = <PreferenzesListTile>[
+  PreferenzesListTile("Nüsse", false),
+  PreferenzesListTile("Lactose", false),
+  PreferenzesListTile("Gluten", false),
+  PreferenzesListTile("Histamin", false),
+  PreferenzesListTile("Soja", false),
+];
+
+List<PreferenzesListTile> nutrientsPreferenceList = <PreferenzesListTile>[
+  PreferenzesListTile("B12", false),
+  PreferenzesListTile("Eisen", false),
+  PreferenzesListTile("Magensium", false),
+];
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key key}) : super(key: key);
@@ -55,7 +70,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
             title: "Preferenzen",
             subTitle: "Hast du irgendwelche Allergien?",
           ),
-          body: "SelectWidget",
+          bodyWidget: OnboardingSwitchList(
+            list: allergenePreferenceList,
+            onChange: (String listEntryName, bool isSelected) {
+              var index = allergenePreferenceList
+                  .indexWhere((element) => element.name == listEntryName);
+              allergenePreferenceList[index].isSelected = isSelected;
+            },
+          ),
           decoration: MainPageDecoration,
         ),
         PageViewModel(
@@ -63,7 +85,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
             title: "Preferenzen",
             subTitle: "Gibt es Nährstoffe, die du bewusst aufnehmen möchtest?",
           ),
-          body: "SelectWidget",
+          bodyWidget: OnboardingSwitchList(
+            list: nutrientsPreferenceList,
+            onChange: (String listEntryName, bool isSelected) {
+              var index = nutrientsPreferenceList
+                  .indexWhere((element) => element.name == listEntryName);
+              nutrientsPreferenceList[index].isSelected = isSelected;
+            },
+          ),
           decoration: MainPageDecoration,
         ),
         PageViewModel(
