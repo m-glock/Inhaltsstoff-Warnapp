@@ -1,4 +1,5 @@
 import 'package:Inhaltsstoff_Warnapp/pages/HomePage.dart';
+import 'package:Inhaltsstoff_Warnapp/pages/onboarding/OnboardingTitleWidget.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -26,14 +27,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    const pageDecoration = const PageDecoration(
-      titleTextStyle: TextStyle(fontSize: 36.0, fontWeight: FontWeight.w700),
-      bodyTextStyle: TextStyle(fontSize: 14.0),
+    const ImagePageDecoration = const PageDecoration(
+      pageColor: Colors.white,
+      titleTextStyle: TextStyle(fontSize: 36.0, fontWeight: FontWeight.w600),
       titlePadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      bodyTextStyle: TextStyle(fontSize: 14.0),
       descriptionPadding: EdgeInsets.all(16.0),
       imagePadding: EdgeInsets.fromLTRB(4.0, 32.0, 4.0, 0.0),
-      pageColor: Colors.white,
       imageFlex: 1,
+    );
+    const MainPageDecoration = const PageDecoration(
+      descriptionPadding: EdgeInsets.all(16.0),
+      contentPadding: EdgeInsets.zero,
+      pageColor: Colors.white,
     );
     return IntroductionScreen(
       key: introKey,
@@ -42,29 +48,38 @@ class _OnboardingPageState extends State<OnboardingPage> {
           title: "Inhaltsstoff Warnapp",
           body: "Short describtion of what this app offers to ist users",
           image: _buildImage("healthy_options"),
-          decoration: pageDecoration,
+          decoration: ImagePageDecoration,
         ),
         PageViewModel(
-          title: "Preferenzen 1",
-          body: "Hast du irgendwelche Allergien?",
-          decoration: pageDecoration,
+          titleWidget: OnboardingTitleWidget(
+            title: "Preferenzen",
+            subTitle: "Hast du irgendwelche Allergien?",
+          ),
+          body: "SelectWidget",
+          decoration: MainPageDecoration,
         ),
         PageViewModel(
-          title: "Preferenzen 2",
-          body: "Gibt es Nährstoffe, die du bewusst aufnehmen möchtest?",
-          decoration: pageDecoration,
+          titleWidget: OnboardingTitleWidget(
+            title: "Preferenzen",
+            subTitle: "Gibt es Nährstoffe, die du bewusst aufnehmen möchtest?",
+          ),
+          body: "SelectWidget",
+          decoration: MainPageDecoration,
         ),
         PageViewModel(
-          title: "Preferenzen 3",
-          body: "Welche Inhaltsstoffe möchtest du nicht konsumieren?",
-          decoration: pageDecoration,
+          titleWidget: OnboardingTitleWidget(
+            title: "Preferenzen",
+            subTitle: "Welche Inhaltsstoffe möchtest du nicht konsumieren?",
+          ),
+          body: "SelectWidget",
+          decoration: MainPageDecoration,
         ),
         PageViewModel(
           title: "Geschafft!",
           body:
               "Du hast das Setup abgeschlossen. Lass uns jetzt einkaufen gehen!",
           image: _buildImage("shopping_app"),
-          decoration: pageDecoration,
+          decoration: ImagePageDecoration,
         ),
       ],
       onDone: () => _onIntroEnd(context),
