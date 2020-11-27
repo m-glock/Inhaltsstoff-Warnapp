@@ -1,30 +1,52 @@
 import 'package:flutter/material.dart';
-import './OnboardingSwitchList.dart';
+import './OnboardingRadioButtonTable.dart';
 
-class OnboardingCheckboxList extends StatefulWidget {
-  OnboardingCheckboxList({Key key, this.list, this.onChange}) : super(key: key);
+class OnboardingSliderList extends StatefulWidget {
+  OnboardingSliderList({Key key, this.list, this.onChange}) : super(key: key);
 
-  final List<PreferenzesListTile> list;
+  final List<UnwantedIngredientsListTile> list;
   final Function onChange;
-
   @override
-  _OnboardingCheckboxListState createState() => _OnboardingCheckboxListState();
+  _OnboardingSliderListState createState() => _OnboardingSliderListState();
 }
 
-class _OnboardingCheckboxListState extends State<OnboardingCheckboxList> {
+class _OnboardingSliderListState extends State<OnboardingSliderList> {
+  List<String> tableHeaderElements = preferenceOptions;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
-        children: widget.list
-            .map<Widget>((PreferenzesListTile listTile) => CheckboxListTile(
-                  title: Text(listTile.name),
-                  value: listTile.isSelected,
-                  onChanged: (bool value) {
-                    widget.onChange(listTile.name, value);
-                  },
-                ))
-            .toList(),
+      child: Table(
+        children: List.generate(
+          widget.list.length,
+          (index) => TableRow(
+            children: [
+              TableCell(
+                child: Text(widget.list[index].name),
+                verticalAlignment: TableCellVerticalAlignment.middle,
+              ),
+              TableCell(
+                child: Slider(
+                    min: 0.0,
+                    max: 2.0,
+                    value: preferenceOptions
+                        .indexOf(widget.list[index].preference)
+                        .toDouble(),
+                    onChanged: (double value) {
+                      widget.onChange(index, preferenceOptions[value.toInt()]);
+                    },
+                    divisions: 2,
+                    activeColor: Colors.blue,
+                    inactiveColor: Colors.grey,
+                    label: widget.list[index].preference,
+                    semanticFormatterCallback: (double newValue) {
+                      return preferenceOptions[newValue.toInt()];
+                    }),
+                verticalAlignment: TableCellVerticalAlignment.middle,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

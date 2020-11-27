@@ -3,6 +3,7 @@ import './OnboardingTitleWidget.dart';
 import './OnboardingSwitchList.dart';
 import './OnboardingRadioButtonTable.dart';
 import './OnboardingCheckboxList.dart';
+import './OnboardingSliderList.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -43,12 +44,22 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   List<UnwantedIngredientsListTile> unwantedIngrediencePreferenceList =
       <UnwantedIngredientsListTile>[
-    UnwantedIngredientsListTile("Palmöl", preferenceState.regardless),
-    UnwantedIngredientsListTile("Zucker", preferenceState.regardless),
+    UnwantedIngredientsListTile("Palmöl", preferenceOptions[1]),
+    UnwantedIngredientsListTile("Zucker", preferenceOptions[1]),
     UnwantedIngredientsListTile(
-        "Tierische Produkte", preferenceState.regardless),
+        "Tierische Produkte", preferenceOptions[1]),
     UnwantedIngredientsListTile(
-        "Verdickungsmittel", preferenceState.regardless),
+        "Verdickungsmittel", preferenceOptions[1]),
+  ];
+
+  List<UnwantedIngredientsListTile> unwantedIngrediencePreferenceList2 =
+      <UnwantedIngredientsListTile>[
+    UnwantedIngredientsListTile("Palmöl", preferenceOptions[1]),
+    UnwantedIngredientsListTile("Zucker", preferenceOptions[1]),
+    UnwantedIngredientsListTile(
+        "Tierische Produkte", preferenceOptions[1]),
+    UnwantedIngredientsListTile(
+        "Verdickungsmittel", preferenceOptions[1]),
   ];
 
   void _onIntroEnd(context) {
@@ -124,14 +135,38 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle:
                 "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
           ),
-          bodyWidget: OnboardingSliderList(
+          bodyWidget: OnboardingRadioButtonTable(
             list: unwantedIngrediencePreferenceList,
-            onChange:
-                (int index, preferenceState newPreferenceValue) {
-              setState(() {
-                unwantedIngrediencePreferenceList[index].preference =
-                    newPreferenceValue;
-              });
+            onChange: (int index, String newPreferenceValue) {
+              if (preferenceOptions.contains(newPreferenceValue)) {
+                setState(() {
+                  unwantedIngrediencePreferenceList[index].preference =
+                      newPreferenceValue;
+                });
+              } else {
+                throw ErrorDescription('illegal State: newPreferenceValue is not included in PreferenceOptions');
+              }
+            },
+          ),
+          decoration: MainPageDecoration,
+        ),
+        PageViewModel(
+          titleWidget: OnboardingTitleWidget(
+            title: "Preferenzen",
+            subTitle:
+                "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
+          ),
+          bodyWidget: OnboardingSliderList(
+            list: unwantedIngrediencePreferenceList2,
+            onChange: (int index, String newPreferenceValue) {
+              if (preferenceOptions.contains(newPreferenceValue)) {
+                setState(() {
+                  unwantedIngrediencePreferenceList2[index].preference =
+                      newPreferenceValue;
+                });
+              } else {
+                throw ErrorDescription('illegal State: newPreferenceValue is not included in PreferenceOptions');
+              }
             },
           ),
           decoration: MainPageDecoration,
