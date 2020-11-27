@@ -1,6 +1,7 @@
 import '../HomePage.dart';
 import './OnboardingTitleWidget.dart';
 import './OnboardingSwitchList.dart';
+import './OnboardingCheckboxList.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,7 @@ List<PreferenzesListTile> allergenePreferenceList = <PreferenzesListTile>[
 
 List<PreferenzesListTile> nutrientsPreferenceList = <PreferenzesListTile>[
   PreferenzesListTile("B12", false),
+  PreferenzesListTile("Vitamin D", false),
   PreferenzesListTile("Eisen", false),
   PreferenzesListTile("Magensium", false),
 ];
@@ -85,7 +87,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             title: "Preferenzen",
             subTitle: "Gibt es Nährstoffe, die du bewusst aufnehmen möchtest?",
           ),
-          bodyWidget: OnboardingSwitchList(
+          bodyWidget: OnboardingCheckboxList(
             list: nutrientsPreferenceList,
             onChange: (String listEntryName, bool isSelected) {
               var index = nutrientsPreferenceList
@@ -93,14 +95,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
               nutrientsPreferenceList[index].isSelected = isSelected;
             },
           ),
-          decoration: MainPageDecoration,
-        ),
-        PageViewModel(
-          titleWidget: OnboardingTitleWidget(
-            title: "Preferenzen",
-            subTitle: "Welche Inhaltsstoffe möchtest du nicht konsumieren?",
-          ),
-          body: "SelectWidget",
           decoration: MainPageDecoration,
         ),
         PageViewModel(
