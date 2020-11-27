@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
 
-enum preferenceState {
-  never,
-  regardless,
-  few,
-}
+List<String> preferenceOptions = ['nichts', 'egal', 'wenig'];
 
 class UnwantedIngredientsListTile {
   UnwantedIngredientsListTile(this.name, this.preference);
   String name;
-  preferenceState preference;
+  String preference;
 }
 
-class OnboardingSliderList extends StatefulWidget {
-  OnboardingSliderList({Key key, this.list, this.onChange}) : super(key: key);
+class OnboardingRadioButtonTable extends StatefulWidget {
+  OnboardingRadioButtonTable({Key key, this.list, this.onChange})
+      : super(key: key);
 
   final List<UnwantedIngredientsListTile> list;
   final Function onChange;
 
   @override
-  _OnboardingSliderListState createState() => _OnboardingSliderListState();
+  _OnboardingRadioButtonTableState createState() =>
+      _OnboardingRadioButtonTableState();
 }
 
-class _OnboardingSliderListState extends State<OnboardingSliderList> {
+class _OnboardingRadioButtonTableState
+    extends State<OnboardingRadioButtonTable> {
   TextStyle tableHeadTextStyle = TextStyle(
     fontWeight: FontWeight.w800,
     fontSize: 10.0,
@@ -31,7 +30,7 @@ class _OnboardingSliderListState extends State<OnboardingSliderList> {
     fontWeight: FontWeight.w400,
     fontSize: 16.0,
   );
-  List<String> tableHeaderElements = ['test', 'nichts', 'egal', 'wenig'];
+  List<String> tableHeaderElements = ['', ...preferenceOptions];
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +54,8 @@ class _OnboardingSliderListState extends State<OnboardingSliderList> {
                 child: Text(
                   tableHeaderElements[tableHeaderIndex],
                   style: tableHeadTextStyle,
-                  textAlign: tableHeaderIndex == 0
-                      ? TextAlign.left
-                      : TextAlign.center,
+                  textAlign:
+                      tableHeaderIndex == 0 ? TextAlign.left : TextAlign.center,
                 ),
                 verticalAlignment: TableCellVerticalAlignment.middle,
               ),
@@ -75,10 +73,10 @@ class _OnboardingSliderListState extends State<OnboardingSliderList> {
                   verticalAlignment: TableCellVerticalAlignment.middle,
                 ),
                 ...List.generate(
-                  preferenceState.values.length,
+                  preferenceOptions.length,
                   (preferenceStateIndex) => TableCell(
                     child: Radio(
-                      value: preferenceState.values[preferenceStateIndex],
+                      value: preferenceOptions[preferenceStateIndex],
                       groupValue: widget.list[listIndex].preference,
                       onChanged: (value) {
                         widget.onChange(listIndex, value);
