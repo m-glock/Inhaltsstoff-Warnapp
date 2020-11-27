@@ -22,6 +22,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
     PreferenzesListTile("Gluten", false),
     PreferenzesListTile("Histamin", false),
     PreferenzesListTile("Soja", false),
+    PreferenzesListTile("Nüsse", false),
+    PreferenzesListTile("Lactose", false),
+    PreferenzesListTile("Gluten", false),
+    PreferenzesListTile("Histamin", false),
+    PreferenzesListTile("Soja", false),
+    PreferenzesListTile("Nüsse", false),
+    PreferenzesListTile("Lactose", false),
+    PreferenzesListTile("Gluten", false),
+    PreferenzesListTile("Histamin", false),
+    PreferenzesListTile("Soja", false),
   ];
 
   List<PreferenzesListTile> nutrientsPreferenceList = <PreferenzesListTile>[
@@ -85,9 +95,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
           bodyWidget: OnboardingSwitchList(
             list: allergenePreferenceList,
-            onChange: (String listEntryName, bool isSelected) {
-              var index = allergenePreferenceList
-                  .indexWhere((element) => element.name == listEntryName);
+            onChange: (int index, bool isSelected) {
               setState(() {
                 allergenePreferenceList[index].isSelected = isSelected;
               });
@@ -102,9 +110,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
           bodyWidget: OnboardingCheckboxList(
             list: nutrientsPreferenceList,
-            onChange: (String listEntryName, bool isSelected) {
-              var index = nutrientsPreferenceList
-                  .indexWhere((element) => element.name == listEntryName);
+            onChange: (int index, bool isSelected) {
               setState(() {
                 nutrientsPreferenceList[index].isSelected = isSelected;
               });
@@ -121,9 +127,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           bodyWidget: OnboardingSliderList(
             list: unwantedIngrediencePreferenceList,
             onChange:
-                (String listEntryName, preferenceState newPreferenceValue) {
-              var index = unwantedIngrediencePreferenceList
-                  .indexWhere((element) => element.name == listEntryName);
+                (int index, preferenceState newPreferenceValue) {
               setState(() {
                 unwantedIngrediencePreferenceList[index].preference =
                     newPreferenceValue;

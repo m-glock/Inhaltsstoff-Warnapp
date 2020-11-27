@@ -16,16 +16,15 @@ class _OnboardingCheckboxListState extends State<OnboardingCheckboxList> {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
-        children: List.generate(
-          widget.list.length,
-          (index) => CheckboxListTile(
-            title: Text(widget.list[index].name),
-            value: widget.list[index].isSelected,
-            onChanged: (bool value) {
-              widget.onChange(index, value);
-            },
-          ),
-        ),
+        children: widget.list
+            .map<Widget>((PreferenzesListTile listTile) => CheckboxListTile(
+                  title: Text(listTile.name),
+                  value: listTile.isSelected,
+                  onChanged: (bool value) {
+                    widget.onChange(listTile.name, value);
+                  },
+                ))
+            .toList(),
       ),
     );
   }

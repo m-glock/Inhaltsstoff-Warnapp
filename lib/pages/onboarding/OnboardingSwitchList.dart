@@ -21,15 +21,16 @@ class _OnboardingSwitchListState extends State<OnboardingSwitchList> {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
-        children: widget.list
-            .map<Widget>((PreferenzesListTile listTile) => SwitchListTile(
-                  title: Text(listTile.name),
-                  value: listTile.isSelected,
-                  onChanged: (bool value) {
-                    widget.onChange(listTile.name, value);
-                  },
-                ))
-            .toList(),
+        children: List.generate(
+          widget.list.length,
+          (index) => SwitchListTile(
+            title: Text(widget.list[index].name),
+            value: widget.list[index].isSelected,
+            onChanged: (bool value) {
+              widget.onChange(index, value);
+            },
+          ),
+        ),
       ),
     );
   }

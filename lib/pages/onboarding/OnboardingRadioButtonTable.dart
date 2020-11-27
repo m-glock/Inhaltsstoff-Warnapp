@@ -23,14 +23,16 @@ class OnboardingSliderList extends StatefulWidget {
 }
 
 class _OnboardingSliderListState extends State<OnboardingSliderList> {
-  final tableHeadTextStyle = TextStyle(
+  TextStyle tableHeadTextStyle = TextStyle(
     fontWeight: FontWeight.w800,
     fontSize: 10.0,
   );
-  final tableCellsTextStyle = TextStyle(
+  TextStyle tableCellsTextStyle = TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 16.0,
   );
+  List<String> tableHeaderElements = ['test', 'nichts', 'egal', 'wenig'];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -47,68 +49,46 @@ class _OnboardingSliderListState extends State<OnboardingSliderList> {
         },
         children: [
           TableRow(
-            children: [
-              TableCell(
+            children: List.generate(
+              tableHeaderElements.length,
+              (tableHeaderIndex) => TableCell(
                 child: Text(
-                  '',
+                  tableHeaderElements[tableHeaderIndex],
                   style: tableHeadTextStyle,
+                  textAlign: tableHeaderIndex == 0
+                      ? TextAlign.left
+                      : TextAlign.center,
                 ),
                 verticalAlignment: TableCellVerticalAlignment.middle,
               ),
-              TableCell(
-                child: Text(
-                  'nichts'.toUpperCase(),
-                  style: tableHeadTextStyle,
-                  textAlign: TextAlign.center,
-                ),
-                verticalAlignment: TableCellVerticalAlignment.middle,
-              ),
-              TableCell(
-                child: Text(
-                  'egal'.toUpperCase(),
-                  style: tableHeadTextStyle,
-                  textAlign: TextAlign.center,
-                ),
-                verticalAlignment: TableCellVerticalAlignment.middle,
-              ),
-              TableCell(
-                child: Text(
-                  'wenig'.toUpperCase(),
-                  style: tableHeadTextStyle,
-                  textAlign: TextAlign.center,
-                ),
-                verticalAlignment: TableCellVerticalAlignment.middle,
-              ),
-            ],
+            ),
           ),
-          ...widget.list
-              .map(
-                (listElement) => TableRow(
-                  children: [
-                    TableCell(
-                      child: Text(
-                        listElement.name,
-                        style: tableCellsTextStyle,
-                      ),
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                    ),
-                    ...preferenceState.values
-                        .map(
-                          (preferenceState) => TableCell(
-                            child: Radio(
-                              value: preferenceState,
-                              groupValue: listElement.preference,
-                              onChanged: (value) {
-                                widget.onChange(listElement.name, value);
-                              },
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  ],
+          ...List.generate(
+            widget.list.length,
+            (listIndex) => TableRow(
+              children: [
+                TableCell(
+                  child: Text(
+                    widget.list[listIndex].name,
+                    style: tableCellsTextStyle,
+                  ),
+                  verticalAlignment: TableCellVerticalAlignment.middle,
                 ),
-              )
-              .toList(),
+                ...List.generate(
+                  preferenceState.values.length,
+                  (preferenceStateIndex) => TableCell(
+                    child: Radio(
+                      value: preferenceState.values[preferenceStateIndex],
+                      groupValue: widget.list[listIndex].preference,
+                      onChanged: (value) {
+                        widget.onChange(listIndex, value);
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
