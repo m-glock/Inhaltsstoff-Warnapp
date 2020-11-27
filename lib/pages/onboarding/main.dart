@@ -1,6 +1,7 @@
 import '../HomePage.dart';
 import './OnboardingTitleWidget.dart';
 import './OnboardingSwitchList.dart';
+import './OnboardingRadioButtonTable.dart';
 import './OnboardingCheckboxList.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,14 @@ List<PreferenzesListTile> nutrientsPreferenceList = <PreferenzesListTile>[
   PreferenzesListTile("Vitamin D", false),
   PreferenzesListTile("Eisen", false),
   PreferenzesListTile("Magensium", false),
+];
+
+List<UnwantedIngredientsListTile> unwantedIngrediencePreferenceList =
+    <UnwantedIngredientsListTile>[
+  UnwantedIngredientsListTile("Palmöl", preferenceState.regardless),
+  UnwantedIngredientsListTile("Zucker", preferenceState.regardless),
+  UnwantedIngredientsListTile("Tierische Produkte", preferenceState.regardless),
+  UnwantedIngredientsListTile("Verdickungsmittel", preferenceState.regardless),
 ];
 
 class OnboardingPage extends StatefulWidget {
@@ -93,6 +102,24 @@ class _OnboardingPageState extends State<OnboardingPage> {
               var index = nutrientsPreferenceList
                   .indexWhere((element) => element.name == listEntryName);
               nutrientsPreferenceList[index].isSelected = isSelected;
+            },
+          ),
+          decoration: MainPageDecoration,
+        ),
+        PageViewModel(
+          titleWidget: OnboardingTitleWidget(
+            title: "Preferenzen",
+            subTitle:
+                "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
+          ),
+          bodyWidget: OnboardingSliderList(
+            list: unwantedIngrediencePreferenceList,
+            onChange:
+                (String listEntryName, preferenceState newPreferenceValue) {
+              var index = unwantedIngrediencePreferenceList
+                  .indexWhere((element) => element.name == listEntryName);
+              unwantedIngrediencePreferenceList[index].preference =
+                  newPreferenceValue;
             },
           ),
           decoration: MainPageDecoration,
