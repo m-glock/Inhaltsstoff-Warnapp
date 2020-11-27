@@ -99,9 +99,6 @@ class _OnboardingSliderListState extends State<OnboardingSliderList> {
                               value: preferenceState,
                               groupValue: listElement.preference,
                               onChanged: (value) {
-                                setState(() {
-                                  listElement.preference = value;
-                                });
                                 widget.onChange(listElement.name, value);
                               },
                             ),

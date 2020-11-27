@@ -6,29 +6,6 @@ import './OnboardingCheckboxList.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
 
-List<PreferenzesListTile> allergenePreferenceList = <PreferenzesListTile>[
-  PreferenzesListTile("Nüsse", false),
-  PreferenzesListTile("Lactose", false),
-  PreferenzesListTile("Gluten", false),
-  PreferenzesListTile("Histamin", false),
-  PreferenzesListTile("Soja", false),
-];
-
-List<PreferenzesListTile> nutrientsPreferenceList = <PreferenzesListTile>[
-  PreferenzesListTile("B12", false),
-  PreferenzesListTile("Vitamin D", false),
-  PreferenzesListTile("Eisen", false),
-  PreferenzesListTile("Magensium", false),
-];
-
-List<UnwantedIngredientsListTile> unwantedIngrediencePreferenceList =
-    <UnwantedIngredientsListTile>[
-  UnwantedIngredientsListTile("Palmöl", preferenceState.regardless),
-  UnwantedIngredientsListTile("Zucker", preferenceState.regardless),
-  UnwantedIngredientsListTile("Tierische Produkte", preferenceState.regardless),
-  UnwantedIngredientsListTile("Verdickungsmittel", preferenceState.regardless),
-];
-
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key key}) : super(key: key);
 
@@ -38,6 +15,31 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
+
+  List<PreferenzesListTile> allergenePreferenceList = <PreferenzesListTile>[
+    PreferenzesListTile("Nüsse", false),
+    PreferenzesListTile("Lactose", false),
+    PreferenzesListTile("Gluten", false),
+    PreferenzesListTile("Histamin", false),
+    PreferenzesListTile("Soja", false),
+  ];
+
+  List<PreferenzesListTile> nutrientsPreferenceList = <PreferenzesListTile>[
+    PreferenzesListTile("B12", false),
+    PreferenzesListTile("Vitamin D", false),
+    PreferenzesListTile("Eisen", false),
+    PreferenzesListTile("Magensium", false),
+  ];
+
+  List<UnwantedIngredientsListTile> unwantedIngrediencePreferenceList =
+      <UnwantedIngredientsListTile>[
+    UnwantedIngredientsListTile("Palmöl", preferenceState.regardless),
+    UnwantedIngredientsListTile("Zucker", preferenceState.regardless),
+    UnwantedIngredientsListTile(
+        "Tierische Produkte", preferenceState.regardless),
+    UnwantedIngredientsListTile(
+        "Verdickungsmittel", preferenceState.regardless),
+  ];
 
   void _onIntroEnd(context) {
     Navigator.of(context).pushReplacement(
@@ -86,7 +88,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
             onChange: (String listEntryName, bool isSelected) {
               var index = allergenePreferenceList
                   .indexWhere((element) => element.name == listEntryName);
-              allergenePreferenceList[index].isSelected = isSelected;
+              setState(() {
+                allergenePreferenceList[index].isSelected = isSelected;
+              });
             },
           ),
           decoration: MainPageDecoration,
@@ -101,7 +105,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
             onChange: (String listEntryName, bool isSelected) {
               var index = nutrientsPreferenceList
                   .indexWhere((element) => element.name == listEntryName);
-              nutrientsPreferenceList[index].isSelected = isSelected;
+              setState(() {
+                nutrientsPreferenceList[index].isSelected = isSelected;
+              });
             },
           ),
           decoration: MainPageDecoration,
@@ -118,8 +124,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 (String listEntryName, preferenceState newPreferenceValue) {
               var index = unwantedIngrediencePreferenceList
                   .indexWhere((element) => element.name == listEntryName);
-              unwantedIngrediencePreferenceList[index].preference =
-                  newPreferenceValue;
+              setState(() {
+                unwantedIngrediencePreferenceList[index].preference =
+                    newPreferenceValue;
+              });
             },
           ),
           decoration: MainPageDecoration,

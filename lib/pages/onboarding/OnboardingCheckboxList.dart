@@ -21,9 +21,6 @@ class _OnboardingCheckboxListState extends State<OnboardingCheckboxList> {
                   title: Text(listTile.name),
                   value: listTile.isSelected,
                   onChanged: (bool value) {
-                    setState(() {
-                      listTile.isSelected = value;
-                    });
                     widget.onChange(listTile.name, value);
                   },
                 ))

@@ -26,9 +26,6 @@ class _OnboardingSwitchListState extends State<OnboardingSwitchList> {
                   title: Text(listTile.name),
                   value: listTile.isSelected,
                   onChanged: (bool value) {
-                    setState(() {
-                      listTile.isSelected = value;
-                    });
                     widget.onChange(listTile.name, value);
                   },
                 ))
