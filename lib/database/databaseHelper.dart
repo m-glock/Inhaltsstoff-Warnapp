@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbObject.dart';
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbTables.dart';
+import 'package:Inhaltsstoff_Warnapp/database/tables/DbTable.dart';
+import 'package:Inhaltsstoff_Warnapp/database/tables/DbTableNames.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -49,28 +49,81 @@ class DatabaseHelper {
     });
   }
 
-  Future<int> saveNewObjectToDb(DbObject object) async {
+  // insert one row into a table
+  Future<int> add(DbTable object) async {
     Database db = await instance.database;
     Map<String, dynamic> row = object.toMap(withId: false);
 
     return await db.insert(object.getTableType().name, row);
   }
 
-  Future<DbObject> getItemById(int id, DbTables tableType) async {
+  // insert multiple rows into one or more tables
+  Future<List<int>> addAll(List<DbTable> objects) async {
+    Database db = await instance.database;
+    List<int> newRowIds = new List();
+
+    objects.forEach((element) async {
+      Map<String, dynamic> row = element.toMap(withId: false);
+      int rowId = await db.insert(element.getTableType().name, row);
+      newRowIds.add(rowId);
+    });
+
+    return newRowIds;
+  }
+
+  // get a row with a specific id from a table
+  Future<DbTable> read(int id, DbTableNames table) async {
     Database db = await instance.database;
     List<Map> list = await db.query(tableType.name, where: 'id = ?', whereArgs: [id]);
     //List<Map> list = await db.rawQuery('SELECT * FROM Ingredient_Group WHERE id = ?', [id]);
     int length = list.length;
-    return length > 0 ? tableType.fromMap(list[0]) : null;
+    return length > 0 ? table.fromMap(list[0]) : null;
   }
 
-  Future<int> updateItem(DbObject object) async {
+  // read all rows with specific values
+  // TODO: in progress
+  /*Future<DbTable> readAll(List<String> arguments, DbTables) async {
+    Database db = await instance.database;
+    List<Map> list = await db.query(tableType.name, where: 'id = ?', whereArgs: [id]);
+    int length = list.length;
+    return length > 0 ? tableType.fromMap(list[0]) : null;
+  }*/
+
+  // update a specific row in a table
+  Future<int> update(DbTable object) async {
     Database db = await instance.database;
     return await db.update(object.getTableType().name, object.toMap(), where: 'id = ?', whereArgs: [object.id]);
   }
 
-  Future<int> deleteItemById(int id, DbTables tableType) async {
+  // update multiple rows in a table
+  Future<List<int>> updateAll(List<DbTable> objects) async {
     Database db = await instance.database;
-    return await db.delete(tableType.name, where: 'id = ?', whereArgs: [id]);
+    List<int> updatedRowIds = new List();
+
+    objects.forEach((element) async {
+      int rowId = await db.update(element.getTableType().name, element.toMap(), where: 'id = ?', whereArgs: [element.id]);
+      updatedRowIds.add(rowId);
+    });
+
+    return updatedRowIds;
+  }
+
+  // delete one row with a specific id
+  Future<int> delete(DbTable object) async {
+    Database db = await instance.database;
+    return await db.delete(object.getTableType().name, where: 'id = ?', whereArgs: [object.id]);
+  }
+
+  // delete multiple rows
+  Future<List<int>> deleteAll(List<DbTable> objects) async {
+    Database db = await instance.database;
+    List<int> deletedRowIds = new List();
+
+    objects.forEach((element) async {
+      int rowId = await db.delete(element.getTableType().name, where: 'id = ?', whereArgs: [element.id]);
+      deletedRowIds.add(rowId);
+    });
+
+    return deletedRowIds;
   }
 }
