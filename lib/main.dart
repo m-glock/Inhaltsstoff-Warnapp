@@ -1,8 +1,9 @@
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbTables.dart';
+import 'package:Inhaltsstoff_Warnapp/database/tables/DbTableNames.dart';
+import 'package:Inhaltsstoff_Warnapp/database/tables/Type.dart';
 import 'package:flutter/material.dart';
 
-import 'database/database_helper.dart';
-import 'database/tables/IngredientGroup.dart';
+import 'database/databaseHelper.dart';
+import 'database/tables/Type.dart';
 
 void main() {
   runApp(MyApp());
@@ -144,27 +145,32 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _insert() async {
     // row to insert
-    IngredientGroup testGroup = IngredientGroup('vegan');
-    final id = await dbHelper.saveNewObjectToDb(testGroup);
+    Type group = Type('vegan');
+    //List<IngredientGroup> groups = new List();
+    //groups.add(IngredientGroup('vegan'));
+    //Ingredient ing = new Ingredient(groups, 'Fleisch');
+    final id = await dbHelper.add(group);
     print('inserted row id: $id');
   }
 
   void _query() async {
-    final IngredientGroup object = await dbHelper.getItemById(1, DbTables.ingredientGroup);
+    final Type object = await dbHelper.read(1, DbTableNames.type);
+    //final Ingredient ing = await dbHelper.getItemById(1, DbTables.ingredient);
     print('query all rows:');
     print(object.name);
   }
 
   void _update() async {
     // row to update
-    IngredientGroup testGroup = IngredientGroup('vegetarian', id: 2);
-    final rowsAffected = await dbHelper.updateItem(testGroup);
+    Type testGroup = Type('vegetarian', id: 2);
+    final rowsAffected = await dbHelper.update(testGroup);
     print('updated $rowsAffected row(s)');
   }
 
   void _delete() async {
     // Assuming that the number of rows is the id for the last row.
-    final rowsDeleted = await dbHelper.deleteItemById(2, DbTables.ingredientGroup);
+    Type group = Type('vegan');
+    final rowsDeleted = await dbHelper.delete(group);
     print('deleted $rowsDeleted row(s)');
   }
 }
