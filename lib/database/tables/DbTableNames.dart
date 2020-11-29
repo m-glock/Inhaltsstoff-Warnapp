@@ -1,8 +1,8 @@
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbObject.dart';
-import 'package:Inhaltsstoff_Warnapp/database/tables/IngredientGroup.dart';
+import 'package:Inhaltsstoff_Warnapp/database/tables/DbTable.dart';
+import 'package:Inhaltsstoff_Warnapp/database/tables/Type.dart';
 import 'package:Inhaltsstoff_Warnapp/database/tables/Ingredients.dart';
 
-enum DbTables{
+enum DbTableNames{
   ingredient,
   ingredientType,
   type,
@@ -14,27 +14,27 @@ enum DbTables{
   productList
 }
 
-extension DbTablesExtension on DbTables {
+extension DbTablesExtension on DbTableNames {
 
   String get name {
     switch (this) {
-      case DbTables.ingredient:
+      case DbTableNames.ingredient:
         return 'ingredient';
-      case DbTables.ingredientType:
+      case DbTableNames.ingredientType:
         return 'ingredienttype';
-      case DbTables.type:
+      case DbTableNames.type:
         return 'type';
-      case DbTables.preferenceType:
+      case DbTableNames.preferenceType:
         return 'preferencetype';
-      case DbTables.productIngredient:
+      case DbTableNames.productIngredient:
         return 'productingredient';
-      case DbTables.scanResult:
+      case DbTableNames.scanResult:
         return 'scanresult';
-      case DbTables.product:
+      case DbTableNames.product:
         return 'product';
-      case DbTables.list:
+      case DbTableNames.list:
         return 'list';
-      case DbTables.productList:
+      case DbTableNames.productList:
         return 'productlist';
       default:
         return null;
@@ -42,11 +42,11 @@ extension DbTablesExtension on DbTables {
   }
 
   //TODO: add mapping for all classes
-  DbObject fromMap(Map<String, dynamic> data){
+  DbTable fromMap(Map<String, dynamic> data){
     switch(this){
-      case DbTables.ingredientType:
-        return IngredientGroup.fromMap(data);
-      case DbTables.ingredient:
+      case DbTableNames.type:
+        return Type.fromMap(data);
+      case DbTableNames.ingredient:
         return Ingredient.fromMap(data);
       default:
         return null;

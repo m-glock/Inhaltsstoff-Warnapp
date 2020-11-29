@@ -1,43 +1,37 @@
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbObject.dart';
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbTables.dart';
+import 'package:Inhaltsstoff_Warnapp/database/tables/DbTable.dart';
+import 'package:Inhaltsstoff_Warnapp/database/tables/DbTableNames.dart';
 
-import 'IngredientGroup.dart';
+import 'Type.dart';
 
-class Ingredient implements DbObject{
+class Ingredient extends DbTable{
 
-  // TODO: one ingredient can belong to more than one group
-  int _id;
+  // Fields
   String _name;
-  IngredientGroup _group;
+  List<dynamic> _groups;
 
-  Ingredient(this._group, this._name, {int id}) : _id = id;
+  // Constructor
+  Ingredient(this._groups, this._name, {int id}) : super(id);
 
   // Getter and Setter
-  @override
-  int get id => _id;
-
   String get name => _name;
+  List<Type> get group => _groups;
 
-  IngredientGroup get group => _group;
-  int get groupId => _group.id;
-  set group(IngredientGroup newGroup) => _group = newGroup;
+  // Methods
+  DbTableNames getTableType() { return DbTableNames.ingredient; }
 
-  @override
-  DbTables getTableType() { return DbTables.ingredients; }
-
-  // used when inserting a row in the table
-  @override
+  // TODO groups/group ids => how to handle joinTables or one to many relations both to and from database
   Map<String, dynamic> toMap({bool withId: true}){
     final map = new Map<String, dynamic>();
-    map['group_id'] = _group.id;
     map['name'] = _name;
-    if(withId) map['id'] = _id;
+    if(withId) map['id'] = super.id;
+    //List<int> groupIds = new List();
+    //_groups.forEach((element) => groupIds.add(element.id));
+    //map['groups'] = groupIds;
     return map;
   }
 
-  // used when converting the row into an object
-  factory Ingredient.fromMap(Map<String, dynamic> data) =>   new Ingredient(
-      data['group_id'],
+  factory Ingredient.fromMap(Map<String, dynamic> data) => new Ingredient(
+      data['groups'],
       data['name'],
       id: data['id']
   );

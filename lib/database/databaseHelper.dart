@@ -32,13 +32,13 @@ class DatabaseHelper {
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
         version: _databaseVersion,
-        onConfigure: _onConfigure,
+        //onConfigure: _onConfigure,
         onCreate: _onCreate);
   }
 
-  static Future _onConfigure(Database db) async {
+  /*static Future _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
-  }
+  }*/
 
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
@@ -74,8 +74,7 @@ class DatabaseHelper {
   // get a row with a specific id from a table
   Future<DbTable> read(int id, DbTableNames table) async {
     Database db = await instance.database;
-    List<Map> list = await db.query(tableType.name, where: 'id = ?', whereArgs: [id]);
-    //List<Map> list = await db.rawQuery('SELECT * FROM Ingredient_Group WHERE id = ?', [id]);
+    List<Map> list = await db.query(table.name, where: 'id = ?', whereArgs: [id]);
     int length = list.length;
     return length > 0 ? table.fromMap(list[0]) : null;
   }
