@@ -16,7 +16,7 @@ class Ingredient extends DbTable{
   List<Type> get group => _groups;
 
   // Methods
-  DbTableNames getTableType() { return DbTableNames.ingredient; }
+  DbTableNames getTableName() { return DbTableNames.ingredient; }
 
   // TODO groups/group ids => how to handle joinTables or one to many relations both to and from database
   Map<String, dynamic> toMap({bool withId: true}){

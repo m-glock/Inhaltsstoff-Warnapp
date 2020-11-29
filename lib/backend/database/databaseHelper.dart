@@ -55,7 +55,7 @@ class DatabaseHelper {
     Database db = await instance.database;
     Map<String, dynamic> row = object.toMap(withId: false);
 
-    return await db.insert(object.getTableType().name, row);
+    return await db.insert(object.getTableName().name, row);
   }
 
   // insert multiple rows into one or more tables
@@ -65,7 +65,7 @@ class DatabaseHelper {
 
     objects.forEach((element) async {
       Map<String, dynamic> row = element.toMap(withId: false);
-      int rowId = await db.insert(element.getTableType().name, row);
+      int rowId = await db.insert(element.getTableName().name, row);
       newRowIds.add(rowId);
     });
 
@@ -92,7 +92,7 @@ class DatabaseHelper {
   // update a specific row in a table
   Future<int> update(DbTable object) async {
     Database db = await instance.database;
-    return await db.update(object.getTableType().name, object.toMap(), where: 'id = ?', whereArgs: [object.id]);
+    return await db.update(object.getTableName().name, object.toMap(), where: 'id = ?', whereArgs: [object.id]);
   }
 
   // update multiple rows in a table
@@ -101,7 +101,7 @@ class DatabaseHelper {
     List<int> updatedRowIds = new List();
 
     objects.forEach((element) async {
-      int rowId = await db.update(element.getTableType().name, element.toMap(), where: 'id = ?', whereArgs: [element.id]);
+      int rowId = await db.update(element.getTableName().name, element.toMap(), where: 'id = ?', whereArgs: [element.id]);
       updatedRowIds.add(rowId);
     });
 
@@ -111,7 +111,7 @@ class DatabaseHelper {
   // delete one row with a specific id
   Future<int> delete(DbTable object) async {
     Database db = await instance.database;
-    return await db.delete(object.getTableType().name, where: 'id = ?', whereArgs: [object.id]);
+    return await db.delete(object.getTableName().name, where: 'id = ?', whereArgs: [object.id]);
   }
 
   // delete multiple rows
@@ -120,7 +120,7 @@ class DatabaseHelper {
     List<int> deletedRowIds = new List();
 
     objects.forEach((element) async {
-      int rowId = await db.delete(element.getTableType().name, where: 'id = ?', whereArgs: [element.id]);
+      int rowId = await db.delete(element.getTableName().name, where: 'id = ?', whereArgs: [element.id]);
       deletedRowIds.add(rowId);
     });
 

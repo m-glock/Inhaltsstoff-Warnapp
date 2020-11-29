@@ -16,7 +16,7 @@ abstract class DbTable{
   int get id => _id;
 
   // Methods
-  DbTableNames getTableType();
+  DbTableNames getTableName();
   Map<String, dynamic> toMap({bool withId: true});
   static DbTable fromMap(Map<String, dynamic> data) {}
 }

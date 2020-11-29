@@ -12,7 +12,7 @@ class Type extends DbTable{
   // Getter and Setter
   String get name => _name;
 
-  DbTableNames getTableType() { return DbTableNames.type; }
+  DbTableNames getTableName() { return DbTableNames.type; }
 
   // used when inserting a row in the table
   Map<String, dynamic> toMap({bool withId: true}){
