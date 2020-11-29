@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:Inhaltsstoff_Warnapp/database/tables/DbObject.dart';
 import 'package:Inhaltsstoff_Warnapp/database/tables/DbTables.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -9,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 // code adapted from https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
 class DatabaseHelper {
 
-  static final _databaseName = "MyDatabase9.db";
+  static final _databaseName = "MyDatabase.db";
   static final _databaseVersion = 1;
 
   // make this a singleton class
@@ -31,26 +32,21 @@ class DatabaseHelper {
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
         version: _databaseVersion,
+        onConfigure: _onConfigure,
         onCreate: _onCreate);
   }
 
-  // TODO how to insert all necessary tables with few lines?
-  // TODO how to insert content of tables with few lines?
+  static Future _onConfigure(Database db) async {
+    await db.execute('PRAGMA foreign_keys = ON');
+  }
+
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
-    await db.execute('''
-          CREATE TABLE Ingredients (
-            id INTEGER PRIMARY KEY,
-            group_id INTEGER NOT NULL,
-            name TEXT NOT NULL
-          );
-          ''');
-    await db.execute('''
-          CREATE TABLE Ingredient_Group (
-            id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL
-          );
-          ''');
+    String fileText = await rootBundle.loadString('assets/create_tables_sql.txt');
+    List<String> queries = fileText.split(';');
+    queries.forEach((element) async {
+      await db.execute(element);
+    });
   }
 
   Future<int> saveNewObjectToDb(DbObject object) async {
