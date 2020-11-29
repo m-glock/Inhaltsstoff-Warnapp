@@ -1,6 +1,6 @@
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbTable.dart';
-import 'package:Inhaltsstoff_Warnapp/database/tables/Type.dart';
-import 'package:Inhaltsstoff_Warnapp/database/tables/Ingredients.dart';
+import '../Ingredient.dart';
+import '../Type.dart';
+import 'DbTable.dart';
 
 enum DbTableNames{
   ingredient,

@@ -1,7 +1,6 @@
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbTable.dart';
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbTableNames.dart';
-
 import 'Type.dart';
+import 'database/DbTable.dart';
+import 'database/DbTableNames.dart';
 
 class Ingredient extends DbTable{
 

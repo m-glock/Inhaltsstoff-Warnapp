@@ -11,13 +11,12 @@
 // bar items. The first one is selected.](https://flutter.github.io/assets-for-api-docs/assets/material/bottom_navigation_bar.png)
 
 import 'package:flutter/material.dart';
+import 'backend/database/databaseHelper.dart';
 import 'pages/lists/main.dart';
 import 'pages/comparison/main.dart';
 import 'pages/analysis/main.dart';
 import 'pages/scanning/main.dart';
 import 'pages/history/main.dart';
-
-import 'database/databaseHelper.dart';
 
 class Destination {
   const Destination(this.title, this.icon, this.color, this.page);
@@ -64,6 +63,8 @@ class MyStatefulWidget extends StatefulWidget {
 /// This is the private State class that goes with MyStatefulWidget.
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   // reference to our single class that manages the database
+  // database will be created if it does not exist or referenced if it already exists
+  // this process is only initiated when a query is executed (method from databaseHelper)
   final dbHelper = DatabaseHelper.instance;
 
   int _selectedIndex = 2;

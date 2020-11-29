@@ -1,4 +1,4 @@
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbTableNames.dart';
+import 'DbTableNames.dart';
 
 /*
 * super class for every class that represents a database table

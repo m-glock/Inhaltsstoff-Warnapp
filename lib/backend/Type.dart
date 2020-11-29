@@ -1,5 +1,5 @@
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbTable.dart';
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbTableNames.dart';
+import 'database/DbTable.dart';
+import 'database/DbTableNames.dart';
 
 class Type extends DbTable{
 
@@ -23,7 +23,7 @@ class Type extends DbTable{
   }
 
   // used when converting the row into an object
-  factory Type.fromMap(Map<String, dynamic> data) =>   new Type(
+  factory Type.fromMap(Map<String, dynamic> data) => new Type(
       data['name'],
       id : data['id']
   );

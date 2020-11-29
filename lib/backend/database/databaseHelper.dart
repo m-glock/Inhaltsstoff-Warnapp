@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbTable.dart';
-import 'package:Inhaltsstoff_Warnapp/database/tables/DbTableNames.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'DbTable.dart';
+import 'DbTableNames.dart';
 
 // code adapted from https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
 class DatabaseHelper {
