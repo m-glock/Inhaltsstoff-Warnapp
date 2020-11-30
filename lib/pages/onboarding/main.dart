@@ -46,20 +46,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
       <UnwantedIngredientsListTile>[
     UnwantedIngredientsListTile("Palmöl", preferenceOptions[1]),
     UnwantedIngredientsListTile("Zucker", preferenceOptions[1]),
-    UnwantedIngredientsListTile(
-        "Tierische Produkte", preferenceOptions[1]),
-    UnwantedIngredientsListTile(
-        "Verdickungsmittel", preferenceOptions[1]),
+    UnwantedIngredientsListTile("Tierische Produkte", preferenceOptions[1]),
+    UnwantedIngredientsListTile("Verdickungsmittel", preferenceOptions[1]),
   ];
 
   List<UnwantedIngredientsListTile> unwantedIngrediencePreferenceList2 =
       <UnwantedIngredientsListTile>[
     UnwantedIngredientsListTile("Palmöl", preferenceOptions[1]),
     UnwantedIngredientsListTile("Zucker", preferenceOptions[1]),
-    UnwantedIngredientsListTile(
-        "Tierische Produkte", preferenceOptions[1]),
-    UnwantedIngredientsListTile(
-        "Verdickungsmittel", preferenceOptions[1]),
+    UnwantedIngredientsListTile("Tierische Produkte", preferenceOptions[1]),
+    UnwantedIngredientsListTile("Verdickungsmittel", preferenceOptions[1]),
   ];
 
   void _onIntroEnd(context) {
@@ -72,6 +68,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
       child: Image.asset('assets/$assetName.png', width: 350.0),
       alignment: Alignment.bottomCenter,
     );
+  }
+
+  void _onBackTap() {
+    if (introKey.currentState.controller.page > 0.0) {
+      introKey.currentState
+          .animateScroll((introKey.currentState.controller.page - 1.0).toInt());
+    } else {
+      print('done');
+    }
   }
 
   @override
@@ -144,7 +149,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       newPreferenceValue;
                 });
               } else {
-                throw ErrorDescription('illegal State: newPreferenceValue is not included in PreferenceOptions');
+                throw ErrorDescription(
+                    'illegal State: newPreferenceValue is not included in PreferenceOptions');
               }
             },
           ),
@@ -165,9 +171,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       newPreferenceValue;
                 });
               } else {
-                throw ErrorDescription('illegal State: newPreferenceValue is not included in PreferenceOptions');
+                throw ErrorDescription(
+                    'illegal State: newPreferenceValue is not included in PreferenceOptions');
               }
             },
+          ),
+          footer: RaisedButton(
+            onPressed: () => _onBackTap(),
+            color: Colors.blue,
+            child: Text(
+              "Back",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           decoration: MainPageDecoration,
         ),
