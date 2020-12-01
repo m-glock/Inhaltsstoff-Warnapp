@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 
-class PreferenzesListTile {
-  PreferenzesListTile(this.name, this.isSelected);
-  String name;
-  bool isSelected;
-}
-
 class OnboardingSwitchList extends StatefulWidget {
-  OnboardingSwitchList({Key key, this.list, this.onChange}) : super(key: key);
+  OnboardingSwitchList(
+      {Key key, this.options, this.selectedItems, this.onChange})
+      : super(key: key);
 
-  final List<PreferenzesListTile> list;
+  final List<String> options;
+  final List<String> selectedItems;
   final Function onChange;
 
   @override
@@ -19,14 +16,16 @@ class OnboardingSwitchList extends StatefulWidget {
 class _OnboardingSwitchListState extends State<OnboardingSwitchList> {
   @override
   Widget build(BuildContext context) {
+  print(widget.options);
     return Container(
       child: Column(
         children: List.generate(
-          widget.list.length,
+          widget.options.length,
           (index) => SwitchListTile(
-            title: Text(widget.list[index].name),
-            value: widget.list[index].isSelected,
+            title: Text(widget.options[index]),
+            value: widget.selectedItems.contains(widget.options[index]),
             onChanged: (bool value) {
+              print(value);
               widget.onChange(index, value);
             },
           ),

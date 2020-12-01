@@ -17,45 +17,26 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
 
-  List<PreferenzesListTile> allergenePreferenceList = <PreferenzesListTile>[
-    PreferenzesListTile("Nüsse", false),
-    PreferenzesListTile("Lactose", false),
-    PreferenzesListTile("Gluten", false),
-    PreferenzesListTile("Histamin", false),
-    PreferenzesListTile("Soja", false),
-    PreferenzesListTile("Nüsse", false),
-    PreferenzesListTile("Lactose", false),
-    PreferenzesListTile("Gluten", false),
-    PreferenzesListTile("Histamin", false),
-    PreferenzesListTile("Soja", false),
-    PreferenzesListTile("Nüsse", false),
-    PreferenzesListTile("Lactose", false),
-    PreferenzesListTile("Gluten", false),
-    PreferenzesListTile("Histamin", false),
-    PreferenzesListTile("Soja", false),
-  ];
+  Map<String, List<String>> preferences = {
+    "allergenes": [],
+    "nutrients": [],
+    "unwantedIngredientsFew": [],
+    "unwantedIngredientsNothing": [],
+  };
 
-  List<PreferenzesListTile> nutrientsPreferenceList = <PreferenzesListTile>[
-    PreferenzesListTile("B12", false),
-    PreferenzesListTile("Vitamin D", false),
-    PreferenzesListTile("Eisen", false),
-    PreferenzesListTile("Magensium", false),
+  List<String> allergeneOptions = [
+    "Nüsse",
+    "Lactose",
+    "Gluten",
+    "Histamin",
+    "Soja"
   ];
-
-  List<UnwantedIngredientsListTile> unwantedIngrediencePreferenceList =
-      <UnwantedIngredientsListTile>[
-    UnwantedIngredientsListTile("Palmöl", preferenceOptions[1]),
-    UnwantedIngredientsListTile("Zucker", preferenceOptions[1]),
-    UnwantedIngredientsListTile("Tierische Produkte", preferenceOptions[1]),
-    UnwantedIngredientsListTile("Verdickungsmittel", preferenceOptions[1]),
-  ];
-
-  List<UnwantedIngredientsListTile> unwantedIngrediencePreferenceList2 =
-      <UnwantedIngredientsListTile>[
-    UnwantedIngredientsListTile("Palmöl", preferenceOptions[1]),
-    UnwantedIngredientsListTile("Zucker", preferenceOptions[1]),
-    UnwantedIngredientsListTile("Tierische Produkte", preferenceOptions[1]),
-    UnwantedIngredientsListTile("Verdickungsmittel", preferenceOptions[1]),
+  List<String> nutrientOptions = ["B12", "Eisen", "Vitamin D", "Magnesium"];
+  List<String> ingredientOptions = [
+    "Palmöl",
+    "Zucker",
+    "Tierische Produkte",
+    "Verdickungsmittel"
   ];
 
   void _onIntroEnd(context) {
@@ -110,10 +91,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle: "Hast du irgendwelche Allergien?",
           ),
           bodyWidget: OnboardingSwitchList(
-            list: allergenePreferenceList,
-            onChange: (int index, bool isSelected) {
+            options: allergeneOptions,
+            selectedItems: preferences["allergenes"],
+            onChange: (int index, bool hasBeenSelected) {
+              String changedItem = allergeneOptions[index];
               setState(() {
-                allergenePreferenceList[index].isSelected = isSelected;
+                hasBeenSelected
+                    ? preferences["allergenes"].add(changedItem)
+                    : preferences["allergenes"].remove(changedItem);
               });
             },
           ),
@@ -125,10 +110,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle: "Gibt es Nährstoffe, die du bewusst aufnehmen möchtest?",
           ),
           bodyWidget: OnboardingCheckboxList(
-            list: nutrientsPreferenceList,
-            onChange: (int index, bool isSelected) {
+            options: nutrientOptions,
+            selectedItems: preferences["nutrients"],
+            onChange: (int index, bool hasBeenSelected) {
+              String changedItem = nutrientOptions[index];
               setState(() {
-                nutrientsPreferenceList[index].isSelected = isSelected;
+                hasBeenSelected
+                    ? preferences["nutrients"].add(changedItem)
+                    : preferences["nutrients"].remove(changedItem);
               });
             },
           ),
@@ -141,17 +130,31 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
           ),
           bodyWidget: OnboardingRadioButtonTable(
-            list: unwantedIngrediencePreferenceList,
+            options: ingredientOptions,
+            selectedItems: {
+              "few": preferences["unwantedIngredientsFew"],
+              "nothing": preferences["unwantedIngredientsNothing"]
+            },
             onChange: (int index, String newPreferenceValue) {
-              if (preferenceOptions.contains(newPreferenceValue)) {
-                setState(() {
-                  unwantedIngrediencePreferenceList[index].preference =
-                      newPreferenceValue;
-                });
-              } else {
-                throw ErrorDescription(
-                    'illegal State: newPreferenceValue is not included in PreferenceOptions');
-              }
+              String changedItem = ingredientOptions[index];
+              setState(() {
+                switch (newPreferenceValue) {
+                  case "wenig":
+                    preferences["unwantedIngredientsNothing"]
+                        .remove(changedItem);
+                    preferences["unwantedIngredientsFew"].add(changedItem);
+                    break;
+                  case "nichts":
+                    preferences["unwantedIngredientsFew"].remove(changedItem);
+                    preferences["unwantedIngredientsNothing"].add(changedItem);
+                    break;
+                  default:
+                    preferences["unwantedIngredientsFew"].remove(changedItem);
+                    preferences["unwantedIngredientsNothing"]
+                        .remove(changedItem);
+                    break;
+                }
+              });
             },
           ),
           decoration: MainPageDecoration,
@@ -163,17 +166,31 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
           ),
           bodyWidget: OnboardingSliderList(
-            list: unwantedIngrediencePreferenceList2,
+            options: ingredientOptions,
+            selectedItems: {
+              "few": preferences["unwantedIngredientsFew"],
+              "nothing": preferences["unwantedIngredientsNothing"]
+            },
             onChange: (int index, String newPreferenceValue) {
-              if (preferenceOptions.contains(newPreferenceValue)) {
-                setState(() {
-                  unwantedIngrediencePreferenceList2[index].preference =
-                      newPreferenceValue;
-                });
-              } else {
-                throw ErrorDescription(
-                    'illegal State: newPreferenceValue is not included in PreferenceOptions');
-              }
+              String changedItem = ingredientOptions[index];
+              setState(() {
+                switch (newPreferenceValue) {
+                  case "wenig":
+                    preferences["unwantedIngredientsNothing"]
+                        .remove(changedItem);
+                    preferences["unwantedIngredientsFew"].add(changedItem);
+                    break;
+                  case "nichts":
+                    preferences["unwantedIngredientsFew"].remove(changedItem);
+                    preferences["unwantedIngredientsNothing"].add(changedItem);
+                    break;
+                  default:
+                    preferences["unwantedIngredientsFew"].remove(changedItem);
+                    preferences["unwantedIngredientsNothing"]
+                        .remove(changedItem);
+                    break;
+                }
+              });
             },
           ),
           footer: RaisedButton(

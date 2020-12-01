@@ -2,17 +2,13 @@ import 'package:flutter/material.dart';
 
 List<String> preferenceOptions = ['nichts', 'egal', 'wenig'];
 
-class UnwantedIngredientsListTile {
-  UnwantedIngredientsListTile(this.name, this.preference);
-  String name;
-  String preference;
-}
-
 class OnboardingRadioButtonTable extends StatefulWidget {
-  OnboardingRadioButtonTable({Key key, this.list, this.onChange})
+  OnboardingRadioButtonTable(
+      {Key key, this.options, this.selectedItems, this.onChange})
       : super(key: key);
 
-  final List<UnwantedIngredientsListTile> list;
+  final List<String> options;
+  final Map<String, List<String>> selectedItems;
   final Function onChange;
 
   @override
@@ -62,12 +58,12 @@ class _OnboardingRadioButtonTableState
             ),
           ),
           ...List.generate(
-            widget.list.length,
+            widget.options.length,
             (listIndex) => TableRow(
               children: [
                 TableCell(
                   child: Text(
-                    widget.list[listIndex].name,
+                    widget.options[listIndex],
                     style: tableCellsTextStyle,
                   ),
                   verticalAlignment: TableCellVerticalAlignment.middle,
@@ -77,7 +73,13 @@ class _OnboardingRadioButtonTableState
                   (preferenceStateIndex) => TableCell(
                     child: Radio(
                       value: preferenceOptions[preferenceStateIndex],
-                      groupValue: widget.list[listIndex].preference,
+                      groupValue: widget.selectedItems["nothing"]
+                              .contains(widget.options[listIndex])
+                          ? "nichts"
+                          : widget.selectedItems["few"]
+                                  .contains(widget.options[listIndex])
+                              ? "wenig"
+                              : "egal",
                       onChanged: (value) {
                         widget.onChange(listIndex, value);
                       },

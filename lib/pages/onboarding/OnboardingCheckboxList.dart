@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import './OnboardingSwitchList.dart';
 
 class OnboardingCheckboxList extends StatefulWidget {
-  OnboardingCheckboxList({Key key, this.list, this.onChange}) : super(key: key);
+  OnboardingCheckboxList(
+      {Key key, this.options, this.selectedItems, this.onChange})
+      : super(key: key);
 
-  final List<PreferenzesListTile> list;
+  final List<String> options;
+  final List<String> selectedItems;
   final Function onChange;
 
   @override
@@ -17,10 +19,10 @@ class _OnboardingCheckboxListState extends State<OnboardingCheckboxList> {
     return Container(
       child: Column(
         children: List.generate(
-          widget.list.length,
+          widget.options.length,
           (index) => CheckboxListTile(
-            title: Text(widget.list[index].name),
-            value: widget.list[index].isSelected,
+            title: Text(widget.options[index]),
+            value: widget.selectedItems.contains(widget.options[index]),
             onChanged: (bool value) {
               widget.onChange(index, value);
             },

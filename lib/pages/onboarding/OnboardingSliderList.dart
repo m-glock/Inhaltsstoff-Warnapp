@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import './OnboardingRadioButtonTable.dart';
 
 class OnboardingSliderList extends StatefulWidget {
-  OnboardingSliderList({Key key, this.list, this.onChange}) : super(key: key);
+  OnboardingSliderList(
+      {Key key, this.options, this.selectedItems, this.onChange})
+      : super(key: key);
 
-  final List<UnwantedIngredientsListTile> list;
+  final List<String> options;
+  final Map<String, List<String>> selectedItems;
   final Function onChange;
+
   @override
   _OnboardingSliderListState createState() => _OnboardingSliderListState();
 }
@@ -13,16 +17,17 @@ class OnboardingSliderList extends StatefulWidget {
 class _OnboardingSliderListState extends State<OnboardingSliderList> {
   List<String> tableHeaderElements = preferenceOptions;
 
+
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Table(
         children: List.generate(
-          widget.list.length,
+          widget.options.length,
           (index) => TableRow(
             children: [
               TableCell(
-                child: Text(widget.list[index].name),
+                child: Text(widget.options[index]),
                 verticalAlignment: TableCellVerticalAlignment.middle,
               ),
               TableCell(
@@ -30,7 +35,15 @@ class _OnboardingSliderListState extends State<OnboardingSliderList> {
                     min: 0.0,
                     max: 2.0,
                     value: preferenceOptions
-                        .indexOf(widget.list[index].preference)
+                        .indexOf(
+                          widget.selectedItems["nothing"]
+                                  .contains(widget.options[index])
+                              ? "nichts"
+                              : widget.selectedItems["few"]
+                                      .contains(widget.options[index])
+                                  ? "wenig"
+                                  : "egal",
+                        )
                         .toDouble(),
                     onChanged: (double value) {
                       widget.onChange(index, preferenceOptions[value.toInt()]);
@@ -38,7 +51,13 @@ class _OnboardingSliderListState extends State<OnboardingSliderList> {
                     divisions: 2,
                     activeColor: Colors.blue,
                     inactiveColor: Colors.grey,
-                    label: widget.list[index].preference,
+                    label: widget.selectedItems["nothing"]
+                            .contains(widget.options[index])
+                        ? "nichts"
+                        : widget.selectedItems["few"]
+                                .contains(widget.options[index])
+                            ? "wenig"
+                            : "egal",
                     semanticFormatterCallback: (double newValue) {
                       return preferenceOptions[newValue.toInt()];
                     }),
