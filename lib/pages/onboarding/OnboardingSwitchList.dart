@@ -16,7 +16,6 @@ class OnboardingSwitchList extends StatefulWidget {
 class _OnboardingSwitchListState extends State<OnboardingSwitchList> {
   @override
   Widget build(BuildContext context) {
-  print(widget.options);
     return Container(
       child: Column(
         children: List.generate(
@@ -25,7 +24,6 @@ class _OnboardingSwitchListState extends State<OnboardingSwitchList> {
             title: Text(widget.options[index]),
             value: widget.selectedItems.contains(widget.options[index]),
             onChanged: (bool value) {
-              print(value);
               widget.onChange(index, value);
             },
           ),

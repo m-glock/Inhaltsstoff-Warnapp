@@ -4,6 +4,7 @@ import './OnboardingSwitchList.dart';
 import './OnboardingRadioButtonTable.dart';
 import './OnboardingCheckboxList.dart';
 import './OnboardingSliderList.dart';
+import './OnboardingSummary.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -51,13 +52,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
-  void _onBackTap() {
-    if (introKey.currentState.controller.page > 0.0) {
-      introKey.currentState
-          .animateScroll((introKey.currentState.controller.page - 1.0).toInt());
-    } else {
-      print('done');
-    }
+  void _animateToPage(String pageName) {
+    int pageIndex = pageName == "allergenes"
+        ? 1
+        : pageName == "nutrients"
+            ? 2
+            : 3;
+    introKey.currentState.animateScroll(pageIndex);
   }
 
   @override
@@ -75,6 +76,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       descriptionPadding: EdgeInsets.all(16.0),
       contentPadding: EdgeInsets.zero,
       pageColor: Colors.white,
+      titlePadding: EdgeInsets.only(bottom: 8.0),
     );
     return IntroductionScreen(
       key: introKey,
@@ -203,6 +205,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
+          ),
+          decoration: MainPageDecoration,
+        ),
+        PageViewModel(
+          titleWidget: OnboardingTitleWidget(
+            title: "Preferenzen",
+            subTitle:
+                "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
+          ),
+          bodyWidget: OnboardingSummary(
+            preferences: preferences,
+            onEditPreference: _animateToPage,
           ),
           decoration: MainPageDecoration,
         ),
