@@ -27,8 +27,99 @@ class _ScanningResultState extends State<ScanningResult> {
             Text('Hersteller, Scandatum', style: appTheme().textTheme.headline2, textAlign: TextAlign.center),
             SizedBox(height:20.0),
             drawResultCircle(Colors.green, Icons.done),
-            //drawResultCircle(Colors.yellow, Icons.warning),
+            //drawResultCircle(Colors.yellow[600], Icons.warning),
             //drawResultCircle(Colors.red, Icons.clear),
+            SizedBox(height:25.0),
+            getResultText('Good Choice!', Colors.green),
+            //getResultText('Caution!', Colors.yellow[600]),
+            //getResultText('Bad Choice!', Colors.red),
+            SizedBox(height:20.0),
+            ColoredBox(
+              color: Colors.green[100],
+              child:
+              ListTile(
+                leading: Icon(Icons.done, color: Colors.green[800]),
+                title: Text('Enthält keine ungewollten Inhaltsstoffe', style: TextStyle(fontSize: 14, color: Colors.green[800])),
+                dense: true,
+              ),
+            ),
+            SizedBox(height:10.0),
+            ColoredBox(
+              color: Colors.green[100],
+              child: ListTile(
+                leading: Icon(Icons.add, color: Colors.green[800]),
+                title: Text('Enthält Magnesium, B12', style: TextStyle(fontSize: 14, color: Colors.green[800])),
+                dense: true,
+              ),
+            ),
+            SizedBox(height:30.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Column(
+                  children: [
+                    MaterialButton(
+                      onPressed: () {},
+                      color: appTheme().primaryColor,
+                      textColor: Colors.white,
+                      child: Icon(
+                        //Icons.list,
+                        Icons.favorite,
+                        size: 24,
+                      ),
+                      padding: EdgeInsets.all(16),
+                      shape: CircleBorder(),
+                    ),
+                    SizedBox(height:10.0),
+                    Text('Speichern', style: TextStyle(color: appTheme().primaryColor, fontSize: 14)),
+                  ],
+                ),
+                Column(
+                  children: [
+                    MaterialButton(
+                      onPressed: () {},
+                      color: appTheme().primaryColor,
+                      textColor: Colors.white,
+                      child: Icon(
+                        Icons.compare_arrows,
+                        size: 24,
+                      ),
+                      padding: EdgeInsets.all(16),
+                      shape: CircleBorder(),
+                    ),
+                    SizedBox(height:10.0),
+                    Text('Vergleichen', style: TextStyle(color: appTheme().primaryColor, fontSize: 14)),
+                  ],
+                ),
+                Column(
+                  children: [
+                    MaterialButton(
+                      onPressed: () {},
+                      color: appTheme().primaryColor,
+                      textColor: Colors.white,
+                      child: Icon(
+                        Icons.add_shopping_cart,
+                        size: 24,
+                      ),
+                      padding: EdgeInsets.all(16),
+                      shape: CircleBorder(),
+                    ),
+                    SizedBox(height:10.0),
+                    Text('Kaufen', style: TextStyle(color: appTheme().primaryColor, fontSize: 14)),
+                  ],
+                ),
+              ]
+            ),
+            SizedBox(height:30.0),
+            SizedBox(
+              height: 50,
+              child: ColoredBox(
+                color: Colors.blue[50],
+                child: Center(
+                  child: Text('Weitere Informationen', style: appTheme().textTheme.headline2, textAlign: TextAlign.center),
+                )
+              ),
+            ),
             ExpansionTile(
               title: Text(
                 "Präferenzen",
@@ -83,9 +174,9 @@ class _ScanningResultState extends State<ScanningResult> {
 
   Widget drawResultCircle(Color circleColor, IconData resultIcon){
     return Container(
-      width: 250,
-      height: 250,
-      child: Icon(resultIcon, size: 150, color: Colors.white,),
+      width: 200,
+      height: 200,
+      child: Icon(resultIcon, size: 100, color: Colors.white,),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: circleColor,
@@ -98,6 +189,17 @@ class _ScanningResultState extends State<ScanningResult> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget getResultText(String choiceText, Color textColor){
+    return Text(
+        choiceText,
+        style: TextStyle(
+            color: textColor,
+            fontSize: 25,
+            fontWeight: FontWeight.bold),
+        textAlign: TextAlign.center
     );
   }
 }
