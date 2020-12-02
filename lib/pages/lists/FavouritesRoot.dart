@@ -24,6 +24,17 @@ class _FavouritesRootState extends State<FavouritesRoot> {
       appBar: AppBar(
         title: Text('FavouritesRoot'),
         backgroundColor: Colors.blue,
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/settings');
+            },
+            child: Icon(
+              Icons.settings,
+              size: 26.0,
+            ),
+          )
+        ],
       ),
       backgroundColor: Colors.white,
       body: Container(

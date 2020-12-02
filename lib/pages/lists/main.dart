@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/pages/settings/SettingsRoot.dart';
 import 'package:flutter/material.dart';
 import 'FavouritesRoot.dart';
 import 'FavouritesSecond.dart';
@@ -18,6 +19,8 @@ class _FavouritesPageState extends State<FavouritesPage> {
           settings: settings,
           builder: (BuildContext context) {
             switch(settings.name) {
+              case '/settings':
+                return SettingsRoot();
               case '/':
                 return FavouritesRoot();
               case '/second':

@@ -30,8 +30,7 @@ const List<Destination> allDestinations = <Destination>[
   Destination('Verlauf', Icons.history, Colors.blue, HistoryPage()),
   Destination('Scannen', Icons.camera_alt, Colors.blue, ScanningPage()),
   Destination('Vergleich', Icons.compare_arrows, Colors.blue, ComparisonPage()),
-  Destination('Analyse', Icons.bar_chart, Colors.blue, AnalysisPage())
-
+  Destination('Analyse', Icons.bar_chart, Colors.blue, AnalysisPage()),
 ];
 
 void main() => runApp(MyApp());
