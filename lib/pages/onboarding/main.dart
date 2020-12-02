@@ -1,9 +1,7 @@
 import '../HomePage.dart';
 import './OnboardingTitleWidget.dart';
-import './OnboardingSwitchList.dart';
 import './OnboardingRadioButtonTable.dart';
 import './OnboardingCheckboxList.dart';
-import './OnboardingSliderList.dart';
 import './OnboardingSummary.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +90,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             title: "Preferenzen",
             subTitle: "Hast du irgendwelche Allergien?",
           ),
-          bodyWidget: OnboardingSwitchList(
+          bodyWidget: OnboardingCheckboxList(
             options: allergeneOptions,
             selectedItems: preferences["allergenes"],
             onChange: (int index, bool hasBeenSelected) {
@@ -163,56 +161,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
         PageViewModel(
           titleWidget: OnboardingTitleWidget(
-            title: "Preferenzen",
+            title: "Zusammenfassung",
             subTitle:
-                "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
-          ),
-          bodyWidget: OnboardingSliderList(
-            options: ingredientOptions,
-            selectedItems: {
-              "few": preferences["unwantedIngredientsFew"],
-              "nothing": preferences["unwantedIngredientsNothing"]
-            },
-            onChange: (int index, String newPreferenceValue) {
-              String changedItem = ingredientOptions[index];
-              setState(() {
-                switch (newPreferenceValue) {
-                  case "wenig":
-                    preferences["unwantedIngredientsNothing"]
-                        .remove(changedItem);
-                    preferences["unwantedIngredientsFew"].add(changedItem);
-                    break;
-                  case "nichts":
-                    preferences["unwantedIngredientsFew"].remove(changedItem);
-                    preferences["unwantedIngredientsNothing"].add(changedItem);
-                    break;
-                  default:
-                    preferences["unwantedIngredientsFew"].remove(changedItem);
-                    preferences["unwantedIngredientsNothing"]
-                        .remove(changedItem);
-                    break;
-                }
-              });
-            },
-          ),
-          footer: RaisedButton(
-            onPressed: () => _onBackTap(),
-            color: Colors.blue,
-            child: Text(
-              "Back",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          decoration: MainPageDecoration,
-        ),
-        PageViewModel(
-          titleWidget: OnboardingTitleWidget(
-            title: "Preferenzen",
-            subTitle:
-                "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
+                "Kontrolliere deine Auswahl und bearbeite sie wenn nötig",
           ),
           bodyWidget: OnboardingSummary(
             preferences: preferences,
