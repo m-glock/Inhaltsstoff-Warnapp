@@ -1,4 +1,5 @@
 
+import 'package:Inhaltsstoff_Warnapp/backend/Type.dart';
 import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
 /// Flutter code sample for BottomNavigationBar
 
@@ -56,11 +57,11 @@ class MyApp extends StatelessWidget {
         child: Text('Button'),
         onPressed: () async {
           final dbHelper = DatabaseHelper.instance;
-          await dbHelper.add(Ingredient(null, "name"));
+          await dbHelper.add(Type("name2"));
           print('hello'); //               <-- logging
 
-          await dbHelper.read(1, DbTableNames.ingredient);
-
+          List<Map> test = await dbHelper.readAll(DbTableNames.type);
+          print(test);
         },
       ),
     ),

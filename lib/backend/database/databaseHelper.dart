@@ -82,12 +82,11 @@ class DatabaseHelper {
 
   // read all rows with specific values
   // TODO: in progress
-  /*Future<DbTable> readAll(List<String> arguments, DbTables) async {
+  Future<List <Map>> readAll(DbTableNames tableType) async {
     Database db = await instance.database;
-    List<Map> list = await db.query(tableType.name, where: 'id = ?', whereArgs: [id]);
-    int length = list.length;
-    return length > 0 ? tableType.fromMap(list[0]) : null;
-  }*/
+    List<Map> list = await db.query(tableType.name);
+    return list;
+  }
 
   // update a specific row in a table
   Future<int> update(DbTable object) async {
