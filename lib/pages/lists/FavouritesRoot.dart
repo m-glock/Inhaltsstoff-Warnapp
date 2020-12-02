@@ -1,7 +1,9 @@
+import 'package:Inhaltsstoff_Warnapp/customWidgets/CustomAppBar.dart';
+import 'package:Inhaltsstoff_Warnapp/pages/settings/SettingsRoot.dart';
 import 'package:flutter/material.dart';
 
 class FavouritesRoot extends StatefulWidget {
-  const FavouritesRoot({ Key key }) : super(key: key);
+  const FavouritesRoot({Key key}) : super(key: key);
 
   @override
   _FavouritesRootState createState() => _FavouritesRootState();
@@ -21,21 +23,7 @@ class _FavouritesRootState extends State<FavouritesRoot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('FavouritesRoot'),
-        backgroundColor: Colors.blue,
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, '/settings');
-            },
-            child: Icon(
-              Icons.settings,
-              size: 26.0,
-            ),
-          )
-        ],
-      ),
+      appBar: CustomAppBar('Favoriten'),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(32.0),
