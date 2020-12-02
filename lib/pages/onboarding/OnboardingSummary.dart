@@ -48,43 +48,56 @@ class OnboardingSummary extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Divider(),
                 ListTile(
                   leading: preferenceCategoryInfo[key]["icon"],
                   title: Text(
                     preferenceCategoryInfo[key]["title"],
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
                     ),
                   ),
                   trailing: IconButton(
                     icon: Icon(
                       Icons.edit,
-                      color: Colors.blue,
+                      color: Colors.grey[800],
                     ),
                     onPressed: () => onEditPreference(key),
                   ),
                 ),
-                Divider(),
-                Wrap(
-                  spacing: 12.0,
-                  runSpacing: 0.0,
-                  children: List<Widget>.generate(
-                    preferences[key].length,
-                    (int valueIndex) {
-                      return Chip(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(16.0),
-                          ),
-                          side: BorderSide(color: Colors.black),
-                        ),
-                        label: Text(preferences[key][valueIndex]),
-                      );
-                    },
-                  ).toList(),
+                Divider(
+                  thickness: 1.0,
                 ),
+                if (preferences[key].length > 0)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 4.0,
+                    ),
+                    child: Wrap(
+                      spacing: 12.0,
+                      runSpacing: 0.0,
+                      children: List<Widget>.generate(
+                        preferences[key].length,
+                        (int valueIndex) {
+                          return Chip(
+                            backgroundColor: Colors.grey[200],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(16.0),
+                              ),
+                              //side: BorderSide(color: Colors.grey),
+                            ),
+                            label: Text(preferences[key][valueIndex]),
+                          );
+                        },
+                      ).toList(),
+                    ),
+                  ),
+                if (preferences[key].length > 0)
+                  Divider(
+                    thickness: 1.0,
+                  ),
               ],
             );
           },

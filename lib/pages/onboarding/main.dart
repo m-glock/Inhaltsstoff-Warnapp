@@ -76,6 +76,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
       pageColor: Colors.white,
       titlePadding: EdgeInsets.only(bottom: 8.0),
     );
+    const SummaryPageDecoration = const PageDecoration(
+      descriptionPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      contentPadding: EdgeInsets.zero,
+      pageColor: Colors.white,
+      titlePadding: EdgeInsets.zero,
+    );
     return IntroductionScreen(
       key: introKey,
       pages: [
@@ -169,7 +175,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             preferences: preferences,
             onEditPreference: _animateToPage,
           ),
-          decoration: MainPageDecoration,
+          decoration: SummaryPageDecoration,
         ),
         PageViewModel(
           title: "Geschafft!",
