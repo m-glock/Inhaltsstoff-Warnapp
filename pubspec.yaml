@@ -46,7 +46,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/
+    - assets/database/create_tables_sql.txt
+    - pubspec.yaml
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

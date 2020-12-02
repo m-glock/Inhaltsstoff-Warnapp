@@ -1,4 +1,5 @@
 
+import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
 /// Flutter code sample for BottomNavigationBar
 
 // This example shows a [BottomNavigationBar] as it is used within a [Scaffold]
@@ -11,6 +12,8 @@
 // bar items. The first one is selected.](https://flutter.github.io/assets-for-api-docs/assets/material/bottom_navigation_bar.png)
 
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
+import 'backend/Ingredient.dart';
 import 'backend/database/databaseHelper.dart';
 import 'pages/lists/main.dart';
 import 'pages/comparison/main.dart';
@@ -43,17 +46,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // return MaterialApp(
+    //   title: _title,
+    //   home: MyStatefulWidget(),
+    // );
     return MaterialApp(
-      title: _title,
-      home: MyStatefulWidget(),
+    home: Center(
+      child: RaisedButton(
+        child: Text('Button'),
+        onPressed: () async {
+          final dbHelper = DatabaseHelper.instance;
+          await dbHelper.add(Ingredient(null, "name"));
+          print('hello'); //               <-- logging
+
+          await dbHelper.read(1, DbTableNames.ingredient);
+
+        },
+      ),
+    ),
     );
   }
 }
 
-
 /// This is the stateful widget that the main application instantiates.
 class MyStatefulWidget extends StatefulWidget {
   MyStatefulWidget({Key key}) : super(key: key);
+
 
   @override
   _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
