@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 
-class SettingsHelp extends StatefulWidget {
-  const SettingsHelp({ Key key }) : super(key: key);
-
-  @override
-  _SettingsHelpState createState() => _SettingsHelpState();
-}
-
-class _SettingsHelpState extends State<SettingsHelp> {
+class SettingsHelp extends StatelessWidget {
+  const SettingsHelp({Key key,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Hilfe'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
       body: Container(

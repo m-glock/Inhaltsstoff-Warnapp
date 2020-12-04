@@ -20,20 +20,15 @@ const List<SettingsPage> allSettingsPages = <SettingsPage>[
   SettingsPage(Icons.help, 'Hilfe', SettingsHelp()),
 ];
 
-class SettingsRoot extends StatefulWidget {
+class SettingsRoot extends StatelessWidget {
   const SettingsRoot({Key key}) : super(key: key);
 
-  @override
-  _SettingsRootState createState() => _SettingsRootState();
-}
-
-class _SettingsRootState extends State<SettingsRoot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Einstellungen'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
       body: ListView(

@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 
-class SettingsAgb extends StatefulWidget {
-  const SettingsAgb({ Key key }) : super(key: key);
-
-  @override
-  _SettingsAgbState createState() => _SettingsAgbState();
-}
-
-class _SettingsAgbState extends State<SettingsAgb> {
+class SettingsAgb extends StatelessWidget {
+  const SettingsAgb({Key key,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('AGB'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
       body: Container(

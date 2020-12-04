@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 
-class SettingsGeneral extends StatefulWidget {
-  const SettingsGeneral({ Key key }) : super(key: key);
-
-  @override
-  _SettingsGeneralState createState() => _SettingsGeneralState();
-}
-
-class _SettingsGeneralState extends State<SettingsGeneral> {
+class SettingsGeneral extends StatelessWidget {
+  const SettingsGeneral({Key key,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Allgemein'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
       body: Container(

@@ -1,5 +1,4 @@
 import 'package:Inhaltsstoff_Warnapp/customWidgets/CustomAppBar.dart';
-import 'package:Inhaltsstoff_Warnapp/pages/settings/SettingsRoot.dart';
 import 'package:flutter/material.dart';
 
 class FavouritesRoot extends StatefulWidget {

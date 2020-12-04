@@ -9,7 +9,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   CustomAppBar(
     this.title, {
     Key key,
-  })  : preferredSize = Size.fromHeight(50.0),
+  })  : preferredSize = Size.fromHeight(56.0),
         super(key: key);
 
   @override
@@ -19,7 +19,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       backgroundColor: Colors.blue,
       actions: [
         IconButton(
-          icon: Icon(Icons.settings, size: 26.0),
+          icon: Icon(Icons.settings),
           onPressed: () {
             Navigator.push(
                 context,

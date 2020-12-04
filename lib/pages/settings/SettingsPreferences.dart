@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 
-class SettingsPreferences extends StatefulWidget {
-  const SettingsPreferences({ Key key }) : super(key: key);
-
-  @override
-  _SettingsPreferencesState createState() => _SettingsPreferencesState();
-}
-
-class _SettingsPreferencesState extends State<SettingsPreferences> {
+class SettingsPreferences extends StatelessWidget {
+  const SettingsPreferences({Key key,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Präferenzen'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
       body: Container(
