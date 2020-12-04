@@ -65,6 +65,7 @@ class _ScanningRootState extends State<ScanningRoot> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
+          Expanded(child: Image.asset('assets/images/logo.png'),flex: 1),
           // Image.asset('assets/images/logo.png'),
           SizedBox(height: 20.0),
           Text('Scanne dein Produkt',
@@ -77,7 +78,7 @@ class _ScanningRootState extends State<ScanningRoot> {
               children: <Widget>[
                 Column(
                   children: [
-                    MaterialButton(
+                    RaisedButton(
                       onPressed: () {
                         showDialog(
                           context: context,
