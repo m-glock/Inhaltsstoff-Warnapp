@@ -12,7 +12,7 @@ class ScanningRoot extends StatefulWidget {
 }
 
 class _ScanningRootState extends State<ScanningRoot> {
-  String _scanBarcode;
+  String _scanBarcode = '';
   TextEditingController _textController;
 
   @override
@@ -65,13 +65,20 @@ class _ScanningRootState extends State<ScanningRoot> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          Expanded(child: Image.asset('assets/images/logo.png'),flex: 1),
+          Expanded(child: Image.asset('assets/images/logo2.png', 	
+            height: 300,
+            width: 300,
+          ),flex: 1),
           // Image.asset('assets/images/logo.png'),
           SizedBox(height: 20.0),
           Text('Scanne dein Produkt',
               style: appTheme().textTheme.headline1,
               textAlign: TextAlign.center),
           SizedBox(height: 20.0),
+          // Text('$_scanBarcode',
+          //     style: appTheme().textTheme.headline2,
+          //     textAlign: TextAlign.center),
+          // SizedBox(height: 20.0),    
           Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               verticalDirection: VerticalDirection.up,
@@ -158,9 +165,6 @@ class _ScanningRootState extends State<ScanningRoot> {
                     Text('Barcode scannen',
                         style: TextStyle(
                             color: appTheme().primaryColor, fontSize: appTheme().textTheme.bodyText2.fontSize)),
-                    Text('$_scanBarcode',
-                        style: TextStyle(
-                            color: appTheme().primaryColor, fontSize: appTheme().textTheme.bodyText2.fontSize)),
                   ],
                 ),
                 Column(
@@ -173,6 +177,7 @@ class _ScanningRootState extends State<ScanningRoot> {
                       textColor: appTheme().textTheme.button.color,
                       child: Icon(
                         Icons.image,
+                        color: appTheme().textTheme.button.color,
                         size: 24,
                       ),
                       padding: EdgeInsets.all(16),

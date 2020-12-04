@@ -10,6 +10,7 @@
 // bar items. The first one is selected.](https://flutter.github.io/assets-for-api-docs/assets/material/bottom_navigation_bar.png)
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'pages/lists/main.dart';
 import 'pages/comparison/main.dart';
 import 'pages/analysis/main.dart';
@@ -25,11 +26,11 @@ class Destination {
 }
 
 const List<Destination> allDestinations = <Destination>[
-  Destination('Favoriten', Icons.favorite, Colors.blue, FavouritesPage()),
-  Destination('Verlauf', Icons.history, Colors.blue, HistoryPage()),
-  Destination('Scannen', Icons.camera_alt, Colors.blue, ScanningPage()),
-  Destination('Vergleich', Icons.compare_arrows, Colors.blue, ComparisonPage()),
-  Destination('Analyse', Icons.bar_chart, Colors.blue, AnalysisPage())
+  Destination('Favoriten', Icons.favorite, Colors.teal, FavouritesPage()),
+  Destination('Verlauf', Icons.history, Colors.teal, HistoryPage()),
+  Destination('Scannen', Icons.camera_alt, Colors.teal, ScanningPage()),
+  Destination('Vergleich', Icons.compare_arrows, Colors.teal, ComparisonPage()),
+  Destination('Analyse', Icons.bar_chart, Colors.teal, AnalysisPage())
 
 ];
 
@@ -41,6 +42,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
+
     return MaterialApp(
       title: _title,
       home: MyStatefulWidget(),
@@ -80,7 +85,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.teal,
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white.withOpacity(.6),
