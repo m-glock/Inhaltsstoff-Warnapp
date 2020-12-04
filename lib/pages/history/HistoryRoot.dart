@@ -23,7 +23,7 @@ class _HistoryRootState extends State<HistoryRoot> {
     return Scaffold(
       appBar: AppBar(
         title: Text('History'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
       body: Container(

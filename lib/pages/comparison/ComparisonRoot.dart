@@ -23,7 +23,7 @@ class _ComparisonRootState extends State<ComparisonRoot> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Comparison'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
       body: Container(

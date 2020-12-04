@@ -23,7 +23,7 @@ class _AnalysisRootState extends State<AnalysisRoot> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Analysis'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
       body: Container(

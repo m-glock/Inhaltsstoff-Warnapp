@@ -23,7 +23,7 @@ class _FavouritesSecondState extends State<FavouritesSecond> {
     return Scaffold(
       appBar: AppBar(
         title: Text('FavouritesSecond'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
       body: Container(

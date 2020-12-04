@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'ScanningResultExpansionPanel.dart';
 import 'ScanningResult.dart';
 import 'ScanningRoot.dart';
 

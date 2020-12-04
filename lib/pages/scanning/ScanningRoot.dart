@@ -23,7 +23,7 @@ class _ScanningRootState extends State<ScanningRoot> {
     return Scaffold(
       appBar: AppBar(
         title: Text('ScanningRoot'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
       body: Container(

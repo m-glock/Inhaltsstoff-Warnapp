@@ -23,7 +23,7 @@ class _FavouritesRootState extends State<FavouritesRoot> {
     return Scaffold(
       appBar: AppBar(
         title: Text('FavouritesRoot'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
       body: Container(
