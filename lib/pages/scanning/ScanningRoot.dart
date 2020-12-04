@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:Inhaltsstoff_Warnapp/theme/style.dart';
 
 class ScanningRoot extends StatefulWidget {
   const ScanningRoot({ Key key }) : super(key: key);
@@ -11,7 +12,7 @@ class ScanningRoot extends StatefulWidget {
 }
 
 class _ScanningRootState extends State<ScanningRoot> {
-  String _scanBarcode = 'Unbekannt';
+  String _scanBarcode = '';
   TextEditingController _textController;
 
   @override
@@ -58,26 +59,90 @@ class _ScanningRootState extends State<ScanningRoot> {
         backgroundColor: Colors.blue,
       ),
       backgroundColor: Colors.white,
-      body: Container(
-        padding: const EdgeInsets.all(32.0),
-        alignment: Alignment.center,
-        child: Flex(
-                      direction: Axis.vertical,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        TextField(controller: _textController),
-                        RaisedButton(
-                            onPressed: () => scanBarcodeNormal(),
-                            child: Text("Barcode scan")),
-                        RaisedButton(
-                            onPressed: () => startBarcodeScanStream(),
-                            child: Text("Barcode scan stream")),
-                        Text('Scan Ergebnis : $_scanBarcode\n',
-                            style: TextStyle(fontSize: 20))
-                      ])
-      ),
+    body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+  mainAxisSize: MainAxisSize.max,
+  mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+                                Image.asset('assets/images/logo.png'),
+            SizedBox(height:60.0),
+            Text('Scanne dein Produkt', style: appTheme().textTheme.headline1, textAlign: TextAlign.center),
+            SizedBox(height:20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              verticalDirection: VerticalDirection.up,
+              children: <Widget>[
+                Column(
+                  children: [
+                    MaterialButton(
+                      onPressed: () {},
+                      color: appTheme().primaryColor,
+                      textColor: Colors.white,
+                      child: Icon(
+                        Icons.text_fields,
+                        size: 24,
+                      ),
+                      padding: EdgeInsets.all(16),
+                      shape: CircleBorder(),
+                    ),
+                    SizedBox(height:10.0),
+                    Text('Manuelle Eingabe', style: TextStyle(color: appTheme().primaryColor, fontSize: 14)),
+                  ],
+                ),
+                Column(
+                  children: [
+                    MaterialButton(
+                      onPressed: () => scanBarcodeNormal(),
+                      color: appTheme().primaryColor,
+                      textColor: Colors.white,
+                      child: Icon(
+                        Icons.qr_code_scanner,
+                        size: 96,
+                      ),
+                      padding: EdgeInsets.all(16),
+                      shape: CircleBorder(),
+                    ),
+                    SizedBox(height:10.0),
+                    Text('$_scanBarcode', style: TextStyle(color: appTheme().primaryColor, fontSize: 14)),
+                  ],
+                ),
+                Column(
+                  children: [
+                    MaterialButton(
+                      onPressed: () {},
+                      color: appTheme().primaryColor,
+                      textColor: Colors.white,
+                      child: Icon(
+                        Icons.image,
+                        size: 24,
+                      ),
+                      padding: EdgeInsets.all(16),
+                      shape: CircleBorder(),
+                    ),
+                    SizedBox(height:10.0),
+                    Text('Text scannen', style: TextStyle(color: appTheme().primaryColor, fontSize: 14)),
+                  ],
+                ),
+              ]
+            ),
+          SizedBox(height:30.0),
+          ],
+        ),
     );
   }
+ 
+ 
+//  children: <Widget>[
+//                         TextField(controller: _textController),
+//                         RaisedButton(
+//                             onPressed: () => scanBarcodeNormal(),
+//                             child: Text("Barcode scan")),
+//                         RaisedButton(
+//                             onPressed: () => startBarcodeScanStream(),
+//                             child: Text("Barcode scan stream")),
+//                         Text('Scan Ergebnis : $_scanBarcode\n',
+//                             style: TextStyle(fontSize: 20))
+//                       ]
 
   @override
   void dispose() {
