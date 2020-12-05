@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -92,8 +93,8 @@ class FoodApiAccess{
     tagValues.forEach((element) {
       String translatedName;
       if(decodedJson.containsKey(element)){
-        var tagValueTranslations = decodedJson[element]['name'];
-        translatedName = tagValueTranslations.contains(languageCode) ? tagValueTranslations[languageCode] : tagValueTranslations['en'];
+        LinkedHashMap tagValueTranslations = decodedJson[element]['name'];
+        translatedName = tagValueTranslations.containsKey(languageCode) ? tagValueTranslations[languageCode] : tagValueTranslations['en'];
       } else {
         String name = element.toString();
         translatedName = name.substring(name.indexOf(':') + 1);
