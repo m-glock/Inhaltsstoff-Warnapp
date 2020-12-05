@@ -1,3 +1,6 @@
+import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
+
+import 'Ingredient.dart';
 import 'ScanResult.dart';
 
 class Product{
@@ -8,14 +11,14 @@ class Product{
   String _barcode;
   DateTime _scanDate;
 
-  List<dynamic>  _ingredients;
-  Map<String, dynamic> _nutriments;
-  List<dynamic> _allergens;
-  List<dynamic> _vitamins;
+  List<Ingredient> _ingredients;
+  //List<Ingredient> _nutriments;
+  List<Ingredient> _allergens;
+  List<Ingredient> _vitamins;
+  List<Ingredient> _additives;
   DateTime _lastUpdated;
-  List<dynamic> _traces;
+  List<Ingredient> _traces;
   String _nutriscore;
-  List<dynamic> _additives;
 
   double _quantity;
   String _origin;
@@ -29,14 +32,14 @@ class Product{
   String get barcode => _barcode;
   DateTime get scanDate => _scanDate;
 
-  List<dynamic> get ingredients => _ingredients;
-  Map<String, dynamic> get nutriments => _nutriments;
-  List<dynamic> get allergens => _allergens;
-  List<dynamic> get vitamins => _vitamins;
+  List<Ingredient> get ingredients => _ingredients;
+  //List<Ingredient> get nutriments => _nutriments;
+  List<Ingredient>  get allergens => _allergens;
+  List<Ingredient> get vitamins => _vitamins;
+  List<Ingredient> get additives => _additives;
   DateTime get lastUpdated => _lastUpdated;
-  List<dynamic> get traces => _traces;
+  List<Ingredient> get traces => _traces;
   String get nutriscore => _nutriscore;
-  List<dynamic> get additives => _additives;
 
   double get quantity => _quantity;
   String get origin => _origin;
@@ -47,10 +50,12 @@ class Product{
   // constructor with minimal necessary information
   Product(this._name, this._scanResult, this._imageUrl, this._barcode, this._scanDate);
 
-  // factory to create an object from a json file from the food DB API
-  // information is saved as-is, but can be translated with FoodApiAccess.translateTagNames()
-  // currently the app is only available in german, but in the future it would be possible to translate the ingredients according to a language the user chooses
-  factory Product.fromJson(Map<String, dynamic> json) {
+  /*
+  * Uses the json from the Food API to create a new Product object
+  * @param json: the json that the food API returns for a barcode
+  * @return: a new Product object
+  * */
+  static Future<Product> fromApiJson(Map<String, dynamic> json) async {
     String name = json['product_name'];
     String imageUrl = json['image_url'];
     String barcode = json['code'];
@@ -58,27 +63,35 @@ class Product{
 
     Product newProduct = Product(name, null, imageUrl, barcode, scanDate);
 
-    // TODO: handle that not all information is in german.
-    // ingredients -> ingredients.json for ingredients_tags
-    // allergens -> allergens.json for allergens_tags
-    // vitamins -> vitamins.json for vitamins_tags
-    // traces -> allergens.json for tranes_tags
-    // additives -> additives.json for additives_tags
-    newProduct._ingredients = json['ingredients_tags'];
-    newProduct._nutriments = json['nutriments'];
-    newProduct._allergens = json['allergens_tags'];
-    newProduct._vitamins = json['vitamins_tags'];
+    // add other information
     var dateTime = json['last_modified_t'] * 1000;
     newProduct._lastUpdated = DateTime.fromMillisecondsSinceEpoch(dateTime);
-    newProduct._traces = json['traces_tags'];
-    newProduct._nutriscore = json['nutriscore_grade']; //nutriscore_score (int)
-    newProduct._additives = json['additives_tags'];
+    newProduct._nutriscore = json['nutriscore_grade'];
 
     String quantityString = (json['quantity'] as String).trim().replaceAll(new RegExp('[a-zA-Z]'), '');
     newProduct._quantity = double.parse(quantityString);
     newProduct._origin = json['origins'];
     newProduct._manufacturingPlaces = json['manufacturing_places'];
     newProduct._stores = json['stores'];
+
+    // add Ingredients, Nutriments, Allergens, Vitamins, Additives and Traces
+    List<dynamic> ingredientNames = json['ingredients_tags'];
+    newProduct._ingredients = await FoodApiAccess.getIngredientsWithTranslatedNames(ingredientNames, 'ingredients');
+
+    /*var nutrimentNames = json['nutriments_tags'];
+    newProduct._nutriments = await FoodApiAccess.getIngredientsWithTranslatedNames(nutrimentNames, 'nutriments');*/
+
+    var allergenNames = json['allergens_tags'];
+    newProduct._allergens = await FoodApiAccess.getIngredientsWithTranslatedNames(allergenNames, 'allergens');
+
+    List<dynamic> vitaminNames = json['vitamins_tags'];
+    newProduct._vitamins = await FoodApiAccess.getIngredientsWithTranslatedNames(vitaminNames, 'vitamins');
+
+    List<dynamic> additiveNames = json['additives_tags'];
+    newProduct._additives = await FoodApiAccess.getIngredientsWithTranslatedNames(additiveNames, 'additives');
+
+    List<dynamic> tracesNames = json['traces_tags'];
+    newProduct._traces = await FoodApiAccess.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
 
     return newProduct;
   }
