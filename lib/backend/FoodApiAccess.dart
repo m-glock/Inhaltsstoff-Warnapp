@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'Ingredient.dart';
 import 'Product.dart';
+import 'Type.dart';
 import 'package:http/http.dart' as http;
 
 class FoodApiAccess{
@@ -110,7 +111,7 @@ class FoodApiAccess{
   static Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<dynamic> ingredientNames, String tag) async {
     List<Ingredient> ingredients = List();
     List<String> translatedIngredientNames = await translateTagNames(tag, ingredientNames);
-    translatedIngredientNames.forEach((element) => ingredients.add(Ingredient(element))); //TODO: get existing Ingredient from DB instead of creating a new Ingredient object every time
+    translatedIngredientNames.forEach((element) => ingredients.add(Ingredient(element, Type.Nutriment))); //TODO: get existing Ingredient from DB instead of creating a new Ingredient object every time
     return ingredients;
   }
 

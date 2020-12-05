@@ -2,11 +2,12 @@ import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
 
 import 'Ingredient.dart';
 import 'ScanResult.dart';
+import 'Type.dart';
 
 class Product{
 
   String _name;
-  ScanResult _scanResult;
+  Map<Ingredient, ScanResult> _itemizedScanResults;
   String _imageUrl;
   String _barcode;
   DateTime _scanDate;
@@ -27,7 +28,7 @@ class Product{
 
   // Getter
   String get name => _name;
-  ScanResult get scanResult => _scanResult;
+  Map<Ingredient, ScanResult> get itemizedScanResult => _itemizedScanResults;
   String get imageUrl => _imageUrl;
   String get barcode => _barcode;
   DateTime get scanDate => _scanDate;
@@ -48,7 +49,7 @@ class Product{
 
 
   // constructor with minimal necessary information
-  Product(this._name, this._scanResult, this._imageUrl, this._barcode, this._scanDate);
+  Product(this._name, this._imageUrl, this._barcode, this._scanDate);
 
   /*
   * Uses the json from the Food API to create a new Product object
@@ -61,7 +62,7 @@ class Product{
     String barcode = json['code'];
     DateTime scanDate = DateTime.now();
 
-    Product newProduct = Product(name, null, imageUrl, barcode, scanDate);
+    Product newProduct = Product(name, imageUrl, barcode, scanDate);
 
     // add other information
     var dateTime = json['last_modified_t'] * 1000;
@@ -93,7 +94,49 @@ class Product{
     List<dynamic> tracesNames = json['traces_tags'];
     newProduct._traces = await FoodApiAccess.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
 
+    //TODO set itemizedScanResults, right now only dummy data
+    Map<Ingredient, ScanResult> itemized = Map();
+    itemized[Ingredient('Senf', Type.Allergen)] = ScanResult.Red;
+    itemized[Ingredient('Vitamin B', Type.Vitamin)] = ScanResult.Green;
+    newProduct._itemizedScanResults = itemized;
+
+
     return newProduct;
   }
 
+  /*
+   * determine the overall ScanResult for this product.
+   * If any Ingredient is red, return red
+   * If any Ingredient is yellow, but none red, return yellow
+   * if all Ingredients are green, return green
+   * @return: the ScanResult for this product
+   */
+  ScanResult getOverallScanResult(){
+    //TODO implement
+    return ScanResult.Yellow;
+  }
+
+  /*
+  * find all Ingredients that the user explicity wants and that the product contains
+  * @return a list of ingredients
+  * */
+  List<Ingredient> getExplicitlyWantedIngredients(){
+    //TODO implement
+    List nutriments = List();
+    nutriments.add(Ingredient('Vitamin C', Type.Vitamin));
+    nutriments.add(Ingredient('Vitamin B', Type.Vitamin));
+    return nutriments;
+  }
+
+  /*
+  * find all Ingredients that the user does not want and that the product contains
+  * @return a list of ingredients
+  * */
+  List<Ingredient> getUnwantedIngredients(){
+    //TODO implement
+    List ingredients = List();
+    ingredients.add(Ingredient('Senf', Type.Allergen));
+    ingredients.add(Ingredient('Vitamin B', Type.Additive));
+    return ingredients;
+  }
 }
