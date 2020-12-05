@@ -33,13 +33,13 @@ class DatabaseHelper {
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
         version: _databaseVersion,
-        //onConfigure: _onConfigure,
+        onConfigure: _onConfigure,
         onCreate: _onCreate);
   }
 
-  /*static Future _onConfigure(Database db) async {
+  static Future _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
-  }*/
+  }
 
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {

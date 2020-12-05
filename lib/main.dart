@@ -1,5 +1,6 @@
 
 import 'package:Inhaltsstoff_Warnapp/backend/Type.dart';
+import 'package:intl/intl.dart';
 import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
 /// Flutter code sample for BottomNavigationBar
 
@@ -62,6 +63,11 @@ class MyApp extends StatelessWidget {
 
           List<Map> test = await dbHelper.readAll(DbTableNames.type);
           print(test);
+
+          final DateTime now = DateTime.now();
+          final DateFormat formatter = DateFormat('yyyy-MM-dd-Hms');
+          final String formatted = formatter.format(now);
+          print(formatted); // something like 2013-04-20
         },
       ),
     ),
