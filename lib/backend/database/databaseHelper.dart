@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Inhaltsstoff_Warnapp/backend/Ingredient.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
