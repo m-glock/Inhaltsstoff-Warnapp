@@ -57,17 +57,23 @@ class MyApp extends StatelessWidget {
       child: RaisedButton(
         child: Text('Button'),
         onPressed: () async {
-          final dbHelper = DatabaseHelper.instance;
-          await dbHelper.add(Type("name2"));
-          print('hello'); //               <-- logging
-
-          List<Map> test = await dbHelper.readAll(DbTableNames.type);
-          print(test);
-
           final DateTime now = DateTime.now();
           final DateFormat formatter = DateFormat('yyyy-MM-dd-Hms');
           final String formatted = formatter.format(now);
           print(formatted); // something like 2013-04-20
+
+
+
+          final dbHelper = DatabaseHelper.instance;
+          await dbHelper.add(Type("Type1"));
+          await dbHelper.add(Ingredient("Ingredient1",1,formatted));
+          print('added Type & Ingrediet'); //               <-- logging
+
+          List<Map> test = await dbHelper.readAll(DbTableNames.type);
+          List<Map> test1 = await dbHelper.readAll(DbTableNames.ingredient);
+          print(test + test1);
+
+
         },
       ),
     ),
