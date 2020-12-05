@@ -6,22 +6,44 @@ import './SettingsPreferences.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage {
-  const SettingsPage(this.icon, this.title, this.page);
-  final IconData icon;
-  final String title;
-  final Widget page;
+  SettingsPage(this.icon, this.title, this.page, [this.settings]){
+    this.settings ??= new Map();
+  }
+  IconData icon;
+  String title;
+  Widget page;
+  Map<String, List<String>> settings;
 }
 
-const List<SettingsPage> allSettingsPages = <SettingsPage>[
-  SettingsPage(Icons.favorite, 'Präferenzen', SettingsPreferences()),
-  SettingsPage(Icons.app_settings_alt, 'Allgemein', SettingsGeneral()),
-  SettingsPage(Icons.info, 'Impressum', SettingsImpressum()),
-  SettingsPage(Icons.format_quote, 'AGB', SettingsAgb()),
-  SettingsPage(Icons.help, 'Hilfe', SettingsHelp()),
-];
-
 class SettingsRoot extends StatelessWidget {
-  const SettingsRoot({Key key}) : super(key: key);
+  SettingsRoot({Key key}) : super(key: key);
+
+  //TODO: get current general and preferences settings from backend
+  // to be able to add them to this list and show them in preview
+  List<SettingsPage> _allSettingsPages = <SettingsPage>[
+      SettingsPage(
+          Icons.favorite,
+          'Präferenzen',
+          SettingsPreferences(),
+          {
+            'Allergien': ['Allergen 1, Allergen 2'],
+            'Gewünschte Nährstoffe': ['Magnesium', 'B12'],
+            'Ungewollte Inhaltsstoffe': ['Inhaltsstoff x']
+          }
+      ),
+      SettingsPage(
+          Icons.app_settings_alt,
+          'Allgemein',
+          SettingsGeneral(),
+          {
+            'Textgröße': ['small'],
+            'Sprache': ['Deutsch']
+          }
+      ),
+      SettingsPage(Icons.info, 'Impressum', SettingsImpressum()),
+      SettingsPage(Icons.format_quote, 'AGB', SettingsAgb()),
+      SettingsPage(Icons.help, 'Hilfe', SettingsHelp()),
+    ];
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +54,10 @@ class SettingsRoot extends StatelessWidget {
       ),
       backgroundColor: Colors.white,
       body: ListView(
-        children: allSettingsPages.map((SettingsPage settingsPage) {
-          return ListTile(
+        children: _allSettingsPages.map((SettingsPage settingsPage) {
+          return Column(
+            children: [
+              ListTile(
               leading: Icon(settingsPage.icon,
                   color: Theme.of(context).primaryColor),
               title: Text(settingsPage.title,
@@ -45,7 +69,21 @@ class SettingsRoot extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) => settingsPage.page));
-              },
+                },
+              ),
+              Column(
+                children: settingsPage.settings.entries.map((setting) {
+                  return ListTile(
+                    title: Text(setting.key,
+                        style: Theme.of(context).textTheme.bodyText1),
+                    trailing: Text(
+                        setting.value.reduce((value, element) => value + ', ' + element),
+                        style: Theme.of(context).textTheme.bodyText2
+                    ),
+                  );
+                }).toList(),
+              )
+            ]
           );
         }).toList(),
       ),
