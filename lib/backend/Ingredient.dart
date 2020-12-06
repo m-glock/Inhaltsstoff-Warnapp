@@ -6,7 +6,7 @@ import 'dart:convert';
 
 class Ingredient extends DbTable {
   // Fields
-  int id;
+  //int id;
   String name;
   int preferencesTypeId;
   String addDate;

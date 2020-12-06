@@ -14,7 +14,7 @@ class PreferenceManager {
 
   static getPreferencedIngredients() async {
     List<Ingredient> ingredients;
-    await dbHelper.readAll(DbTableNames.ingredient);
+    //await dbHelper.readAll(DbTableNames.ingredient);
 
   }
 
