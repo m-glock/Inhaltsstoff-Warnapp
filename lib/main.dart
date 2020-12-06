@@ -1,7 +1,3 @@
-
-import 'package:Inhaltsstoff_Warnapp/backend/Type.dart';
-import 'package:intl/intl.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
 /// Flutter code sample for BottomNavigationBar
 
 // This example shows a [BottomNavigationBar] as it is used within a [Scaffold]
@@ -14,14 +10,12 @@ import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
 // bar items. The first one is selected.](https://flutter.github.io/assets-for-api-docs/assets/material/bottom_navigation_bar.png)
 
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-import 'backend/Ingredient.dart';
-import 'backend/database/databaseHelper.dart';
 import 'pages/lists/main.dart';
 import 'pages/comparison/main.dart';
 import 'pages/analysis/main.dart';
 import 'pages/scanning/main.dart';
 import 'pages/history/main.dart';
+import 'theme/style.dart';
 
 class Destination {
   const Destination(this.title, this.icon, this.color, this.page);
@@ -36,8 +30,7 @@ const List<Destination> allDestinations = <Destination>[
   Destination('Verlauf', Icons.history, Colors.blue, HistoryPage()),
   Destination('Scannen', Icons.camera_alt, Colors.blue, ScanningPage()),
   Destination('Vergleich', Icons.compare_arrows, Colors.blue, ComparisonPage()),
-  Destination('Analyse', Icons.bar_chart, Colors.blue, AnalysisPage())
-
+  Destination('Analyse', Icons.bar_chart, Colors.blue, AnalysisPage()),
 ];
 
 void main() => runApp(MyApp());
@@ -48,35 +41,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(
-    //   title: _title,
-    //   home: MyStatefulWidget(),
-    // );
     return MaterialApp(
-    home: Center(
-      child: RaisedButton(
-        child: Text('Button'),
-        onPressed: () async {
-          final DateTime now = DateTime.now();
-          final DateFormat formatter = DateFormat('yyyy-MM-dd-Hms');
-          final String formatted = formatter.format(now);
-          print(formatted); // something like 2013-04-20
-
-
-
-          final dbHelper = DatabaseHelper.instance;
-          await dbHelper.add(Type("Type1"));
-          await dbHelper.add(Ingredient("Ingredient1",1,formatted));
-          print('added Type & Ingrediet'); //               <-- logging
-
-          List<Map> test = await dbHelper.readAll(DbTableNames.type);
-          List<Map> test1 = await dbHelper.readAll(DbTableNames.ingredient);
-          print(test + test1);
-
-
-        },
-      ),
-    ),
+      title: _title,
+      theme: appTheme(),
+      home: MyStatefulWidget(),
     );
   }
 }
@@ -85,19 +53,12 @@ class MyApp extends StatelessWidget {
 class MyStatefulWidget extends StatefulWidget {
   MyStatefulWidget({Key key}) : super(key: key);
 
-
   @override
   _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
 }
 
-
 /// This is the private State class that goes with MyStatefulWidget.
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  // reference to our single class that manages the database
-  // database will be created if it does not exist or referenced if it already exists
-  // this process is only initiated when a query is executed (method from databaseHelper)
-  final dbHelper = DatabaseHelper.instance;
-
   int _selectedIndex = 2;
 
   void _onItemTapped(int index) {
@@ -120,7 +81,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white.withOpacity(.6),
