@@ -28,7 +28,7 @@ class Product{
 
   // Getter
   String get name => _name;
-  Map<Ingredient, ScanResult> get itemizedScanResult => _itemizedScanResults;
+  Map<Ingredient, ScanResult> get itemizedScanResults => _itemizedScanResults;
   String get imageUrl => _imageUrl;
   String get barcode => _barcode;
   DateTime get scanDate => _scanDate;
@@ -122,29 +122,27 @@ class Product{
 
   /*
   * find all Ingredients that the user explicity wants and that the product contains
-  * @return a list of ingredients
+  * @return a list with the names of ingredients
   * */
-  List<Ingredient> getExplicitlyWantedIngredients(){
+  List<String> getNamesOfExplicitlyWantedIngredients(){
     //TODO implement
-    List nutriments = List();
-    nutriments.add(Ingredient('Vitamin C', Type.Vitamin));
-    nutriments.add(Ingredient('Vitamin B', Type.Vitamin));
-    nutriments.add(Ingredient('Magnesium', Type.Vitamin));
-    nutriments.add(Ingredient('Vitamin D', Type.Vitamin));
+    List<String> nutriments = List();
+    nutriments.add('Vitamin C');
+    nutriments.add('Vitamin B');
     return nutriments;
   }
 
   /*
   * find all Ingredients that the user does not want and that the product contains
-  * @return a list of ingredients
+  * @return a list of with the names of ingredients
   * */
-  List<Ingredient> getUnwantedIngredients(){
+  List<String> getNamesOfUnwantedIngredients(){
     //TODO implement
-    List ingredients = List();
-    ingredients.add(Ingredient('Senf', Type.Allergen));
-    ingredients.add(Ingredient('Vitamin B', Type.Additive));
-    ingredients.add(Ingredient('Wasser', Type.Allergen));
-    ingredients.add(Ingredient('E523', Type.Additive));
+    List<String> ingredients = List();
+    ingredients.add('Senf');
+    ingredients.add('Vitamin B');
+    ingredients.add('Wasser');
+    ingredients.add('E523');
     return ingredients;
   }
 }
