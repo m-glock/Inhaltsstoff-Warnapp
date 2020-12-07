@@ -98,6 +98,10 @@ class Product{
     Map<Ingredient, ScanResult> itemized = Map();
     itemized[Ingredient('Senf', Type.Allergen)] = ScanResult.Red;
     itemized[Ingredient('Vitamin B', Type.Vitamin)] = ScanResult.Green;
+    itemized[Ingredient('Wasser', Type.Nutriment)] = ScanResult.Red;
+    itemized[Ingredient('Vitamin c', Type.Vitamin)] = ScanResult.Green;
+    itemized[Ingredient('Milch', Type.Allergen)] = ScanResult.Red;
+    itemized[Ingredient('E254', Type.Additive)] = ScanResult.Yellow;
     newProduct._itemizedScanResults = itemized;
 
 
@@ -125,6 +129,8 @@ class Product{
     List nutriments = List();
     nutriments.add(Ingredient('Vitamin C', Type.Vitamin));
     nutriments.add(Ingredient('Vitamin B', Type.Vitamin));
+    nutriments.add(Ingredient('Magnesium', Type.Vitamin));
+    nutriments.add(Ingredient('Vitamin D', Type.Vitamin));
     return nutriments;
   }
 
@@ -137,6 +143,8 @@ class Product{
     List ingredients = List();
     ingredients.add(Ingredient('Senf', Type.Allergen));
     ingredients.add(Ingredient('Vitamin B', Type.Additive));
+    ingredients.add(Ingredient('Wasser', Type.Allergen));
+    ingredients.add(Ingredient('E523', Type.Additive));
     return ingredients;
   }
 }
