@@ -7,7 +7,7 @@ class OnboardingSummary extends StatelessWidget {
   final Function onEditPreference;
 
   final Map<String, Map> preferenceCategoryInfo = {
-    "allergenes": {
+    "allergens": {
       "icon": Icons.medical_services_outlined,
       "title": "Allergien",
     },
@@ -73,12 +73,6 @@ class OnboardingSummary extends StatelessWidget {
                         (int valueIndex) {
                           return Chip(
                             backgroundColor: Colors.grey[200],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(16.0),
-                              ),
-                              //side: BorderSide(color: Colors.grey),
-                            ),
                             label: Text(preferences[key][valueIndex]),
                           );
                         },

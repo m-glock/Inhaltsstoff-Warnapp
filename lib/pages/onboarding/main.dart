@@ -1,10 +1,11 @@
-import '../HomePage.dart';
-import './OnboardingTitleWidget.dart';
-import './OnboardingRadioButtonTable.dart';
-import './OnboardingCheckboxList.dart';
-import './OnboardingSummary.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
+
+import './OnboardingSummary.dart';
+import './OnboardingTitleWidget.dart';
+import '../HomePage.dart';
+import '../../customWidgets/RadioButtonTable.dart';
+import '../../customWidgets/CheckboxList.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key key}) : super(key: key);
@@ -17,12 +18,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
 
   Map<String, List<String>> preferences = {
-    "allergenes": [],
+    "allergens": [],
     "nutrients": [],
     "unwantedIngredientsFew": [],
     "unwantedIngredientsNothing": [],
   };
-  List<String> allergeneOptions = [
+  List<String> allergenOptions = [
     "Nüsse",
     "Lactose",
     "Gluten",
@@ -50,7 +51,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _animateToPage(String pageName) {
-    int pageIndex = pageName == "allergenes"
+    int pageIndex = pageName == "allergens"
         ? 1
         : pageName == "nutrients"
             ? 2
@@ -109,15 +110,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
             title: "Allergien",
             subTitle: "Hast du irgendwelche Allergien?",
           ),
-          bodyWidget: OnboardingCheckboxList(
-            options: allergeneOptions,
-            selectedItems: preferences["allergenes"],
+          bodyWidget: CheckboxList(
+            options: allergenOptions,
+            selectedItems: preferences["allergens"],
             onChange: (int index, bool hasBeenSelected) {
-              String changedItem = allergeneOptions[index];
+              String changedItem = allergenOptions[index];
               setState(() {
                 hasBeenSelected
-                    ? preferences["allergenes"].add(changedItem)
-                    : preferences["allergenes"].remove(changedItem);
+                    ? preferences["allergens"].add(changedItem)
+                    : preferences["allergens"].remove(changedItem);
               });
             },
           ),
@@ -129,7 +130,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle:
                 "Gibt es Nährstoffe, die du bewusst vermehrt aufnehmen möchtest?",
           ),
-          bodyWidget: OnboardingCheckboxList(
+          bodyWidget: CheckboxList(
             options: nutrientOptions,
             selectedItems: preferences["nutrients"],
             onChange: (int index, bool hasBeenSelected) {
@@ -149,7 +150,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle:
                 "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
           ),
-          bodyWidget: OnboardingRadioButtonTable(
+          bodyWidget: RadioButtonTable(
             itemList: ingredientOptions,
             options: ["nichts", "egal", "wenig"],
             selectedItems: {

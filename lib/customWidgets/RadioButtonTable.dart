@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 
-class OnboardingRadioButtonTable extends StatelessWidget {
-  OnboardingRadioButtonTable(
-      {Key key,
-      this.options,
-      this.itemList,
-      this.selectedItems,
-      this.onChange});
+class RadioButtonTable extends StatelessWidget {
+  RadioButtonTable(
+      {this.options, this.itemList, this.selectedItems, this.onChange});
 
   final List<String> itemList;
   final List<String> options;
