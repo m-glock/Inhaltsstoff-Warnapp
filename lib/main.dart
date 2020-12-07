@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
+
 import 'pages/HomePage.dart';
 import 'pages/onboarding/main.dart';
-import 'dart:async';
+import 'theme/style.dart';
 
 void main() {
   SharedPreferences.setMockInitialValues(
@@ -18,6 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
+      theme: appTheme(),
       home: MyStatefulWidget(),
     );
   }

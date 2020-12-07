@@ -1,3 +1,4 @@
+import '../../customWidgets/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 
 class HistoryRoot extends StatefulWidget {
@@ -21,10 +22,7 @@ class _HistoryRootState extends State<HistoryRoot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('History'),
-        backgroundColor: Colors.blue,
-      ),
+      appBar: CustomAppBar('Verlauf'),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(32.0),
