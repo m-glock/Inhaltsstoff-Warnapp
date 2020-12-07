@@ -45,7 +45,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   Widget _buildImage(String assetName) {
     return Align(
-      child: Image.asset('assets/$assetName.png', width: 350.0),
+      child: Image.asset('assets/images/$assetName.png', width: 350.0),
       alignment: Alignment.bottomCenter,
     );
   }
