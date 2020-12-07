@@ -108,10 +108,18 @@ class FoodApiAccess{
     return translatedTagValues;
   }
 
-  static Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<dynamic> ingredientNames, String tag) async {
+  /*
+  * TODO: get existing Ingredient from DB instead of creating a new Ingredient object every time
+  * translates all tag names of a list from the Food API and then gets the corresponding ingredient from the DB.
+  * Names normally start with language code such as en: or de:
+  * @param ingredientNames: List of all ingredient names to be translated
+  * @param tag: Tag that the names belong to (allergens, vitamins, ingredients etc.)
+  * @return: a List of ingredient
+  * */
+  static Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<String> ingredientNames, String tag) async {
     List<Ingredient> ingredients = List();
     List<String> translatedIngredientNames = await translateTagNames(tag, ingredientNames);
-    translatedIngredientNames.forEach((element) => ingredients.add(Ingredient(element, Type.Nutriment))); //TODO: get existing Ingredient from DB instead of creating a new Ingredient object every time
+    translatedIngredientNames.forEach((element) => ingredients.add(Ingredient(element, Type.Nutriment)));
     return ingredients;
   }
 
