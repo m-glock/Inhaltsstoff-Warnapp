@@ -19,6 +19,7 @@ class CheckboxList extends StatelessWidget {
             onChanged: (bool value) {
               onChange(index, value);
             },
+            activeColor: Theme.of(context).primaryColor,
           ),
         ),
       ),

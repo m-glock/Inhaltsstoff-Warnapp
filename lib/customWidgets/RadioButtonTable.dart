@@ -9,15 +9,6 @@ class RadioButtonTable extends StatelessWidget {
   final Map<String, List<String>> selectedItems;
   final Function onChange;
 
-  final TextStyle tableHeadTextStyle = TextStyle(
-    fontWeight: FontWeight.w800,
-    fontSize: 10.0,
-  );
-  final TextStyle tableCellsTextStyle = TextStyle(
-    fontWeight: FontWeight.w400,
-    fontSize: 16.0,
-  );
-
   @override
   Widget build(BuildContext context) {
     final List<String> tableHeaderElements = ['', ...options];
@@ -40,7 +31,11 @@ class RadioButtonTable extends StatelessWidget {
               (tableHeaderIndex) => TableCell(
                 child: Text(
                   tableHeaderElements[tableHeaderIndex],
-                  style: tableHeadTextStyle,
+                  style: Theme.of(context).textTheme.bodyText2.merge(
+                        TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                   textAlign:
                       tableHeaderIndex == 0 ? TextAlign.left : TextAlign.center,
                 ),
@@ -53,10 +48,8 @@ class RadioButtonTable extends StatelessWidget {
             (listIndex) => TableRow(
               children: [
                 TableCell(
-                  child: Text(
-                    itemList[listIndex],
-                    style: tableCellsTextStyle,
-                  ),
+                  child: Text(itemList[listIndex],
+                      style: Theme.of(context).textTheme.bodyText1),
                   verticalAlignment: TableCellVerticalAlignment.middle,
                 ),
                 ...List.generate(
@@ -74,6 +67,7 @@ class RadioButtonTable extends StatelessWidget {
                       onChanged: (value) {
                         onChange(listIndex, value);
                       },
+                      activeColor: Theme.of(context).primaryColor,
                     ),
                   ),
                 ),

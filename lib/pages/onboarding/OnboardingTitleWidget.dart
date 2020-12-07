@@ -17,23 +17,28 @@ class OnboardingTitleWidget extends StatelessWidget {
               child: Text(
                 title,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 36.0,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white),
+                style: Theme.of(context).textTheme.headline1.merge(
+                      TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
               ),
               padding: EdgeInsets.only(bottom: 8.0),
             ),
             Text(
               subTitle,
-              style: TextStyle(fontSize: 14.0, color: Colors.white),
+              style: Theme.of(context).textTheme.bodyText1.merge(
+                    TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
               textAlign: TextAlign.center,
             ),
           ]),
         ),
       ),
       decoration: BoxDecoration(
-        color: Colors.blue,
+        color: Theme.of(context).primaryColor,
       ),
     );
   }

@@ -39,25 +39,27 @@ class OnboardingSummary extends StatelessWidget {
                 ListTile(
                   leading: Icon(
                     preferenceCategoryInfo[key]["icon"],
-                    color: Colors.blue,
+                    color: Theme.of(context).primaryColor,
                   ),
                   title: Text(
                     preferenceCategoryInfo[key]["title"],
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                    ),
+                    style: Theme.of(context).textTheme.bodyText1.merge(
+                          TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                   ),
                   trailing: IconButton(
                     icon: Icon(
                       Icons.edit,
-                      color: Colors.grey[800],
+                      color: Colors.grey[900],
                     ),
                     onPressed: () => onEditPreference(key),
                   ),
                 ),
                 Divider(
                   thickness: 1.0,
+                  height: 8.0,
                 ),
                 if (preferences[key].length > 0)
                   Padding(
@@ -82,6 +84,7 @@ class OnboardingSummary extends StatelessWidget {
                 if (preferences[key].length > 0)
                   Divider(
                     thickness: 1.0,
+                    height: 8.0,
                   ),
               ],
             );

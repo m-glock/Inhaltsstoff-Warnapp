@@ -61,22 +61,22 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    const ImagePageDecoration = const PageDecoration(
+    final imagePageDecoration = PageDecoration(
       pageColor: Colors.white,
-      titleTextStyle: TextStyle(fontSize: 36.0, fontWeight: FontWeight.w600),
+      titleTextStyle: Theme.of(context).textTheme.headline1,
       titlePadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      bodyTextStyle: TextStyle(fontSize: 14.0),
+      bodyTextStyle: Theme.of(context).textTheme.bodyText1,
       descriptionPadding: EdgeInsets.all(16.0),
       imagePadding: EdgeInsets.fromLTRB(4.0, 32.0, 4.0, 0.0),
       imageFlex: 1,
     );
-    const MainPageDecoration = const PageDecoration(
+    final mainPageDecoration = PageDecoration(
       descriptionPadding: EdgeInsets.all(16.0),
       contentPadding: EdgeInsets.zero,
       pageColor: Colors.white,
       titlePadding: EdgeInsets.only(bottom: 8.0),
     );
-    const SummaryPageDecoration = const PageDecoration(
+    final summaryPageDecoration = PageDecoration(
       descriptionPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       contentPadding: EdgeInsets.zero,
       pageColor: Colors.white,
@@ -92,18 +92,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
               Text(
                 "Mit der Inhaltstoff Warnapp kannst du beim Einkaufen schnell und unkompliziert erkennen, ob du ein Produkt aufgrund seiner Inhaltsstoffe essen kannst.",
                 textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyText1,
               ),
               Padding(
                 child: Text(
                   "Bevor es losgehen kann, erzähl uns ein bisschen über deine Lebensmittelverträglichkeiten und Ernährungspräferenzen.",
                   textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText1,
                 ),
                 padding: EdgeInsets.symmetric(vertical: 16.0),
               ),
             ],
           ),
           image: _buildImage("healthy_options"),
-          decoration: ImagePageDecoration,
+          decoration: imagePageDecoration,
         ),
         PageViewModel(
           titleWidget: OnboardingTitleWidget(
@@ -122,7 +124,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               });
             },
           ),
-          decoration: MainPageDecoration,
+          decoration: mainPageDecoration,
         ),
         PageViewModel(
           titleWidget: OnboardingTitleWidget(
@@ -142,7 +144,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               });
             },
           ),
-          decoration: MainPageDecoration,
+          decoration: mainPageDecoration,
         ),
         PageViewModel(
           titleWidget: OnboardingTitleWidget(
@@ -156,9 +158,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
             selectedItems: {
               "wenig": preferences["unwantedIngredientsFew"],
               "nichts": preferences["unwantedIngredientsNothing"],
-              "egal": ingredientOptions.where((element) =>
-                  !preferences["unwantedIngredientsFew"].contains(element) &&
-                  !preferences["unwantedIngredientsNothing"].contains(element)).toList(),
+              "egal": ingredientOptions
+                  .where((element) =>
+                      !preferences["unwantedIngredientsFew"]
+                          .contains(element) &&
+                      !preferences["unwantedIngredientsNothing"]
+                          .contains(element))
+                  .toList(),
             },
             onChange: (int index, String newPreferenceValue) {
               String changedItem = ingredientOptions[index];
@@ -182,7 +188,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               });
             },
           ),
-          decoration: MainPageDecoration,
+          decoration: mainPageDecoration,
         ),
         PageViewModel(
           titleWidget: OnboardingTitleWidget(
@@ -193,7 +199,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             preferences: preferences,
             onEditPreference: _animateToPage,
           ),
-          decoration: SummaryPageDecoration,
+          decoration: summaryPageDecoration,
         ),
         PageViewModel(
           title: "Geschafft!",
@@ -202,18 +208,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
               Text(
                 "Jetzt da du uns deine Präferenzen mitgeteilt hast, können wir deine Lebensmittel anhand deiner Präferenzen für dich in geeignet oder ungeeignet einstufen. Scanne dazu einfach das jeweilige Produkt mit dem Barcode-scanner ein und schon siehst du das Ergebnis.",
                 textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyText1,
               ),
               Padding(
                 child: Text(
                   "Lass uns einkaufen gehen!",
                   textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText1,
                 ),
                 padding: EdgeInsets.symmetric(vertical: 16.0),
               ),
             ],
           ),
           image: _buildImage("shopping_app"),
-          decoration: ImagePageDecoration,
+          decoration: imagePageDecoration,
         ),
       ],
       onDone: () => _onIntroEnd(context),
