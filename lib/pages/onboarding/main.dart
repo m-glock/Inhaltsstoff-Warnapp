@@ -150,10 +150,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
           ),
           bodyWidget: OnboardingRadioButtonTable(
-            options: ingredientOptions,
+            itemList: ingredientOptions,
+            options: ["nichts", "egal", "wenig"],
             selectedItems: {
-              "few": preferences["unwantedIngredientsFew"],
-              "nothing": preferences["unwantedIngredientsNothing"]
+              "wenig": preferences["unwantedIngredientsFew"],
+              "nichts": preferences["unwantedIngredientsNothing"],
+              "egal": ingredientOptions.where((element) =>
+                  !preferences["unwantedIngredientsFew"].contains(element) &&
+                  !preferences["unwantedIngredientsNothing"].contains(element)).toList(),
             },
             onChange: (int index, String newPreferenceValue) {
               String changedItem = ingredientOptions[index];
@@ -168,7 +172,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     preferences["unwantedIngredientsFew"].remove(changedItem);
                     preferences["unwantedIngredientsNothing"].add(changedItem);
                     break;
-                  default:
+                  case "egal":
                     preferences["unwantedIngredientsFew"].remove(changedItem);
                     preferences["unwantedIngredientsNothing"]
                         .remove(changedItem);

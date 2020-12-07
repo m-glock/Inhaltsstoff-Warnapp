@@ -1,35 +1,30 @@
 import 'package:flutter/material.dart';
 
-List<String> preferenceOptions = ['nichts', 'egal', 'wenig'];
-
-class OnboardingRadioButtonTable extends StatefulWidget {
+class OnboardingRadioButtonTable extends StatelessWidget {
   OnboardingRadioButtonTable(
-      {Key key, this.options, this.selectedItems, this.onChange})
-      : super(key: key);
+      {Key key,
+      this.options,
+      this.itemList,
+      this.selectedItems,
+      this.onChange});
 
+  final List<String> itemList;
   final List<String> options;
   final Map<String, List<String>> selectedItems;
   final Function onChange;
 
-  @override
-  _OnboardingRadioButtonTableState createState() =>
-      _OnboardingRadioButtonTableState();
-}
-
-class _OnboardingRadioButtonTableState
-    extends State<OnboardingRadioButtonTable> {
-  TextStyle tableHeadTextStyle = TextStyle(
+  final TextStyle tableHeadTextStyle = TextStyle(
     fontWeight: FontWeight.w800,
     fontSize: 10.0,
   );
-  TextStyle tableCellsTextStyle = TextStyle(
+  final TextStyle tableCellsTextStyle = TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 16.0,
   );
-  List<String> tableHeaderElements = ['', ...preferenceOptions];
 
   @override
   Widget build(BuildContext context) {
+    final List<String> tableHeaderElements = ['', ...options];
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 16.0,
@@ -58,30 +53,30 @@ class _OnboardingRadioButtonTableState
             ),
           ),
           ...List.generate(
-            widget.options.length,
+            itemList.length,
             (listIndex) => TableRow(
               children: [
                 TableCell(
                   child: Text(
-                    widget.options[listIndex],
+                    itemList[listIndex],
                     style: tableCellsTextStyle,
                   ),
                   verticalAlignment: TableCellVerticalAlignment.middle,
                 ),
                 ...List.generate(
-                  preferenceOptions.length,
-                  (preferenceStateIndex) => TableCell(
+                  options.length,
+                  (optionIndex) => TableCell(
                     child: Radio(
-                      value: preferenceOptions[preferenceStateIndex],
-                      groupValue: widget.selectedItems["nothing"]
-                              .contains(widget.options[listIndex])
-                          ? "nichts"
-                          : widget.selectedItems["few"]
-                                  .contains(widget.options[listIndex])
-                              ? "wenig"
-                              : "egal",
+                      value: options[optionIndex],
+                      groupValue: selectedItems[options[0]]
+                              .contains(itemList[listIndex])
+                          ? options[0]
+                          : selectedItems[options[1]]
+                                  .contains(itemList[listIndex])
+                              ? options[1]
+                              : options[2],
                       onChanged: (value) {
-                        widget.onChange(listIndex, value);
+                        onChange(listIndex, value);
                       },
                     ),
                   ),

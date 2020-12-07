@@ -8,31 +8,19 @@ class OnboardingSummary extends StatelessWidget {
 
   final Map<String, Map> preferenceCategoryInfo = {
     "allergenes": {
-      "icon": Icon(
-        Icons.medical_services_outlined,
-        color: Colors.blue,
-      ),
+      "icon": Icons.medical_services_outlined,
       "title": "Allergien",
     },
     "nutrients": {
-      "icon": Icon(
-        Icons.insights,
-        color: Colors.blue,
-      ),
+      "icon": Icons.insights,
       "title": "Erwünschte Nährstoffe",
     },
     "unwantedIngredientsNothing": {
-      "icon": Icon(
-        Icons.remove_circle_outline,
-        color: Colors.blue,
-      ),
+      "icon": Icons.remove_circle_outline,
       "title": "Verbotene Inhaltstoffe",
     },
     "unwantedIngredientsFew": {
-      "icon": Icon(
-        Icons.trending_down,
-        color: Colors.blue,
-      ),
+      "icon": Icons.trending_down,
       "title": "Zu reduzierende Inhaltstoffe",
     }
   };
@@ -49,7 +37,10 @@ class OnboardingSummary extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ListTile(
-                  leading: preferenceCategoryInfo[key]["icon"],
+                  leading: Icon(
+                    preferenceCategoryInfo[key]["icon"],
+                    color: Colors.blue,
+                  ),
                   title: Text(
                     preferenceCategoryInfo[key]["title"],
                     style: TextStyle(
