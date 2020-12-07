@@ -22,7 +22,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
     "unwantedIngredientsFew": [],
     "unwantedIngredientsNothing": [],
   };
-
   List<String> allergeneOptions = [
     "Nüsse",
     "Lactose",
@@ -86,14 +85,28 @@ class _OnboardingPageState extends State<OnboardingPage> {
       key: introKey,
       pages: [
         PageViewModel(
-          title: "Inhaltsstoff Warnapp",
-          body: "Short describtion of what this app offers to ist users",
+          title: "Willkommen",
+          bodyWidget: Column(
+            children: [
+              Text(
+                "Mit der Inhaltstoff Warnapp kannst du beim Einkaufen schnell und unkompliziert erkennen, ob du ein Produkt aufgrund seiner Inhaltsstoffe essen kannst.",
+                textAlign: TextAlign.center,
+              ),
+              Padding(
+                child: Text(
+                  "Bevor es losgehen kann, erzähl uns ein bisschen über deine Lebensmittelverträglichkeiten und Ernährungspräferenzen.",
+                  textAlign: TextAlign.center,
+                ),
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+              ),
+            ],
+          ),
           image: _buildImage("healthy_options"),
           decoration: ImagePageDecoration,
         ),
         PageViewModel(
           titleWidget: OnboardingTitleWidget(
-            title: "Preferenzen",
+            title: "Allergien",
             subTitle: "Hast du irgendwelche Allergien?",
           ),
           bodyWidget: OnboardingCheckboxList(
@@ -112,8 +125,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
         PageViewModel(
           titleWidget: OnboardingTitleWidget(
-            title: "Preferenzen",
-            subTitle: "Gibt es Nährstoffe, die du bewusst aufnehmen möchtest?",
+            title: "Erwünschte Nährstoffe",
+            subTitle:
+                "Gibt es Nährstoffe, die du bewusst vermehrt aufnehmen möchtest?",
           ),
           bodyWidget: OnboardingCheckboxList(
             options: nutrientOptions,
@@ -131,7 +145,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
         PageViewModel(
           titleWidget: OnboardingTitleWidget(
-            title: "Preferenzen",
+            title: "Unerwünschte Inhaltsstoffe",
             subTitle:
                 "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
           ),
@@ -168,8 +182,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         PageViewModel(
           titleWidget: OnboardingTitleWidget(
             title: "Zusammenfassung",
-            subTitle:
-                "Kontrolliere deine Auswahl und bearbeite sie wenn nötig",
+            subTitle: "Kontrolliere deine Auswahl und bearbeite sie wenn nötig",
           ),
           bodyWidget: OnboardingSummary(
             preferences: preferences,
@@ -179,8 +192,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
         PageViewModel(
           title: "Geschafft!",
-          body:
-              "Du hast das Setup abgeschlossen. Lass uns jetzt einkaufen gehen!",
+          bodyWidget: Column(
+            children: [
+              Text(
+                "Jetzt da du uns deine Präferenzen mitgeteilt hast, können wir deine Lebensmittel anhand deiner Präferenzen für dich in geeignet oder ungeeignet einstufen. Scanne dazu einfach das jeweilige Produkt mit dem Barcode-scanner ein und schon siehst du das Ergebnis.",
+                textAlign: TextAlign.center,
+              ),
+              Padding(
+                child: Text(
+                  "Lass uns einkaufen gehen!",
+                  textAlign: TextAlign.center,
+                ),
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+              ),
+            ],
+          ),
           image: _buildImage("shopping_app"),
           decoration: ImagePageDecoration,
         ),
@@ -188,10 +214,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
       onDone: () => _onIntroEnd(context),
       showSkipButton: true,
       dotsFlex: 0,
-      skip: const Text('Skip', style: TextStyle(fontWeight: FontWeight.w600)),
-      next: const Icon(Icons.arrow_forward),
-      done: const Text('Fertig', style: TextStyle(fontWeight: FontWeight.w600)),
-      dotsDecorator: const DotsDecorator(
+      skip: Text('Skip', style: TextStyle(fontWeight: FontWeight.w600)),
+      next: Icon(Icons.arrow_forward),
+      done: Text('Starten', style: TextStyle(fontWeight: FontWeight.w600)),
+      dotsDecorator: DotsDecorator(
         size: Size(10.0, 10.0),
         color: Color(0xFFBDBDBD),
         activeSize: Size(22.0, 10.0),

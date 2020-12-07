@@ -16,7 +16,11 @@ class OnboardingTitleWidget extends StatelessWidget {
             Padding(
               child: Text(
                 title,
-                style: TextStyle(fontSize: 36.0, fontWeight: FontWeight.w600, color: Colors.white),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 36.0,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
               ),
               padding: EdgeInsets.only(bottom: 8.0),
             ),
