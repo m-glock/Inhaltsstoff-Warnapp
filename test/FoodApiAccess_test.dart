@@ -1,27 +1,43 @@
+import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/Ingredient.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/Product.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('Scan a barcode and return a product object', () {
-    throw UnimplementedError('test not implemented yet');
+  test('Scan a barcode and return a product object', () async {
+    Product scannedProduct = await FoodApiAccess.scanProduct('4000400085115');
+    assert(scannedProduct != null);
   });
 
-  test('Scan a barcode for a product that does not exist', () {
-    throw UnimplementedError('test not implemented yet');
+  test('Scan a barcode for a product that does not exist', () async {
+    Product scannedProduct = await FoodApiAccess.scanProduct('abcd');
+    assert(scannedProduct == null);
   });
 
-  test('Get all values for the tag allergens', () {
-    throw UnimplementedError('test not implemented yet');
+  test('Get all values for the tag allergens', () async {
+    List<String> allergenNames = await FoodApiAccess.getAllValuesForTag('allergens');
+    assert(allergenNames != null);
+    assert(allergenNames.isNotEmpty);
   });
 
-  test('Get all values for the tag allergies which does not exist in the database', () {
-    throw UnimplementedError('test not implemented yet');
+  test('Get all values for the tag allergies which does not exist in the database', () async {
+    List<String> allergenNames = await FoodApiAccess.getAllValuesForTag('allergies');
+    assert(allergenNames == null);
   });
 
-  test('translate a list of ingredients to german', () {
-    throw UnimplementedError('test not implemented yet');
+  test('translate a list of one ingredient to german', () async {
+    List<String> englishNames = List();
+    englishNames.add('en:gluten');
+    List<Ingredient> translatedNames = await FoodApiAccess.getIngredientsWithTranslatedNames(englishNames, 'allergens');
+
+    assert(translatedNames[0].name.compareTo('Gluten') == 0);
   });
 
-  test('translate a list of ingredients to a lnaguag that is not included in the api', () {
-    throw UnimplementedError('test not implemented yet');
+  test('a list of one ingredient cannot be translated, so the same name should be returned', () async {
+    List<String> englishNames = List();
+    englishNames.add('en:notexisting');
+    List<Ingredient> translatedNames = await FoodApiAccess.getIngredientsWithTranslatedNames(englishNames, 'allergens');
+
+    assert(translatedNames[0].name.compareTo('notexisting') == 0);
   });
 }
