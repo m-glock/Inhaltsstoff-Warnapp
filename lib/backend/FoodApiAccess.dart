@@ -78,7 +78,7 @@ class FoodApiAccess{
   * @param languageCode: the ISO 639-1 language code for the target language
   * @return the translation of the tag Value according to the API or null if tag was not found
   * */
-  static Future<List<String>> _translateTagNames(String tag, List<String> tagValues, {String languageCode:'de'}) async {
+  static Future<List<String>> _translateTagNames(String tag, List<dynamic> tagValues, {String languageCode:'de'}) async {
     String requestUrl = '$_foodDbApiUrl/$_taxonomyEndpoint/$tag.json';
 
     http.Response response = await _getRequest(requestUrl);
@@ -116,7 +116,7 @@ class FoodApiAccess{
   * @param tag: Tag that the names belong to (allergens, vitamins, ingredients etc.)
   * @return: a List of ingredient
   * */
-  static Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<String> ingredientNames, String tag) async {
+  static Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<dynamic> ingredientNames, String tag) async {
     List<Ingredient> ingredients = List();
     List<String> translatedIngredientNames = await _translateTagNames(tag, ingredientNames);
     translatedIngredientNames.forEach((element) => ingredients.add(Ingredient(element, Type.Nutriment)));
