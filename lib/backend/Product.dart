@@ -1,8 +1,8 @@
 import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/PreferenceType.dart';
 
 import 'Ingredient.dart';
 import 'ScanResult.dart';
-import 'Type.dart';
 
 class Product{
 
@@ -88,12 +88,12 @@ class Product{
 
     //TODO set itemizedScanResults with PreferenceManager, right now only dummy data
     Map<Ingredient, ScanResult> itemized = Map();
-    itemized[Ingredient('Senf', Type.Allergen)] = ScanResult.Red;
-    itemized[Ingredient('Vitamin B', Type.Vitamin)] = ScanResult.Green;
-    itemized[Ingredient('Wasser', Type.Nutriment)] = ScanResult.Red;
-    itemized[Ingredient('Vitamin c', Type.Vitamin)] = ScanResult.Green;
-    itemized[Ingredient('Milch', Type.Allergen)] = ScanResult.Red;
-    itemized[Ingredient('E254', Type.Additive)] = ScanResult.Yellow;
+    itemized[Ingredient('Senf', PreferenceType.Unwanted, '')] = ScanResult.Red;
+    itemized[Ingredient('Vitamin B', PreferenceType.Preferred, '')] = ScanResult.Green;
+    itemized[Ingredient('Wasser', PreferenceType.NotPreferred, '')] = ScanResult.Red;
+    itemized[Ingredient('Vitamin c', PreferenceType.Unwanted, '')] = ScanResult.Green;
+    itemized[Ingredient('Milch', PreferenceType.Preferred, '')] = ScanResult.Red;
+    itemized[Ingredient('E254', PreferenceType.Unwanted, '')] = ScanResult.Yellow;
     newProduct._itemizedScanResults = itemized;
 
 

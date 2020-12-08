@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:Inhaltsstoff_Warnapp/backend/PreferenceType.dart';
+
 import 'Ingredient.dart';
 import 'Product.dart';
-import 'Type.dart';
 import 'package:http/http.dart' as http;
 
 class FoodApiAccess{
@@ -120,7 +121,7 @@ class FoodApiAccess{
     List<Ingredient> ingredients = List();
     List<String> translatedIngredientNames = await _translateTagNames(tag, ingredientNames);
     translatedIngredientNames.forEach(
-            (element) => ingredients.add(Ingredient(element, Type.Nutriment))
+            (element) => ingredients.add(Ingredient(element, PreferenceType.None, ''))
     );
     return ingredients;
   }
