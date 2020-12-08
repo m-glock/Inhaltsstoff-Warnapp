@@ -1,6 +1,16 @@
+enum ScanResult { Red, Yellow, Green }
 
-enum ScanResult{
-  Green,
-  Yellow,
-  Red
+extension ScanResultExtension on ScanResult {
+  String get name {
+    switch (this) {
+      case ScanResult.Red:
+        return 'red';
+      case ScanResult.Yellow:
+        return 'yellow';
+      case ScanResult.Green:
+        return 'green';
+      default:
+        return null;
+    }
+  }
 }
