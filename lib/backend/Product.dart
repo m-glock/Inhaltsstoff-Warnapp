@@ -11,15 +11,12 @@ class Product{
   String _imageUrl;
   String _barcode;
   DateTime _scanDate;
+  DateTime _lastUpdated;
+  String _nutriscore;
 
   List<Ingredient> _ingredients;
   //List<Ingredient> _nutriments;
-  List<Ingredient> _allergens;
-  List<Ingredient> _vitamins;
-  List<Ingredient> _additives;
-  DateTime _lastUpdated;
   List<Ingredient> _traces;
-  String _nutriscore;
 
   double _quantity;
   String _origin;
@@ -32,15 +29,12 @@ class Product{
   String get imageUrl => _imageUrl;
   String get barcode => _barcode;
   DateTime get scanDate => _scanDate;
+  DateTime get lastUpdated => _lastUpdated;
+  String get nutriscore => _nutriscore;
 
   List<Ingredient> get ingredients => _ingredients;
   //List<Ingredient> get nutriments => _nutriments;
-  List<Ingredient>  get allergens => _allergens;
-  List<Ingredient> get vitamins => _vitamins;
-  List<Ingredient> get additives => _additives;
-  DateTime get lastUpdated => _lastUpdated;
   List<Ingredient> get traces => _traces;
-  String get nutriscore => _nutriscore;
 
   double get quantity => _quantity;
   String get origin => _origin;
@@ -76,20 +70,23 @@ class Product{
     newProduct._stores = json['stores'];
 
     // add Ingredients, Nutriments, Allergens, Vitamins, Additives and Traces
+    List<Ingredient> ingredients = List();
     List<dynamic> ingredientNames = json['ingredients_tags'];
-    newProduct._ingredients = await FoodApiAccess.getIngredientsWithTranslatedNames(ingredientNames, 'ingredients');
+    ingredients = await FoodApiAccess.getIngredientsWithTranslatedNames(ingredientNames, 'ingredients');
 
     /*var nutrimentNames = json['nutriments_tags'];
     newProduct._nutriments = await FoodApiAccess.getIngredientsWithTranslatedNames(nutrimentNames, 'nutriments');*/
 
     var allergenNames = json['allergens_tags'];
-    newProduct._allergens = await FoodApiAccess.getIngredientsWithTranslatedNames(allergenNames, 'allergens');
+    ingredients.addAll(await FoodApiAccess.getIngredientsWithTranslatedNames(allergenNames, 'allergens'));
 
     List<dynamic> vitaminNames = json['vitamins_tags'];
-    newProduct._vitamins = await FoodApiAccess.getIngredientsWithTranslatedNames(vitaminNames, 'vitamins');
+    ingredients.addAll(await FoodApiAccess.getIngredientsWithTranslatedNames(vitaminNames, 'vitamins'));
 
     List<dynamic> additiveNames = json['additives_tags'];
-    newProduct._additives = await FoodApiAccess.getIngredientsWithTranslatedNames(additiveNames, 'additives');
+    ingredients.addAll(await FoodApiAccess.getIngredientsWithTranslatedNames(additiveNames, 'additives'));
+
+    newProduct._ingredients = ingredients;
 
     List<dynamic> tracesNames = json['traces_tags'];
     newProduct._traces = await FoodApiAccess.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
