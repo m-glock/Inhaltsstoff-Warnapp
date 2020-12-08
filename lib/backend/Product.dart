@@ -15,7 +15,6 @@ class Product{
   String _nutriscore;
 
   List<Ingredient> _ingredients;
-  //List<Ingredient> _nutriments;
   List<Ingredient> _traces;
 
   double _quantity;
@@ -33,7 +32,6 @@ class Product{
   String get nutriscore => _nutriscore;
 
   List<Ingredient> get ingredients => _ingredients;
-  //List<Ingredient> get nutriments => _nutriments;
   List<Ingredient> get traces => _traces;
 
   double get quantity => _quantity;
@@ -64,18 +62,15 @@ class Product{
     newProduct._nutriscore = json['nutriscore_grade'];
 
     String quantityString = (json['quantity'] as String).trim().replaceAll(new RegExp('[a-zA-Z]'), '');
-    newProduct._quantity = double.parse(quantityString);
+    newProduct._quantity = quantityString.isEmpty ? 0 : double.parse(quantityString);
     newProduct._origin = json['origins'];
     newProduct._manufacturingPlaces = json['manufacturing_places'];
     newProduct._stores = json['stores'];
 
-    // add Ingredients, Nutriments, Allergens, Vitamins, Additives and Traces
+    // add Ingredients, Allergens, Vitamins, Additives and Traces
     List<Ingredient> ingredients = List();
     List<dynamic> ingredientNames = json['ingredients_tags'];
     ingredients = await FoodApiAccess.getIngredientsWithTranslatedNames(ingredientNames, 'ingredients');
-
-    /*var nutrimentNames = json['nutriments_tags'];
-    newProduct._nutriments = await FoodApiAccess.getIngredientsWithTranslatedNames(nutrimentNames, 'nutriments');*/
 
     var allergenNames = json['allergens_tags'];
     ingredients.addAll(await FoodApiAccess.getIngredientsWithTranslatedNames(allergenNames, 'allergens'));
@@ -91,7 +86,7 @@ class Product{
     List<dynamic> tracesNames = json['traces_tags'];
     newProduct._traces = await FoodApiAccess.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
 
-    //TODO set itemizedScanResults, right now only dummy data
+    //TODO set itemizedScanResults with PreferenceManager, right now only dummy data
     Map<Ingredient, ScanResult> itemized = Map();
     itemized[Ingredient('Senf', Type.Allergen)] = ScanResult.Red;
     itemized[Ingredient('Vitamin B', Type.Vitamin)] = ScanResult.Green;
@@ -118,28 +113,24 @@ class Product{
   }
 
   /*
-  * find all Ingredients that the user explicity wants and that the product contains
-  * @return a list with the names of ingredients
+  * get the names of ingredients that are responsible for the overall scan result.
+  * Either return the responsible ingredients that are not wanted or those that are explicitly wanted
+  * @param unwantedIngredients: determines whether to return the ingredients that cause a negative scan result (unwanted)
+  *                             or those that are explicitly wanted by the user and contained in the product
+  * @return: a list of ingredient names
+  * TODO implement, right now only dummy data
   * */
-  List<String> getNamesOfExplicitlyWantedIngredients(){
-    //TODO implement
-    List<String> nutriments = List();
-    nutriments.add('Vitamin C');
-    nutriments.add('Vitamin B');
-    return nutriments;
-  }
-
-  /*
-  * find all Ingredients that the user does not want and that the product contains
-  * @return a list of with the names of ingredients
-  * */
-  List<String> getNamesOfUnwantedIngredients(){
-    //TODO implement
-    List<String> ingredients = List();
-    ingredients.add('Senf');
-    ingredients.add('Vitamin B');
-    ingredients.add('Wasser');
-    ingredients.add('E523');
-    return ingredients;
+  List<String> getDecisiveIngredientNames(bool unwantedIngredients){
+    if(unwantedIngredients){
+      List<String> unwanted = List();
+      unwanted.add('Schokolade');
+      unwanted.add('Milch');
+      return unwanted;
+    } else {
+      List<String> wanted = List();
+      wanted.add('Vitamin C');
+      wanted.add('Magnesium');
+      return wanted;
+    }
   }
 }
