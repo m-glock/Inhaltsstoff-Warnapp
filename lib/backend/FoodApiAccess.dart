@@ -32,7 +32,7 @@ class FoodApiAccess{
     // handle if product does not exist in the food API database
     // utf8 decoding for umlaute
     Map<String, dynamic> decodedJson = json.decode(utf8.decode(response.bodyBytes));
-    if(decodedJson['status'] == '0'){
+    if(decodedJson['status'] == 0){
       log('Product with Barcode $barcode does not exist in the database.');
       return null;
     }
@@ -119,7 +119,9 @@ class FoodApiAccess{
   static Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<dynamic> ingredientNames, String tag) async {
     List<Ingredient> ingredients = List();
     List<String> translatedIngredientNames = await _translateTagNames(tag, ingredientNames);
-    translatedIngredientNames.forEach((element) => ingredients.add(Ingredient(element, Type.Nutriment)));
+    translatedIngredientNames.forEach(
+            (element) => ingredients.add(Ingredient(element, Type.Nutriment))
+    );
     return ingredients;
   }
 
