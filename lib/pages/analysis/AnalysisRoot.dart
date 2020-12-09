@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../customWidgets/CustomAppBar.dart';
 
 class AnalysisRoot extends StatefulWidget {
   const AnalysisRoot({ Key key }) : super(key: key);
@@ -21,10 +22,7 @@ class _AnalysisRootState extends State<AnalysisRoot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Analysis'),
-        backgroundColor: Colors.blue,
-      ),
+      appBar: CustomAppBar('Analyse'),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(32.0),
