@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Inhaltsstoff_Warnapp/customWidgets/LabelledIconButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -72,117 +73,52 @@ class _ScanningRootState extends State<ScanningRoot> {
               'Scanne dein Produkt',
               style: Theme.of(context).textTheme.headline1,
             ),
-            SizedBox(height: 20.0),
             Expanded(
                 child: Image.asset(
-                  'assets/images/logo2.png',
+                  'assets/images/logo.png',
                   height: 300,
                   width: 300,
                 ),
                 flex: 1),
-            SizedBox(height: 20.0),
             // Text('$_scanBarcode',
             //     style: Theme.of(context).textTheme.headline2,
             //     textAlign: TextAlign.center),
-            // SizedBox(height: 20.0),
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 verticalDirection: VerticalDirection.up,
                 children: <Widget>[
-                  Column(
-                    children: [
-                      RaisedButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (BuildContext context) {
-                              return ScanningBarcodeDialog();
-                            },
-                          ).then((val) {
-                            setState(() {
-                              _scanBarcode = val;
-                            });
-                          });
+                  LabelledIconButton(
+                    'Manuelle Eingabe',
+                    Icons.text_fields,
+                    false,
+                    () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return ScanningBarcodeDialog();
                         },
-                        color: Theme.of(context).primaryColorLight,
-                        textColor: Theme.of(context).primaryColor,
-                        child: Icon(
-                          Icons.text_fields,
-                          size: 24,
-                        ),
-                        padding: EdgeInsets.all(16),
-                        shape: CircleBorder(
-                          side: BorderSide(
-                            color: Theme.of(context).primaryColor,
-                            width: 1.5,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10.0),
-                      Text('Manuelle Eingabe',
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  .fontSize)),
-                    ],
+                      ).then((val) {
+                        setState(() {
+                          _scanBarcode = val;
+                        });
+                      });
+                    },
                   ),
-                  Column(
-                    children: [
-                      RaisedButton(
-                        onPressed: () => scanBarcodeNormal(),
-                        color: Theme.of(context).primaryColor,
-                        textColor: Colors.white,
-                        child: Icon(
-                          Icons.fullscreen,
-                          size: 50,
-                        ),
-                        padding: EdgeInsets.all(16),
-                        shape: CircleBorder(),
-                      ),
-                      SizedBox(height: 10.0),
-                      Text('Barcode scannen',
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  .fontSize)),
-                    ],
+                  LabelledIconButton(
+                    'Barcode scannen',
+                    Icons.fullscreen,
+                    true,
+                    scanBarcodeNormal,
+                    iconSize: 52,
                   ),
-                  Column(
-                    children: [
-                      RaisedButton(
-                        onPressed: () {},
-                        color: Theme.of(context).primaryColorLight,
-                        textColor: Theme.of(context).primaryColor,
-                        child: Icon(
-                          Icons.image,
-                          color: Theme.of(context).primaryColor,
-                          size: 24,
-                        ),
-                        padding: EdgeInsets.all(16),
-                        shape: CircleBorder(
-                            side: BorderSide(
-                              color: Theme.of(context).primaryColor,
-                              width: 1.5
-                            )
-                            ),
-                      ),
-                      SizedBox(height: 10.0),
-                      Text('Text scannen',
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  .fontSize)),
-                    ],
+                  LabelledIconButton(
+                    'Text scannen',
+                    Icons.image,
+                    false,
+                    () {},
                   ),
                 ]),
-            SizedBox(height: 30.0),
           ],
         ),
       ),
