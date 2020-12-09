@@ -6,19 +6,18 @@ import 'scanning/main.dart';
 import 'history/main.dart';
 
 class Destination {
-  const Destination(this.title, this.icon, this.color, this.page);
+  const Destination(this.title, this.icon, this.page);
   final String title;
   final IconData icon;
-  final MaterialColor color;
   final StatefulWidget page;
 }
 
 const List<Destination> allDestinations = <Destination>[
-  Destination('Favoriten', Icons.favorite, Colors.blue, FavouritesPage()),
-  Destination('Verlauf', Icons.history, Colors.blue, HistoryPage()),
-  Destination('Scannen', Icons.camera_alt, Colors.blue, ScanningPage()),
-  Destination('Vergleich', Icons.compare_arrows, Colors.blue, ComparisonPage()),
-  Destination('Analyse', Icons.bar_chart, Colors.blue, AnalysisPage())
+  Destination('Favoriten', Icons.favorite, FavouritesPage()),
+  Destination('Verlauf', Icons.history, HistoryPage()),
+  Destination('Scannen', Icons.camera_alt, ScanningPage()),
+  Destination('Vergleich', Icons.compare_arrows, ComparisonPage()),
+  Destination('Analyse', Icons.bar_chart, AnalysisPage())
 ];
 
 /// This is the stateful widget that the main application instantiates.
@@ -73,7 +72,7 @@ class _HomePageState extends State<HomePage> {
         items: allDestinations.map((Destination destination) {
           return BottomNavigationBarItem(
             icon: Icon(destination.icon),
-            backgroundColor: destination.color,
+            backgroundColor: Theme.of(context).primaryColor,
             label: destination.title,
           );
         }).toList(),

@@ -24,6 +24,11 @@ ThemeData appTheme() {
         fontSize: 10.0,
         color: Colors.grey[900],
       ),
+      subtitle2: TextStyle(
+        fontSize: 10.0,
+        color: Colors.grey[900],
+        fontWeight: FontWeight.bold,
+      ),
     ),
   );
 }

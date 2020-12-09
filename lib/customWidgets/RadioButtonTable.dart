@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class RadioButtonTable extends StatelessWidget {
   RadioButtonTable(
-      {this.options, this.itemList, this.selectedItems, this.onChange});
+      {this.options, this.items, this.selectedItems, this.onChange});
 
-  final List<String> itemList;
+  final List<String> items;
   final List<String> options;
   final Map<String, List<String>> selectedItems;
   final Function onChange;
@@ -31,11 +31,7 @@ class RadioButtonTable extends StatelessWidget {
               (tableHeaderIndex) => TableCell(
                 child: Text(
                   tableHeaderElements[tableHeaderIndex],
-                  style: Theme.of(context).textTheme.bodyText2.merge(
-                        TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                  style: Theme.of(context).textTheme.subtitle2,
                   textAlign:
                       tableHeaderIndex == 0 ? TextAlign.left : TextAlign.center,
                 ),
@@ -44,11 +40,11 @@ class RadioButtonTable extends StatelessWidget {
             ),
           ),
           ...List.generate(
-            itemList.length,
+            items.length,
             (listIndex) => TableRow(
               children: [
                 TableCell(
-                  child: Text(itemList[listIndex],
+                  child: Text(items[listIndex],
                       style: Theme.of(context).textTheme.bodyText1),
                   verticalAlignment: TableCellVerticalAlignment.middle,
                 ),
@@ -58,10 +54,10 @@ class RadioButtonTable extends StatelessWidget {
                     child: Radio(
                       value: options[optionIndex],
                       groupValue: selectedItems[options[0]]
-                              .contains(itemList[listIndex])
+                              .contains(items[listIndex])
                           ? options[0]
                           : selectedItems[options[1]]
-                                  .contains(itemList[listIndex])
+                                  .contains(items[listIndex])
                               ? options[1]
                               : options[2],
                       onChanged: (value) {

@@ -17,11 +17,11 @@ class OnboardingSummary extends StatelessWidget {
     },
     "unwantedIngredientsNothing": {
       "icon": Icons.remove_circle_outline,
-      "title": "Verbotene Inhaltstoffe",
+      "title": "Verbotene Inhaltsstoffe",
     },
     "unwantedIngredientsFew": {
       "icon": Icons.trending_down,
-      "title": "Zu reduzierende Inhaltstoffe",
+      "title": "Zu reduzierende Inhaltsstoffe",
     }
   };
 

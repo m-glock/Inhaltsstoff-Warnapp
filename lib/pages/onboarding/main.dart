@@ -90,7 +90,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           bodyWidget: Column(
             children: [
               Text(
-                "Mit der Inhaltstoff Warnapp kannst du beim Einkaufen schnell und unkompliziert erkennen, ob du ein Produkt aufgrund seiner Inhaltsstoffe essen kannst.",
+                "Mit der Inhaltsstoff Warnapp kannst du beim Einkaufen schnell und unkompliziert erkennen, ob du ein Produkt aufgrund seiner Inhaltsstoffe essen kannst.",
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyText1,
               ),
@@ -153,7 +153,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
           ),
           bodyWidget: RadioButtonTable(
-            itemList: ingredientOptions,
+            items: ingredientOptions,
             options: ["nichts", "egal", "wenig"],
             selectedItems: {
               "wenig": preferences["unwantedIngredientsFew"],
@@ -206,7 +206,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           bodyWidget: Column(
             children: [
               Text(
-                "Jetzt da du uns deine Präferenzen mitgeteilt hast, können wir deine Lebensmittel anhand deiner Präferenzen für dich in geeignet oder ungeeignet einstufen. Scanne dazu einfach das jeweilige Produkt mit dem Barcode-scanner ein und schon siehst du das Ergebnis.",
+                "Jetzt da du uns deine Präferenzen mitgeteilt hast, können wir deine Lebensmittel anhand deiner Präferenzen für dich in geeignet, eingeschränkt geeignet oder ungeeignet einstufen. Scanne dazu einfach das jeweilige Produkt mit dem Barcode-scanner ein und schon siehst du das Ergebnis.",
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyText1,
               ),
