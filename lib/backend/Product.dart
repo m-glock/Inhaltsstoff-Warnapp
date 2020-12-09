@@ -1,8 +1,7 @@
 import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/PreferenceType.dart';
 
 import 'Ingredient.dart';
-import 'ScanResult.dart';
+import 'Enums/ScanResult.dart';
 
 class Product{
 
