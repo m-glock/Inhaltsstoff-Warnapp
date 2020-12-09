@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:Inhaltsstoff_Warnapp/theme/style.dart';
 
 class ScanningRoot extends StatefulWidget {
   const ScanningRoot({Key key}) : super(key: key);
@@ -26,7 +25,7 @@ class _ScanningRootState extends State<ScanningRoot> {
 
   startBarcodeScanStream() async {
     FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            appTheme().textTheme.button.color.toString(), "Abbrechen", true, ScanMode.BARCODE)
+            Theme.of(context).textTheme.button.color.toString(), "Abbrechen", true, ScanMode.BARCODE)
         .listen((barcode) => print(barcode));
   }
 
@@ -57,9 +56,9 @@ class _ScanningRootState extends State<ScanningRoot> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Barcode Scanner'),
-        backgroundColor: appTheme().primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
-      backgroundColor: appTheme().backgroundColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
@@ -69,14 +68,13 @@ class _ScanningRootState extends State<ScanningRoot> {
             height: 300,
             width: 300,
           ),flex: 1),
-          // Image.asset('assets/images/logo.png'),
           SizedBox(height: 20.0),
           Text('Scanne dein Produkt',
-              style: appTheme().textTheme.headline1,
+              style: Theme.of(context).textTheme.headline1,
               textAlign: TextAlign.center),
           SizedBox(height: 20.0),
           // Text('$_scanBarcode',
-          //     style: appTheme().textTheme.headline2,
+          //     style: Theme.of(context).textTheme.headline2,
           //     textAlign: TextAlign.center),
           // SizedBox(height: 20.0),    
           Row(
@@ -133,7 +131,7 @@ class _ScanningRootState extends State<ScanningRoot> {
                           });
                         });
                       },
-                      color: appTheme().accentColor,
+                      color: Theme.of(context).accentColor,
                       textColor: Theme.of(context).primaryColor,
                       child: Icon(
                         Icons.text_fields,
@@ -145,15 +143,15 @@ class _ScanningRootState extends State<ScanningRoot> {
                     SizedBox(height: 10.0),
                     Text('Manuelle Eingabe',
                         style: TextStyle(
-                            color: appTheme().primaryColor, fontSize: appTheme().textTheme.bodyText2.fontSize)),
+                            color: Theme.of(context).primaryColor, fontSize: Theme.of(context).textTheme.bodyText2.fontSize)),
                   ],
                 ),
                 Column(
                   children: [
                     RaisedButton(
                       onPressed: () => scanBarcodeNormal(),
-                      color: appTheme().primaryColor,
-                      textColor: appTheme().textTheme.button.color,
+                      color: Theme.of(context).primaryColor,
+                      textColor: Theme.of(context).textTheme.button.color,
                       child: Icon(
                         Icons.fullscreen,
                         size: 50,
@@ -164,20 +162,20 @@ class _ScanningRootState extends State<ScanningRoot> {
                     SizedBox(height: 10.0),
                     Text('Barcode scannen',
                         style: TextStyle(
-                            color: appTheme().primaryColor, fontSize: appTheme().textTheme.bodyText2.fontSize)),
+                            color: Theme.of(context).primaryColor, fontSize: Theme.of(context).textTheme.bodyText2.fontSize)),
                   ],
                 ),
                 Column(
                   children: [
                     RaisedButton(
                       onPressed: null,
-                      color: appTheme().primaryColor,
-                      disabledColor: appTheme().disabledColor,
-                      disabledTextColor: appTheme().accentColor,
-                      textColor: appTheme().textTheme.button.color,
+                      color: Theme.of(context).primaryColor,
+                      disabledColor: Theme.of(context).disabledColor,
+                      disabledTextColor: Theme.of(context).accentColor,
+                      textColor: Theme.of(context).textTheme.button.color,
                       child: Icon(
                         Icons.image,
-                        color: appTheme().textTheme.button.color,
+                        color: Theme.of(context).textTheme.button.color,
                         size: 24,
                       ),
                       padding: EdgeInsets.all(16),
@@ -186,7 +184,7 @@ class _ScanningRootState extends State<ScanningRoot> {
                     SizedBox(height: 10.0),
                     Text('Text scannen',
                         style: TextStyle(
-                            color: appTheme().accentColor, fontSize: appTheme().textTheme.bodyText2.fontSize)),
+                            color: Theme.of(context).accentColor, fontSize: Theme.of(context).textTheme.bodyText2.fontSize)),
                   ],
                 ),
               ]),
