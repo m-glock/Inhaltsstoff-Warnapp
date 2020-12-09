@@ -28,8 +28,8 @@ class PreferenceManager {
   static List<Ingredient> getPreferencedIngredients({List<PreferenceType> preferenceTypes}) {
     //TODO implement
     List<Ingredient> ingredients = List();
-    ingredients.add(Ingredient('Zucker', PreferenceType.Unwanted, ''));
-    ingredients.add(Ingredient('Milch', PreferenceType.Unwanted, ''));
+    ingredients.add(Ingredient('Zucker', PreferenceType.NotWanted, ''));
+    ingredients.add(Ingredient('Milch', PreferenceType.NotWanted, ''));
     ingredients.add(Ingredient('Magnesium', PreferenceType.NotPreferred, ''));
     ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, ''));
     //await dbHelper.readAll(DbTableNames.ingredient);
@@ -45,7 +45,7 @@ class PreferenceManager {
     //TODO implement
     List<Ingredient> ingredients = List();
     ingredients.add(Ingredient('Zucker', PreferenceType.None, ''));
-    ingredients.add(Ingredient('Milch', PreferenceType.Unwanted, ''));
+    ingredients.add(Ingredient('Milch', PreferenceType.NotWanted, ''));
     ingredients.add(Ingredient('Magnesium', PreferenceType.None, ''));
     ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, ''));
     return ingredients;
