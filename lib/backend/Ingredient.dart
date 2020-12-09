@@ -9,7 +9,7 @@ class Ingredient extends DbTable {
   String _name;
   PreferenceType _preferencesType;
   String _addDate;
-  List<Type> _types;
+  Type _type;
 
   static final columns = ["id", "name", "preferencesTypeId", "addDate"];
 
@@ -19,7 +19,7 @@ class Ingredient extends DbTable {
 
   // Getter and Setter
   String get name => _name;
-  List<Type> get types => _types;
+  Type get type => _type;
   String get addDate => _addDate;
   PreferenceType get preferenceType => _preferencesType;
 
@@ -28,6 +28,7 @@ class Ingredient extends DbTable {
     return DbTableNames.ingredient;
   }
 
+  //TODO: handle foreign keys
   Map<String, dynamic> toMap({bool withId: true}) {
     final map = new Map<String, dynamic>();
     map['name'] = name;
@@ -40,9 +41,10 @@ class Ingredient extends DbTable {
     return map;
   }
 
-  static fromMap(Map<String, dynamic> data) =>
-      new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'],
-          id: data['id']);
+  static Ingredient fromMap(Map<String, dynamic> data) {
+    return new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'],
+        id: data['id']);
+  }
 
   /*
   * get current date in a string format
@@ -62,6 +64,5 @@ class Ingredient extends DbTable {
   * */
   void changePreference(PreferenceType preferenceType) {
     //TODO implement
-
   }
 }
