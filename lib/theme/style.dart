@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 ThemeData appTheme() {
   return ThemeData(
-    primaryColor: Colors.teal,
-    accentColor: Colors.teal[100],
+    primaryColor: Colors.indigo[700],
+    accentColor: Colors.indigo[100],
     disabledColor: Colors.teal[100],
     backgroundColor: Colors.white,
     textTheme: TextTheme(

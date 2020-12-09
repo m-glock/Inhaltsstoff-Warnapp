@@ -133,8 +133,8 @@ class _ScanningRootState extends State<ScanningRoot> {
                           });
                         });
                       },
-                      color: appTheme().primaryColor,
-                      textColor: appTheme().backgroundColor,
+                      color: appTheme().accentColor,
+                      textColor: Theme.of(context).primaryColor,
                       child: Icon(
                         Icons.text_fields,
                         size: 24,
@@ -156,7 +156,7 @@ class _ScanningRootState extends State<ScanningRoot> {
                       textColor: appTheme().textTheme.button.color,
                       child: Icon(
                         Icons.fullscreen,
-                        size: 96,
+                        size: 50,
                       ),
                       padding: EdgeInsets.all(16),
                       shape: CircleBorder(),
