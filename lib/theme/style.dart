@@ -5,13 +5,30 @@ ThemeData appTheme() {
     primaryColor: Colors.blue,
     accentColor: Colors.blue[100],
     textTheme: TextTheme(
-      headline1: TextStyle(fontSize: 36.0, color: Colors.blue),
-      headline2: TextStyle(fontSize: 20.0, color: Colors.blue),
-      bodyText1: TextStyle(fontSize: 14.0, color: Colors.black87),
-      bodyText2: TextStyle(fontSize: 10.0, color: Colors.black87),
-    ),
-    buttonTheme: ButtonThemeData(
-      textTheme: ButtonTextTheme.primary,
+      headline1: TextStyle(
+        fontSize: 36.0,
+        fontWeight: FontWeight.w400,
+        color: Colors.blue,
+      ),
+      headline2: TextStyle(
+        fontSize: 20.0,
+        fontWeight: FontWeight.w400,
+        color: Colors.blue,
+      ),
+      bodyText1: TextStyle(
+        fontSize: 14.0,
+        fontWeight: FontWeight.w400,
+        color: Colors.grey[900],
+      ),
+      bodyText2: TextStyle(
+        fontSize: 10.0,
+        color: Colors.grey[900],
+      ),
+      subtitle2: TextStyle(
+        fontSize: 10.0,
+        color: Colors.grey[900],
+        fontWeight: FontWeight.bold,
+      ),
     ),
   );
 }
