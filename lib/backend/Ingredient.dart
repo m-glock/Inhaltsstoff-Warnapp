@@ -1,5 +1,5 @@
-import 'PreferenceType.dart';
-import 'Type.dart';
+import 'Enums/PreferenceType.dart';
+import 'Enums/Type.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 import 'package:intl/intl.dart';

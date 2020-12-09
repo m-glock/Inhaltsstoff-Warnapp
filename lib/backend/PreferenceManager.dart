@@ -1,8 +1,8 @@
 import 'dart:core';
 
 import 'Ingredient.dart';
-import 'PreferenceType.dart';
-import 'Type.dart';
+import 'Enums/PreferenceType.dart';
+import 'Enums/Type.dart';
 
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
@@ -58,9 +58,9 @@ class PreferenceManager {
   static List<Type> getIngredientsTypes() {
     //TODO implement
     List<Type> type;
-    type.add(Type('Vitamin'));
-    type.add(Type('Allergen'));
-    type.add(Type('Nutriment'));
+    type.add(Type.Nutriment);
+    type.add(Type.Allergen);
+    type.add(Type.General);
     return type;
   }
 }
