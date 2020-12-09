@@ -7,7 +7,7 @@ import 'ScanResult.dart';
 class Product{
 
   String _name;
-  Map<Ingredient, ScanResult> _itemizedScanResults;
+  ScanResult _scanResult;
   String _imageUrl;
   String _barcode;
   DateTime _scanDate;
@@ -24,7 +24,7 @@ class Product{
 
   // Getter
   String get name => _name;
-  Map<Ingredient, ScanResult> get itemizedScanResults => _itemizedScanResults;
+  ScanResult get scanResult => _scanResult;
   String get imageUrl => _imageUrl;
   String get barcode => _barcode;
   DateTime get scanDate => _scanDate;
@@ -87,29 +87,10 @@ class Product{
     newProduct._traces = await FoodApiAccess.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
 
     //TODO set itemizedScanResults with PreferenceManager, right now only dummy data
-    Map<Ingredient, ScanResult> itemized = Map();
-    itemized[Ingredient('Senf', PreferenceType.Unwanted, '')] = ScanResult.Red;
-    itemized[Ingredient('Vitamin B', PreferenceType.Preferred, '')] = ScanResult.Green;
-    itemized[Ingredient('Wasser', PreferenceType.NotPreferred, '')] = ScanResult.Red;
-    itemized[Ingredient('Vitamin c', PreferenceType.Unwanted, '')] = ScanResult.Green;
-    itemized[Ingredient('Milch', PreferenceType.Preferred, '')] = ScanResult.Red;
-    itemized[Ingredient('E254', PreferenceType.Unwanted, '')] = ScanResult.Yellow;
-    newProduct._itemizedScanResults = itemized;
+    newProduct._scanResult = ScanResult.Yellow;
 
 
     return newProduct;
-  }
-
-  /*
-   * determine the overall ScanResult for this product.
-   * If any Ingredient is red, return red
-   * If any Ingredient is yellow, but none red, return yellow
-   * if all Ingredients are green, return green
-   * @return: the ScanResult for this product
-   */
-  ScanResult getOverallScanResult(){
-    //TODO implement
-    return ScanResult.Yellow;
   }
 
   /*
