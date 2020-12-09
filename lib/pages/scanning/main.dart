@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/pages/scanning/ScanningCropImage.dart';
 import 'package:flutter/material.dart';
 import 'ScanningRoot.dart';
 
@@ -19,6 +20,8 @@ class _ScanningPageState extends State<ScanningPage> {
             switch(settings.name) {
               case '/':
                 return ScanningRoot();
+              case '/crop_image':
+                return ScanningCropImage();
             }
           },
         );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../customWidgets/CustomAppBar.dart';
 
 class ScanningRoot extends StatefulWidget {
   const ScanningRoot({ Key key }) : super(key: key);
@@ -12,22 +11,24 @@ class _ScanningRootState extends State<ScanningRoot> {
   TextEditingController _textController;
 
   @override
-  void initState() {
-    super.initState();
-    _textController = TextEditingController(
-      text: "ScanningRoot",
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar('Scanning'),
+      appBar: AppBar(
+        title: Text('ScanningRoot'),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(32.0),
         alignment: Alignment.center,
-        child: TextField(controller: _textController),
+        child: RaisedButton(
+          child: Text('Go to crop image screen'),
+          color: Theme.of(context).primaryColor,
+          onPressed: () {
+            // Navigate to the second screen using a named route.
+            Navigator.pushNamed(context, '/crop_image');
+          },
+        ),
       ),
     );
   }
