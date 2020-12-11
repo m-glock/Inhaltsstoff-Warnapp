@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:Inhaltsstoff_Warnapp/customWidgets/LabelledIconButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import '../../customWidgets/CustomAppBar.dart';
+import '../../customWidgets/LabelledIconButton.dart';
 import './ScanningBarcodeDialog.dart';
 
 class ScanningRoot extends StatefulWidget {
@@ -16,32 +16,24 @@ class ScanningRoot extends StatefulWidget {
 
 class _ScanningRootState extends State<ScanningRoot> {
   String _scanBarcode = '';
-  TextEditingController _textController;
 
-  @override
-  void initState() {
-    super.initState();
-    _textController = TextEditingController(
-      text: null,
-    );
+  _getHexPrimaryColor() {
+    return '#${Theme.of(context).primaryColor.red.toRadixString(16)}${Theme.of(context).primaryColor.green.toRadixString(16)}${Theme.of(context).primaryColor.blue.toRadixString(16)}';
   }
 
-  startBarcodeScanStream() async {
+  _startBarcodeScanStream() async {
     FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            Theme.of(context).textTheme.button.color.toString(),
-            "Abbrechen",
-            true,
-            ScanMode.BARCODE)
+            _getHexPrimaryColor(), "Abbrechen", true, ScanMode.BARCODE)
         .listen((barcode) => print(barcode));
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> scanBarcodeNormal() async {
+  Future<void> _scanBarcodeNormal() async {
     String barcodeScanRes;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          "#ff6666", "Abbrechen", true, ScanMode.BARCODE);
+          _getHexPrimaryColor(), "Abbrechen", true, ScanMode.BARCODE);
       print(barcodeScanRes);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
@@ -65,69 +57,54 @@ class _ScanningRootState extends State<ScanningRoot> {
       body: Container(
         padding: EdgeInsets.all(24.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(
               'Scanne dein Produkt',
               style: Theme.of(context).textTheme.headline1,
             ),
-            Expanded(
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  height: 300,
-                  width: 300,
-                ),
-                flex: 1),
-            // Text('$_scanBarcode',
-            //     style: Theme.of(context).textTheme.headline2,
-            //     textAlign: TextAlign.center),
+            Image.asset(
+              'assets/images/logo.png',
+            ),
             Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                verticalDirection: VerticalDirection.up,
-                children: <Widget>[
-                  LabelledIconButton(
-                    'Manuelle Eingabe',
-                    Icons.text_fields,
-                    false,
-                    () {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return ScanningBarcodeDialog();
-                        },
-                      ).then((val) {
-                        setState(() {
-                          _scanBarcode = val;
-                        });
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                LabelledIconButton(
+                  'Manuelle Eingabe',
+                  Icons.text_fields,
+                  false,
+                  () {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return ScanningBarcodeDialog();
+                      },
+                    ).then((val) {
+                      setState(() {
+                        _scanBarcode = val;
                       });
-                    },
-                  ),
-                  LabelledIconButton(
-                    'Barcode scannen',
-                    Icons.fullscreen,
-                    true,
-                    scanBarcodeNormal,
-                    iconSize: 52,
-                  ),
-                  LabelledIconButton(
-                    'Text scannen',
-                    Icons.image,
-                    false,
-                    () {},
-                  ),
-                ]),
+                    });
+                  },
+                ),
+                LabelledIconButton(
+                  'Barcode scannen',
+                  Icons.fullscreen,
+                  true,
+                  _scanBarcodeNormal,
+                  iconSize: 52,
+                ),
+                LabelledIconButton(
+                  'Text scannen',
+                  Icons.image,
+                  false,
+                  () {},
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
   }
 }
