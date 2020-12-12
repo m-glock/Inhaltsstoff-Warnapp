@@ -27,5 +27,4 @@ class Type extends DbTable{
       data['name'],
       id : data['id']
   );
-
 }
