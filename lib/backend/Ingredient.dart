@@ -1,5 +1,5 @@
-import 'PreferenceType.dart';
-import 'Type.dart';
+import 'Enums/PreferenceType.dart';
+import 'Enums/Type.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +9,7 @@ class Ingredient extends DbTable {
   String _name;
   PreferenceType _preferencesType;
   String _addDate;
-  List<Type> _types;
+  Type _type;
 
   static final columns = ["id", "name", "preferencesTypeId", "addDate"];
 
@@ -19,30 +19,12 @@ class Ingredient extends DbTable {
 
   // Getter and Setter
   String get name => _name;
-  List<Type> get types => _types;
+  Type get type => _type;
   String get addDate => _addDate;
   PreferenceType get preferenceType => _preferencesType;
 
   // Methods
-  DbTableNames getTableName() {
-    return DbTableNames.ingredient;
-  }
 
-  Map<String, dynamic> toMap({bool withId: true}) {
-    final map = new Map<String, dynamic>();
-    map['name'] = name;
-    //map['preferencesTypeId'] = preferencesTypeId;
-    map['addDate'] = addDate;
-    if (withId) map['id'] = super.id;
-    //List<int> groupIds = new List();
-    //_groups.forEach((element) => groupIds.add(element.id));
-    //map['groups'] = groupIds;
-    return map;
-  }
-
-  static fromMap(Map<String, dynamic> data) =>
-      new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'],
-          id: data['id']);
 
   /*
   * get current date in a string format
@@ -62,6 +44,30 @@ class Ingredient extends DbTable {
   * */
   void changePreference(PreferenceType preferenceType) {
     //TODO implement
+  }
 
+  // DB methods
+  @override
+  DbTableNames getTableName() {
+    return DbTableNames.ingredient;
+  }
+
+  //TODO: handle foreign keys
+  @override
+  Map<String, dynamic> toMap({bool withId: true}) {
+    final map = new Map<String, dynamic>();
+    map['name'] = name;
+    //map['preferencesTypeId'] = preferencesTypeId;
+    map['addDate'] = addDate;
+    if (withId) map['id'] = super.id;
+    //List<int> groupIds = new List();
+    //_groups.forEach((element) => groupIds.add(element.id));
+    //map['groups'] = groupIds;
+    return map;
+  }
+
+  static Ingredient fromMap(Map<String, dynamic> data) {
+    return new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'],
+        id: data['id']);
   }
 }

@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:Inhaltsstoff_Warnapp/backend/PreferenceType.dart';
-
+import 'Enums/PreferenceType.dart';
 import 'Ingredient.dart';
 import 'Product.dart';
 import 'package:http/http.dart' as http;
