@@ -24,27 +24,7 @@ class Ingredient extends DbTable {
   PreferenceType get preferenceType => _preferencesType;
 
   // Methods
-  DbTableNames getTableName() {
-    return DbTableNames.ingredient;
-  }
 
-  //TODO: handle foreign keys
-  Map<String, dynamic> toMap({bool withId: true}) {
-    final map = new Map<String, dynamic>();
-    map['name'] = name;
-    //map['preferencesTypeId'] = preferencesTypeId;
-    map['addDate'] = addDate;
-    if (withId) map['id'] = super.id;
-    //List<int> groupIds = new List();
-    //_groups.forEach((element) => groupIds.add(element.id));
-    //map['groups'] = groupIds;
-    return map;
-  }
-
-  static Ingredient fromMap(Map<String, dynamic> data) {
-    return new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'],
-        id: data['id']);
-  }
 
   /*
   * get current date in a string format
@@ -64,5 +44,30 @@ class Ingredient extends DbTable {
   * */
   void changePreference(PreferenceType preferenceType) {
     //TODO implement
+  }
+
+  // DB methods
+  @override
+  DbTableNames getTableName() {
+    return DbTableNames.ingredient;
+  }
+
+  //TODO: handle foreign keys
+  @override
+  Map<String, dynamic> toMap({bool withId: true}) {
+    final map = new Map<String, dynamic>();
+    map['name'] = name;
+    //map['preferencesTypeId'] = preferencesTypeId;
+    map['addDate'] = addDate;
+    if (withId) map['id'] = super.id;
+    //List<int> groupIds = new List();
+    //_groups.forEach((element) => groupIds.add(element.id));
+    //map['groups'] = groupIds;
+    return map;
+  }
+
+  static Ingredient fromMap(Map<String, dynamic> data) {
+    return new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'],
+        id: data['id']);
   }
 }

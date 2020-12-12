@@ -1,9 +1,11 @@
 import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/database/DbTable.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
 
 import 'Ingredient.dart';
 import 'Enums/ScanResult.dart';
 
-class Product{
+class Product extends DbTable{
 
   String _name;
   ScanResult _scanResult;
@@ -40,7 +42,8 @@ class Product{
 
 
   // constructor with minimal necessary information
-  Product(this._name, this._imageUrl, this._barcode, this._scanDate);
+  Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id})
+      : super(id);
 
   /*
   * Uses the json from the Food API to create a new Product object
@@ -85,9 +88,8 @@ class Product{
     List<dynamic> tracesNames = json['traces_tags'];
     newProduct._traces = await FoodApiAccess.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
 
-    //TODO set itemizedScanResults with PreferenceManager, right now only dummy data
+    //TODO use itemizedScanResults in PreferenceManager to get the overall scanresult, right now only dummy data
     newProduct._scanResult = ScanResult.Yellow;
-
 
     return newProduct;
   }
@@ -112,5 +114,22 @@ class Product{
       wanted.add('Magnesium');
       return wanted;
     }
+  }
+
+  // DB methods
+  @override
+  DbTableNames getTableName() {
+    return DbTableNames.product;
+  }
+
+  @override
+  Map<String, dynamic> toMap({bool withId = true}) {
+    // TODO: implement toMap
+    throw UnimplementedError();
+  }
+
+  static Product fromMap(Map<String, dynamic> data) {
+    // TODO: implement fromMap
+    throw UnimplementedError();
   }
 }
