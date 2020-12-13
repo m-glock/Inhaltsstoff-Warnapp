@@ -4,6 +4,8 @@ import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 import 'package:intl/intl.dart';
 
+import 'database/databaseHelper.dart';
+
 class Ingredient extends DbTable {
   // Fields
   String _name;
@@ -24,8 +26,6 @@ class Ingredient extends DbTable {
   PreferenceType get preferenceType => _preferencesType;
 
   // Methods
-
-
   /*
   * get current date in a string format
   * from https://stackoverflow.com/questions/16126579/how-do-i-format-a-date-with-dart
@@ -42,8 +42,16 @@ class Ingredient extends DbTable {
   * changes the preference type of this ingredient
   * @param preferenceType: the new preference for this ingredient
   * */
-  void changePreference(PreferenceType preferenceType) {
-    //TODO implement
+  void changePreference(PreferenceType preferenceType) async {
+    PreferenceType preferenceTypeToChange = preferenceType;
+    final dbHelper = DatabaseHelper.instance;
+    final db = await dbHelper.database;
+
+    //await dbHelper.update(Ingredient(this._name, preferenceTypeToChange, getCurrentDate()));
+    await db.rawUpdate('UPDATE Ingredient SET preferencesType = ? WHERE name = ? and id = ?',
+    [preferenceTypeToChange, this._name, this.id]);
+
+
   }
 
   // DB methods
