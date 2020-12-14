@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:Inhaltsstoff_Warnapp/backend/Ingredient.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -61,6 +61,20 @@ class DatabaseHelper {
       String query = element.replaceAll('\n', '').replaceAll('\r', '');
       if(element.isNotEmpty)
         await db.execute(query);
+    });
+
+    // get allergens and vitamins from foodapi and save them into the DB
+    List<String> allergens = await FoodApiAccess.getAllValuesForTag('allergens');
+    allergens.forEach((element) async {
+      if(element.isNotEmpty)
+        await db.execute('INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate) VALUES (1, \'$element\', null)');
+    });
+
+    List<String> vitamins = await FoodApiAccess.getAllValuesForTag('vitamins');
+    vitamins.forEach((element) async {
+      if(element.isNotEmpty)
+        // TODO make sure this works when only parent vitamins are added (one of the children right now has a stupid typo :/)
+        await db.execute('INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate) VALUES (2, \'$element\', null)');
     });
   }
 
