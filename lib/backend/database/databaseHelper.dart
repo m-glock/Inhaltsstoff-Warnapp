@@ -53,6 +53,15 @@ class DatabaseHelper {
       if(element.isNotEmpty)
         await db.execute(query);
     });
+
+    // load sql to insert the content into the DB that is static and does not changes during usage of the app
+    String fileTextInsert = await rootBundle.loadString('assets/database/insert_into_tables_sql.txt');
+    List<String> queriesInsert = fileTextInsert.split(';');
+    queriesInsert.forEach((element) async {
+      String query = element.replaceAll('\n', '').replaceAll('\r', '');
+      if(element.isNotEmpty)
+        await db.execute(query);
+    });
   }
 
   // insert one row into a table

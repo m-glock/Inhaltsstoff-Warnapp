@@ -1,0 +1,11 @@
+INSERT INTO scanresult (name) VALUES ('Red');
+INSERT INTO scanresult (name) VALUES ('Yellow');
+INSERT INTO scanresult (name) VALUES ('Green');
+
+INSERT INTO preferencetype (name) VALUES ('not wanted');
+INSERT INTO preferencetype (name) VALUES ('not preferred');
+INSERT INTO preferencetype (name) VALUES ('preferred');
+
+INSERT INTO type (name) VALUES ('Allergen');
+INSERT INTO type (name) VALUES ('Nutriment');
+INSERT INTO type (name) VALUES ('General');

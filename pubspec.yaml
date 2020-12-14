@@ -54,6 +54,7 @@ flutter:
 
   assets:
     - assets/database/create_tables_sql.txt
+    - assets/database/insert_into_tables_sql.txt
     - assets/images/
     - pubspec.yaml
 
