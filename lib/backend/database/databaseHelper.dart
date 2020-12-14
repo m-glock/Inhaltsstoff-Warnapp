@@ -44,10 +44,14 @@ class DatabaseHelper {
 
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
-    String fileText = await rootBundle.loadString('assets/database/create_tables_sql.txt');
-    List<String> queries = fileText.split(';');
-    queries.forEach((element) async {
-      await db.execute(element);
+
+    // load sql to create tables
+    String fileTextCreate = await rootBundle.loadString('assets/database/create_tables_sql.txt');
+    List<String> queriesCreate = fileTextCreate.split(';');
+    queriesCreate.forEach((element) async {
+      String query = element.replaceAll('\n', '').replaceAll('\r', '');
+      if(element.isNotEmpty)
+        await db.execute(query);
     });
   }
 
