@@ -2,9 +2,9 @@ INSERT INTO scanresult (name) VALUES ('Red');
 INSERT INTO scanresult (name) VALUES ('Yellow');
 INSERT INTO scanresult (name) VALUES ('Green');
 
-INSERT INTO preferencetype (name) VALUES ('not wanted');
-INSERT INTO preferencetype (name) VALUES ('not preferred');
-INSERT INTO preferencetype (name) VALUES ('preferred');
+INSERT INTO preferencetype (name) VALUES ('Not Wanted');
+INSERT INTO preferencetype (name) VALUES ('Not Preferred');
+INSERT INTO preferencetype (name) VALUES ('Preferred');
 
 INSERT INTO type (name) VALUES ('Allergen');
 INSERT INTO type (name) VALUES ('Nutriment');
