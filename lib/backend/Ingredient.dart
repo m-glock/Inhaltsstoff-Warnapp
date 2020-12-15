@@ -13,7 +13,7 @@ class Ingredient extends DbTable {
   String _addDate;
   Type _type;
 
-  static final columns = ["id", "name", "preferencesTypeId", "addDate"];
+  static final columns = ["name", "preferencesTypeId", "addDate", "id"];
 
   // Constructor
   Ingredient(this._name, this._preferencesType, this._addDate, {int id})

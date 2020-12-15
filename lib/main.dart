@@ -27,33 +27,60 @@ class MyApp extends StatelessWidget {
         child: RaisedButton(
           child: Text('Button'),
           onPressed: () async {
+            //vars
             final dbHelper = DatabaseHelper.instance;
             final db = await dbHelper.database;
 
 
-
+            //method for getCurrentTime
             final DateTime now = DateTime.now();
             final DateFormat formatter = DateFormat('yyyy-MM-dd-Hm');
             final String formatted = formatter.format(now);
             print(formatted); // something like 2013-04-20
 
-            Ingredient ingredient = new Ingredient("NameTest1", PreferenceType.Preferred, formatted);
+            Ingredient ingredient = new Ingredient("NameTest3", PreferenceType.Preferred, formatted);
 
-            db.execute("Insert into preferencetype (name) values ('preferred')");
+            //db.execute("Insert into preferencetype (name) values ('preferred')");
             //await dbHelper.add(Type("Type1"));
             //await dbHelper.add(PreferenceType(PreferenceType.Preferred));
-            await dbHelper.add(ingredient);
+
+            await dbHelper.add(Ingredient("NameTest3", PreferenceType.Preferred, formatted));
             print('added Type & Ingredient'); //               <-- logging
 
             ingredient.changePreference(PreferenceType.NotWanted);
 
-
             List<Map> test = await dbHelper.readAll(DbTableNames.type);
             List<Map> test1 = await dbHelper.readAll(DbTableNames.ingredient);
             List<Map> test2 = await dbHelper.readAll(DbTableNames.preferenceType);
-            print(test);
-            print(test1);
-            print(test2);
+            //print(test);
+            //print(test1);
+            //print(test2);
+
+            List<Map> results_preference_type = await dbHelper.readAll(DbTableNames.preferenceType);
+            print(results_preference_type);
+
+
+            List<Map> results = await db.query("ingredient", columns: Ingredient.columns, orderBy: "id DESC");
+
+            results.forEach((element) {
+              print(element);
+            });
+
+            List<Ingredient> ingredients = new List();
+            results.forEach((result) {
+
+              Ingredient ingredient = Ingredient.fromMap(result);
+              ingredients.add(ingredient);
+            });
+
+            ingredients.forEach((element) {
+              print(element);
+            });
+
+            //return ingredients;
+
+
+
 
 
 

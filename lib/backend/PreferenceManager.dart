@@ -6,10 +6,10 @@ import 'Enums/PreferenceType.dart';
 import 'Enums/Type.dart';
 
 import 'Product.dart';
+import 'database/DbTableNames.dart';
 import 'database/databaseHelper.dart';
 
 class PreferenceManager {
-  final dbHelper = DatabaseHelper.instance;
 
   /*
   * When the user changes the preference of one or multiple Ingredients, this method is called and
@@ -17,7 +17,7 @@ class PreferenceManager {
   * @param preferenceChanges: a map of ingredients and the preference types they should change to
   * */
   static void changePreference(Map<Ingredient, PreferenceType> preferenceChanges) {
-    // TODO implement
+    // TODO implement, check Ingredient -> duplicate?
   }
 
   /*
@@ -25,14 +25,40 @@ class PreferenceManager {
   * @param preferenceTypes: if only ingredients with a specific preference type are requested
   * @return: a list of all ingredients that the user has preferenced
   * */
-  static List<Ingredient> getPreferencedIngredients({List<PreferenceType> preferenceTypes}) {
-    //TODO implement
-    List<Ingredient> ingredients = List();
-    ingredients.add(Ingredient('Zucker', PreferenceType.NotWanted, ''));
-    ingredients.add(Ingredient('Milch', PreferenceType.NotWanted, ''));
-    ingredients.add(Ingredient('Magnesium', PreferenceType.NotPreferred, ''));
-    ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, ''));
-    //await dbHelper.readAll(DbTableNames.ingredient);
+  static Future<List<Ingredient>> getPreferencedIngredients({List<PreferenceType> preferenceTypes}) async {
+    // implement status: ongoing
+    final dbHelper = DatabaseHelper.instance;
+    final db = await dbHelper.database;
+
+    List<Map> resultsPreferenceType = await dbHelper.readAll(DbTableNames.preferenceType);
+    print(resultsPreferenceType);
+
+
+    List<Map> results = await db.query("ingredient", columns: Ingredient.columns, orderBy: "id DESC");
+
+    results.forEach((element) {
+      print(element);
+    });
+
+    List<Ingredient> ingredients = new List();
+    results.forEach((result) {
+
+      Ingredient ingredient = Ingredient.fromMap(result);
+      ingredients.add(ingredient);
+    });
+
+    ingredients.forEach((element) {
+      print(element);
+    });
+
+
+
+    // List<Ingredient> ingredients = List();
+    // ingredients.add(Ingredient('Zucker', PreferenceType.NotWanted, ''));
+    // ingredients.add(Ingredient('Milch', PreferenceType.NotWanted, ''));
+    // ingredients.add(Ingredient('Magnesium', PreferenceType.NotPreferred, ''));
+    // ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, ''));
+    // //await dbHelper.readAll(DbTableNames.ingredient);
     return ingredients;
   }
 
