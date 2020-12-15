@@ -40,14 +40,14 @@ class MyApp extends StatelessWidget {
 
             Ingredient ingredient = new Ingredient("NameTest3", PreferenceType.Preferred, formatted);
 
-            //db.execute("Insert into preferencetype (name) values ('preferred')");
+            db.execute("Insert into preferencetype (name) values ('preferred')");
             //await dbHelper.add(Type("Type1"));
             //await dbHelper.add(PreferenceType(PreferenceType.Preferred));
 
             await dbHelper.add(Ingredient("NameTest3", PreferenceType.Preferred, formatted));
             print('added Type & Ingredient'); //               <-- logging
 
-            ingredient.changePreference(PreferenceType.NotWanted);
+            //ingredient.changePreference(PreferenceType.NotWanted);
 
             List<Map> test = await dbHelper.readAll(DbTableNames.type);
             List<Map> test1 = await dbHelper.readAll(DbTableNames.ingredient);
@@ -56,11 +56,12 @@ class MyApp extends StatelessWidget {
             //print(test1);
             //print(test2);
 
-            List<Map> results_preference_type = await dbHelper.readAll(DbTableNames.preferenceType);
-            print(results_preference_type);
+            //List<Map> results_preference_type = await dbHelper.readAll(DbTableNames.preferenceType);
+            //print(results_preference_type);
 
 
-            List<Map> results = await db.query("ingredient", columns: Ingredient.columns, orderBy: "id DESC");
+            //List<Map> results = await db.query("ingredient", columns: Ingredient.columns, orderBy: "id DESC");
+            List<Map> results = await db.rawQuery("select i.name, i.preferencesTypeId, i.addDate, i.id, p.name preferenceType from ingredient i join preferencetype p on i.preferencesTypeId=p.id where i.preferencesTypeId is not 'NONE'");
 
             results.forEach((element) {
               print(element);

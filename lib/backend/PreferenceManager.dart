@@ -30,15 +30,11 @@ class PreferenceManager {
     final dbHelper = DatabaseHelper.instance;
     final db = await dbHelper.database;
 
-    List<Map> resultsPreferenceType = await dbHelper.readAll(DbTableNames.preferenceType);
-    print(resultsPreferenceType);
+    List<Map> results = await db.rawQuery("select i.name, i.preferencesTypeId, i.addDate, i.id, p.name preferenceType from ingredient i join preferencetype p on i.preferencesTypeId=p.id where i.preferencesTypeId is not 'NONE'");
 
-
-    List<Map> results = await db.query("ingredient", columns: Ingredient.columns, orderBy: "id DESC");
-
-    results.forEach((element) {
-      print(element);
-    });
+    // results.forEach((element) {
+    //   print(element);
+    // });
 
     List<Ingredient> ingredients = new List();
     results.forEach((result) {
@@ -47,11 +43,9 @@ class PreferenceManager {
       ingredients.add(ingredient);
     });
 
-    ingredients.forEach((element) {
-      print(element);
-    });
-
-
+    // ingredients.forEach((element) {
+    //   print(element);
+    // });
 
     // List<Ingredient> ingredients = List();
     // ingredients.add(Ingredient('Zucker', PreferenceType.NotWanted, ''));
