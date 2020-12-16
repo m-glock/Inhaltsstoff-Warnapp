@@ -21,12 +21,6 @@ class _ScanningRootState extends State<ScanningRoot> {
     return '#${Theme.of(context).primaryColor.red.toRadixString(16)}${Theme.of(context).primaryColor.green.toRadixString(16)}${Theme.of(context).primaryColor.blue.toRadixString(16)}';
   }
 
-  _startBarcodeScanStream() async {
-    FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            _getHexPrimaryColor(), "Abbrechen", true, ScanMode.BARCODE)
-        .listen((barcode) => print(barcode));
-  }
-
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> _scanBarcodeNormal() async {
     String barcodeScanRes;
