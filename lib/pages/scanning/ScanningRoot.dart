@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
+import '../../backend/FoodApiAccess.dart';
+import '../../backend/Product.dart';
 import '../../customWidgets/CustomAppBar.dart';
 import '../../customWidgets/LabelledIconButton.dart';
 import './ScanningBarcodeDialog.dart';
@@ -15,7 +17,7 @@ class ScanningRoot extends StatefulWidget {
 }
 
 class _ScanningRootState extends State<ScanningRoot> {
-  String _scanBarcode = '';
+  Product _scannedProduct;
 
   _getHexPrimaryColor() {
     return '#${Theme.of(context).primaryColor.red.toRadixString(16)}${Theme.of(context).primaryColor.green.toRadixString(16)}${Theme.of(context).primaryColor.blue.toRadixString(16)}';
@@ -38,15 +40,22 @@ class _ScanningRootState extends State<ScanningRoot> {
     // setState to update our non-existent appearance.
     if (!mounted) return;
 
+    //fetchProduct(barcodeScanRes);
+  }
+
+  Future<void> fetchProduct(String barcode) async {
+    //var product = await FoodApiAccess.scanProduct('4009077020122');
+    Product product = await FoodApiAccess.scanProduct("9001400005030");
     setState(() {
-      _scanBarcode = barcodeScanRes;
+      _scannedProduct = product;
     });
+    Navigator.pushNamed(context, '/result', arguments: {_scannedProduct});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar('Scanning'),
+      appBar: CustomAppBar('Scannen'),
       backgroundColor: Theme.of(context).backgroundColor,
       body: Container(
         padding: EdgeInsets.all(24.0),
@@ -78,10 +87,8 @@ class _ScanningRootState extends State<ScanningRoot> {
                             Navigator.pop(context);
                           },
                           onSubmit: (String value) {
-                            setState(() {
-                              _scanBarcode = value;
-                            });
                             Navigator.pop(context);
+                            //fetchProduct(value);
                           },
                         );
                       },
