@@ -1,11 +1,11 @@
 import 'dart:ui';
-
-import 'package:Inhaltsstoff_Warnapp/backend/Product.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/Ingredient.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/Enums/ScanResult.dart';
-import 'package:Inhaltsstoff_Warnapp/customWidgets/ResultCircle.dart';
 import 'package:flutter/material.dart';
+
+import '../../../backend/Product.dart';
+import '../../../backend/Ingredient.dart';
+import '../../../backend/PreferenceManager.dart';
+import '../../../backend/Enums/ScanResult.dart';
+import '../../../customWidgets/ResultCircle.dart';
 
 class ScanningProductDetails extends StatelessWidget {
   ScanningProductDetails({
@@ -56,7 +56,7 @@ class ScanningProductDetails extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyText1,
                   ), //preference
                   trailing: ResultCircle(
-                    entry.value,
+                    result: entry.value,
                     small: true,
                   ), //result
                 ),

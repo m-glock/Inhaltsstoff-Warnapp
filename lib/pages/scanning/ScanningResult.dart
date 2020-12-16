@@ -1,11 +1,13 @@
-import 'package:Inhaltsstoff_Warnapp/backend/Product.dart';
-import 'package:Inhaltsstoff_Warnapp/customWidgets/ResultCircle.dart';
-import 'package:Inhaltsstoff_Warnapp/pages/scanning/scanningCustomWidgets/ScanningProductDetails.dart';
-import 'package:Inhaltsstoff_Warnapp/pages/scanning/scanningCustomWidgets/ScanningProductNutrimentsInfo.dart';
-import 'package:Inhaltsstoff_Warnapp/pages/scanning/scanningCustomWidgets/ScanningResultExplanation.dart';
-import 'package:Inhaltsstoff_Warnapp/pages/scanning/scanningCustomWidgets/ScanningResultText.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../../backend/Enums/ScanResult.dart';
+import '../../backend/Product.dart';
+import '../../customWidgets/CustomAppBar.dart';
+import '../../customWidgets/ResultCircle.dart';
+import './scanningCustomWidgets/ScanningInfoLine.dart';
+import './scanningCustomWidgets/ScanningProductDetails.dart';
+import './scanningCustomWidgets/ScanningProductNutrimentsInfo.dart';
 
 class ProductActionButton {
   ProductActionButton(this.title, this.icon, this.onPressed);
@@ -21,24 +23,73 @@ List<ProductActionButton> productActionButtons = [
   ProductActionButton('Kaufen', Icons.add_shopping_cart, () {}),
 ];
 
+class ScanResultAppearance {
+  ScanResultAppearance(this.icon, this.circleColor, this.textColor,
+      this.backgroundColor, this.resultText, this.explanationText);
+
+  IconData icon;
+  Color circleColor;
+  Color textColor;
+  Color backgroundColor;
+  String resultText;
+  String explanationText;
+}
+
 class ScanningResult extends StatefulWidget {
-  const ScanningResult(this.scannedProduct, {Key key}) : super(key: key);
+  ScanningResult(this.scannedProduct, {Key key}) : super(key: key) {
+    _scanResultAppearanceMap = {
+      ScanResult.Green: new ScanResultAppearance(
+          Icons.done,
+          Colors.green,
+          Colors.green,
+          Colors.green[100],
+          'Gute Wahl!',
+          'Enthält keine ungewollten Inhaltsstoffe.'),
+      ScanResult.Yellow: new ScanResultAppearance(
+          Icons.warning,
+          Colors.yellow[700],
+          Colors.yellow[800],
+          Colors.yellow[100],
+          'Achtung!',
+          'Enthält ' +
+              scannedProduct
+                  .getDecisiveIngredientNames(true)
+                  .reduce((value, element) => value + ', ' + element)),
+      ScanResult.Red: new ScanResultAppearance(
+          Icons.clear,
+          Colors.red,
+          Colors.red,
+          Colors.red[100],
+          'Schlechte Wahl!',
+          'Enthält ' +
+              scannedProduct
+                  .getDecisiveIngredientNames(true)
+                  .reduce((value, element) => value + ', ' + element)),
+    };
+  }
 
   final Product scannedProduct;
+  Map<ScanResult, ScanResultAppearance> _scanResultAppearanceMap;
 
   @override
   _ScanningResultState createState() => _ScanningResultState();
 }
 
 class _ScanningResultState extends State<ScanningResult> {
+  ScanResultAppearance _currentResultAppearance;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentResultAppearance =
+        widget._scanResultAppearanceMap[widget.scannedProduct.scanResult];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Scan Ergebnis'),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      backgroundColor: Colors.white,
+      appBar: CustomAppBar('Scan-Ergebnis'),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: ListView(
         padding: EdgeInsets.symmetric(vertical: 20.0),
         children: <Widget>[
@@ -55,7 +106,7 @@ class _ScanningResultState extends State<ScanningResult> {
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.0),
             child: ResultCircle(
-              widget.scannedProduct.scanResult,
+              result: widget.scannedProduct.scanResult,
               small: false,
             ),
           ),
@@ -63,18 +114,23 @@ class _ScanningResultState extends State<ScanningResult> {
             padding: EdgeInsets.only(
               bottom: 20.0,
             ),
-            child: ScanningResultText(
-              result: widget.scannedProduct.scanResult,
+            child: Text(
+              _currentResultAppearance.resultText,
+              style: TextStyle(
+                color: _currentResultAppearance.textColor,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 10.0),
-            child: ScanningResultExplanation(
-              result: widget.scannedProduct.scanResult,
-              unwantedIngredients:
-                  widget.scannedProduct.getDecisiveIngredientNames(
-                true,
-              ),
+            child: ScanningInfoLine(
+              backgroundColor: _currentResultAppearance.backgroundColor,
+              textColor: _currentResultAppearance.textColor,
+              icon: _currentResultAppearance.icon,
+              text: _currentResultAppearance.explanationText,
             ),
           ),
           Padding(

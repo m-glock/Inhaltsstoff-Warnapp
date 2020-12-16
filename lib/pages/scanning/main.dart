@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'ScanningResult.dart';
-import 'ScanningRoot.dart';
 
-import 'package:Inhaltsstoff_Warnapp/backend/Product.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
-
-//Product testProduct = new Product('Butterbier', '', '', DateTime.now());
+import './ScanningResult.dart';
+import './ScanningRoot.dart';
+import '../../backend/Product.dart';
+import '../../backend/FoodApiAccess.dart';
 
 class ScanningPage extends StatefulWidget {
   const ScanningPage({Key key}) : super(key: key);
@@ -20,7 +18,7 @@ class _ScanningPageState extends State<ScanningPage> {
   @override
   void initState() {
     super.initState();
-    setTextProduct();
+    setTestProduct();
   }
 
   @override
@@ -47,7 +45,7 @@ class _ScanningPageState extends State<ScanningPage> {
     );
   }
 
-  Future<void> setTextProduct() async {
+  Future<void> setTestProduct() async {
     //var product = await FoodApiAccess.scanProduct('4009077020122');
     var product = await FoodApiAccess.scanProduct('9001400005030');
     setState(() {

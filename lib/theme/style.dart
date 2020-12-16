@@ -4,6 +4,7 @@ ThemeData appTheme() {
   return ThemeData(
     primaryColor: Colors.indigo[700],
     accentColor: Colors.indigo[50],
+    backgroundColor: Colors.white,
     textTheme: TextTheme(
       headline1: TextStyle(
         fontSize: 36.0,
