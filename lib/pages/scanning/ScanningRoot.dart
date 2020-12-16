@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../customWidgets/CustomAppBar.dart';
 
 class ScanningRoot extends StatefulWidget {
   const ScanningRoot({ Key key }) : super(key: key);
@@ -21,10 +22,7 @@ class _ScanningRootState extends State<ScanningRoot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('ScanningRoot'),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
+      appBar: CustomAppBar('Scannen'),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(32.0),

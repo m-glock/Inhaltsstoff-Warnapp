@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../customWidgets/CustomAppBar.dart';
 
 class ComparisonRoot extends StatefulWidget {
   const ComparisonRoot({ Key key }) : super(key: key);
@@ -21,10 +22,7 @@ class _ComparisonRootState extends State<ComparisonRoot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Comparison'),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
+      appBar: CustomAppBar('Vergleich'),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(32.0),

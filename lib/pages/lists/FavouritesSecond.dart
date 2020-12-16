@@ -1,3 +1,4 @@
+import '../../customWidgets/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 
 class FavouritesSecond extends StatefulWidget {
@@ -21,10 +22,7 @@ class _FavouritesSecondState extends State<FavouritesSecond> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('FavouritesSecond'),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
+      appBar: CustomAppBar('Favoriten Second'),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(32.0),
