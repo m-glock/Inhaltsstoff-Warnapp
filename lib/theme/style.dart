@@ -11,12 +11,12 @@ ThemeData appTheme() {
       headline1: TextStyle(
         fontSize: 36.0,
         fontWeight: FontWeight.w400,
-        color: Colors.indigo,
+        color: Colors.indigo[700],
       ),
       headline2: TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.w400,
-        color: Colors.indigo,
+        color: Colors.indigo[700],
       ),
       bodyText1: TextStyle(
         fontSize: 14.0,
@@ -37,8 +37,8 @@ ThemeData appTheme() {
         fontWeight: FontWeight.bold,
       ),
     ),
-    //elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(),),
-    /*buttonTheme: ButtonThemeData(
+    /*elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(),),
+    buttonTheme: ButtonThemeData(
       colorScheme: ColorScheme.light(
         primary: Colors.indigo[700],
         secondary: Colors.indigo[100],
