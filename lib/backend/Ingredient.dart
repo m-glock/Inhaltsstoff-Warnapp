@@ -11,7 +11,7 @@ class Ingredient extends DbTable {
   String _name;
   PreferenceType _preferencesType;
   String _addDate;
-  Type _type;
+  List<Type> _types;
 
   static final columns = ["name", "preferencesTypeId", "addDate", "id"];
 
@@ -21,7 +21,7 @@ class Ingredient extends DbTable {
 
   // Getter and Setter
   String get name => _name;
-  Type get type => _type;
+  List<Type> get types => _types;
   String get addDate => _addDate;
   PreferenceType get preferenceType => _preferencesType;
 
