@@ -1,63 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-class ScanningBarcodeDialog extends StatefulWidget {
-  const ScanningBarcodeDialog({Key key}) : super(key: key);
+import './ScanningBarcodeForm.dart';
 
-  @override
-  _ScanningBarcodeDialogState createState() => _ScanningBarcodeDialogState();
-}
-
-class _ScanningBarcodeDialogState extends State<ScanningBarcodeDialog> {
-  TextEditingController _textController;
-
-  @override
-  void initState() {
-    super.initState();
-    _textController = TextEditingController(
-      text: null,
-    );
-  }
+class ScanningBarcodeDialog extends StatelessWidget {
+  final Function onCancel;
+  final Function onSubmit;
+  const ScanningBarcodeDialog(this.onCancel, this.onSubmit, {Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text("Barcode manuell eingeben"),
-      content: TextFormField(
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-          LengthLimitingTextInputFormatter(13),
-        ],
-        keyboardType: TextInputType.number,
-        controller: _textController,
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.dialpad, color: Colors.grey),
-        ),
+    return SimpleDialog(
+      title: Text(
+        "Manuelle Eingabe",
+        style: Theme.of(context).textTheme.headline2,
+        textAlign: TextAlign.center,
       ),
-      actions: <Widget>[
-        FlatButton(
-          child: Text("Abbrechen"),
-          onPressed: () {
-            Navigator.pop(context, _textController.text);
-          },
-        ),
-        FlatButton(
-          child: Text("OK"),
-          onPressed: () {
-            if (_textController.text.length != 13) {
-              return;
-            } else {
-              Navigator.pop(context, _textController.text);
-            }
-          },
-        )
+      children: [
+        ScanningBarcodeForm(onCancel, onSubmit),
       ],
+      titlePadding: EdgeInsets.all(20.0),
+      contentPadding: EdgeInsets.only(right: 20.0, left: 20.0, bottom: 20.0),
     );
-  }
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
   }
 }

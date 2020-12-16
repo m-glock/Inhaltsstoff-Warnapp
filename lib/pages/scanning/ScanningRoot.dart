@@ -78,13 +78,19 @@ class _ScanningRootState extends State<ScanningRoot> {
                       context: context,
                       barrierDismissible: false,
                       builder: (BuildContext context) {
-                        return ScanningBarcodeDialog();
+                        return ScanningBarcodeDialog(
+                          () {
+                            Navigator.pop(context);
+                          },
+                          (String value) {
+                            setState(() {
+                              _scanBarcode = value;
+                            });
+                            Navigator.pop(context);
+                          },
+                        );
                       },
-                    ).then((val) {
-                      setState(() {
-                        _scanBarcode = val;
-                      });
-                    });
+                    );
                   },
                 ),
                 LabelledIconButton(
