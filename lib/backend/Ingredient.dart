@@ -38,21 +38,6 @@ class Ingredient extends DbTable {
     //print(formatted); // something like 2013-04-20
   }
 
-  /*
-  * changes the preference type of this ingredient
-  * @param preferenceType: the new preference for this ingredient
-  * */
-  void changePreference(PreferenceType preferenceType) async {
-    PreferenceType preferenceTypeToChange = preferenceType;
-    final dbHelper = DatabaseHelper.instance;
-    final db = await dbHelper.database;
-
-    //await dbHelper.update(Ingredient(this._name, preferenceTypeToChange, getCurrentDate()));
-    await db.rawUpdate('UPDATE Ingredient SET preferencesType = ? WHERE name = ? and id = ?',
-    [preferenceTypeToChange, this._name, this.id]);
-
-
-  }
 
   // DB methods
   @override

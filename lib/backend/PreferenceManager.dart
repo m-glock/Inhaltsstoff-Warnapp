@@ -16,9 +16,28 @@ class PreferenceManager {
   * saves the information in the database
   * @param preferenceChanges: a map of ingredients and the preference types they should change to
   * */
-  static void changePreference(Map<Ingredient, PreferenceType> preferenceChanges) {
-    // TODO implement, check Ingredient -> duplicate?
+  static void changePreference(Map<Ingredient, PreferenceType> preferenceChanges) async {
+    final dbHelper = DatabaseHelper.instance;
+    final db = await dbHelper.database;
+
+    preferenceChanges.forEach((ingredient, preferenceType) async {
+      //PreferenceType preferenceTypeToChange = preferenceType;
+
+      //await dbHelper.update(Ingredient(this._name, preferenceTypeToChange, getCurrentDate()));
+      await db.rawUpdate('UPDATE Ingredient SET preferencesType = ? WHERE name = ? and id = ?',
+          [preferenceType, ingredient.name, ingredient.id]);
+    });
+
+
+
   }
+
+  /*
+  * changes the preference type of this ingredient
+  * @param preferenceType: the new preference for this ingredient
+  * */
+  //void changePreference(PreferenceType preferenceType) async {
+  
 
   /*
   * get all Ingredients that are saved in the DB that have a preferenceType other than NONE
