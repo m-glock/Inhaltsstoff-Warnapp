@@ -57,14 +57,15 @@ class _ScanningRootState extends State<ScanningRoot> {
       body: Container(
         padding: EdgeInsets.all(24.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(
               'Scanne dein Produkt',
               style: Theme.of(context).textTheme.headline1,
             ),
-            Image.asset(
-              'assets/images/logo.png',
+            Expanded(
+              child: Image.asset(
+                'assets/images/logo.png',
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
