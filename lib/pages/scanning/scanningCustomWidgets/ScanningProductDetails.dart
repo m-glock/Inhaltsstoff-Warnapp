@@ -1,18 +1,33 @@
 import 'dart:ui';
 
-import 'package:Inhaltsstoff_Warnapp/backend/ScanResult.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/Product.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/Ingredient.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/Enums/ScanResult.dart';
 import 'package:Inhaltsstoff_Warnapp/customWidgets/ResultCircle.dart';
 import 'package:flutter/material.dart';
 
 class ScanningProductDetails extends StatelessWidget {
-  const ScanningProductDetails(
-      this.preferencesResults, this.otherIngredients, this.moreProductDetails,
-      {Key key})
-      : super(key: key);
+  ScanningProductDetails({
+    Key key,
+    this.scannedProduct,
+  }) : super(key: key) {
+    _preferencesResults =
+        PreferenceManager.getItemizedScanResults(scannedProduct);
+    _otherIngredients = [];
+    _moreProductDetails = {
+      'Menge': scannedProduct.quantity.toString()?? 'keine Angabe',
+      'Herkunft': scannedProduct.origin?? 'keine Angabe',
+      'Herstellungsorte': scannedProduct.manufacturingPlaces?? 'keine Angabe',
+      'Geschäfte': scannedProduct.stores?? 'keine Angabe',
+      'Nutriscore': scannedProduct.nutriscore?? 'keine Angabe',
+    };
+  }
 
-  final Map<String, ScanResult> preferencesResults;
-  final List<String> otherIngredients;
-  final Map<String, String> moreProductDetails;
+  final Product scannedProduct;
+  Map<Ingredient, ScanResult> _preferencesResults;
+  List<String> _otherIngredients;
+  Map<String, String> _moreProductDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +48,11 @@ class ScanningProductDetails extends StatelessWidget {
             "Präferenzen",
             style: Theme.of(context).textTheme.subtitle1,
           ),
-          children: preferencesResults.entries
+          children: _preferencesResults.entries
               .map(
                 (entry) => ListTile(
                   title: Text(
-                    entry.key,
+                    entry.key.name,
                     style: Theme.of(context).textTheme.bodyText1,
                   ), //preference
                   trailing: ResultCircle(
@@ -53,7 +68,7 @@ class ScanningProductDetails extends StatelessWidget {
             "Andere Inhaltsstoffe",
             style: Theme.of(context).textTheme.subtitle1,
           ),
-          children: otherIngredients
+          children: _otherIngredients
               .map(
                 (ingredient) => ListTile(
                   title: Text(
@@ -69,7 +84,7 @@ class ScanningProductDetails extends StatelessWidget {
             "Weitere Produktdetails",
             style: Theme.of(context).textTheme.subtitle1,
           ),
-          children: moreProductDetails.entries
+          children: _moreProductDetails.entries
               .map(
                 (detail) => ListTile(
                   title: Text(

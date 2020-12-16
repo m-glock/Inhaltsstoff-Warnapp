@@ -1,4 +1,4 @@
-import 'package:Inhaltsstoff_Warnapp/backend/ScanResult.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/Enums/ScanResult.dart';
 import 'package:flutter/material.dart';
 
 class ResultCircle extends StatelessWidget {
@@ -28,15 +28,15 @@ class ResultCircle extends StatelessWidget {
 
   _setColorAndIcon(){
     switch(result){
-      case ScanResult.OKAY:
+      case ScanResult.Green:
         _color = Colors.green;
         _icon = Icons.done;
         break;
-      case ScanResult.CRITICAL:
+      case ScanResult.Yellow:
         _color = Colors.yellow[700];
         _icon = Icons.warning;
         break;
-      case ScanResult.NOT_OKAY:
+      case ScanResult.Red:
         _color = Colors.red;
         _icon = Icons.clear;
         break;

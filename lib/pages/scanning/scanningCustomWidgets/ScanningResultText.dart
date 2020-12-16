@@ -1,4 +1,4 @@
-import 'package:Inhaltsstoff_Warnapp/backend/ScanResult.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/Enums/ScanResult.dart';
 import 'package:flutter/material.dart';
 
 class ScanningResultText extends StatelessWidget {
@@ -11,15 +11,15 @@ class ScanningResultText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (result) {
-      case ScanResult.OKAY:
+      case ScanResult.Green:
         _text = 'Gute Wahl!';
         _color = Colors.green;
         break;
-      case ScanResult.CRITICAL:
+      case ScanResult.Yellow:
         _text = 'Achtung!';
         _color = Colors.yellow[800];
         break;
-      case ScanResult.NOT_OKAY:
+      case ScanResult.Red:
         _text = 'Schlechte Wahl!';
         _color = Colors.red;
         break;

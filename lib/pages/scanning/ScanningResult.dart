@@ -1,10 +1,11 @@
-import 'package:Inhaltsstoff_Warnapp/backend/ScanResult.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/Product.dart';
 import 'package:Inhaltsstoff_Warnapp/customWidgets/ResultCircle.dart';
 import 'package:Inhaltsstoff_Warnapp/pages/scanning/scanningCustomWidgets/ScanningProductDetails.dart';
 import 'package:Inhaltsstoff_Warnapp/pages/scanning/scanningCustomWidgets/ScanningProductNutrimentsInfo.dart';
 import 'package:Inhaltsstoff_Warnapp/pages/scanning/scanningCustomWidgets/ScanningResultExplanation.dart';
 import 'package:Inhaltsstoff_Warnapp/pages/scanning/scanningCustomWidgets/ScanningResultText.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ProductActionButton {
   ProductActionButton(this.title, this.icon, this.onPressed);
@@ -21,7 +22,9 @@ List<ProductActionButton> productActionButtons = [
 ];
 
 class ScanningResult extends StatefulWidget {
-  const ScanningResult({Key key}) : super(key: key);
+  const ScanningResult(this.scannedProduct, {Key key}) : super(key: key);
+
+  final Product scannedProduct;
 
   @override
   _ScanningResultState createState() => _ScanningResultState();
@@ -40,19 +43,19 @@ class _ScanningResultState extends State<ScanningResult> {
         padding: EdgeInsets.symmetric(vertical: 20.0),
         children: <Widget>[
           Text(
-            'Produkt',
+            widget.scannedProduct.name,
             style: Theme.of(context).textTheme.headline1,
             textAlign: TextAlign.center,
           ),
           Text(
-            'Hersteller, Scandatum',
+            new DateFormat('dd.MM.yyyy').format(widget.scannedProduct.scanDate),
             style: Theme.of(context).textTheme.headline2,
             textAlign: TextAlign.center,
           ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.0),
             child: ResultCircle(
-              ScanResult.NOT_OKAY,
+              widget.scannedProduct.scanResult,
               small: false,
             ),
           ),
@@ -61,33 +64,33 @@ class _ScanningResultState extends State<ScanningResult> {
               bottom: 20.0,
             ),
             child: ScanningResultText(
-              result: ScanResult.NOT_OKAY,
+              result: widget.scannedProduct.scanResult,
             ),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 10.0),
             child: ScanningResultExplanation(
-              result: ScanResult.NOT_OKAY,
-              unwantedIngredients: ['Lactose', 'Histamin'],
+              result: widget.scannedProduct.scanResult,
+              unwantedIngredients:
+                  widget.scannedProduct.getDecisiveIngredientNames(
+                true,
+              ),
             ),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 20.0),
             child: ScanningProductNutrimentsInfo(
               //nutriments: ['Magnesium', 'B12'],
-              nutriments: [],
+              nutriments: widget.scannedProduct.getDecisiveIngredientNames(
+                false,
+              ),
             ),
           ),
           _buildProductActionButtons(),
           Padding(
             padding: EdgeInsets.only(top: 20.0),
             child: ScanningProductDetails(
-              {
-                'Präferenz 1': ScanResult.OKAY,
-                'Präferenz 2': ScanResult.CRITICAL
-              },
-              ['Inhaltsstoff x', 'Inhaltsstoff y'],
-              {'Detail xy': 'x'},
+              scannedProduct: widget.scannedProduct,
             ),
           )
         ],

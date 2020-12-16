@@ -1,4 +1,4 @@
-import 'package:Inhaltsstoff_Warnapp/backend/ScanResult.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/Enums/ScanResult.dart';
 import 'package:flutter/material.dart';
 
 import 'ScanningInfoLine.dart';
@@ -18,13 +18,13 @@ class ScanningResultExplanation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (result) {
-      case ScanResult.OKAY:
+      case ScanResult.Green:
         _icon = Icons.done;
         _text = 'Enthält keine ungewollten Inhaltsstoffe';
         _backgroundColor = Colors.green[100];
         _textColor = Colors.green[800];
         break;
-      case ScanResult.CRITICAL:
+      case ScanResult.Yellow:
         _icon = Icons.warning;
         _text = 'Enthält ' +
             unwantedIngredients
@@ -32,7 +32,7 @@ class ScanningResultExplanation extends StatelessWidget {
         _backgroundColor = Colors.yellow[100];
         _textColor = Colors.yellow[900];
         break;
-      case ScanResult.NOT_OKAY:
+      case ScanResult.Red:
         _icon = Icons.clear;
         _text = 'Enthält ' +
             unwantedIngredients
