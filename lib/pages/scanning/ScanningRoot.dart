@@ -65,19 +65,19 @@ class _ScanningRootState extends State<ScanningRoot> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 LabelledIconButton(
-                  'Manuelle Eingabe',
-                  Icons.text_fields,
-                  false,
-                  () {
+                  label: 'Manuelle Eingabe',
+                  icon: Icons.text_fields,
+                  isPrimary: false,
+                  onPressed: () {
                     showDialog(
                       context: context,
                       barrierDismissible: false,
                       builder: (BuildContext context) {
                         return ScanningBarcodeDialog(
-                          () {
+                          onCancel: () {
                             Navigator.pop(context);
                           },
-                          (String value) {
+                          onSubmit: (String value) {
                             setState(() {
                               _scanBarcode = value;
                             });
@@ -89,17 +89,17 @@ class _ScanningRootState extends State<ScanningRoot> {
                   },
                 ),
                 LabelledIconButton(
-                  'Barcode scannen',
-                  Icons.fullscreen,
-                  true,
-                  _scanBarcodeNormal,
+                  label: 'Barcode scannen',
+                  icon: Icons.fullscreen,
+                  isPrimary: true,
+                  onPressed: _scanBarcodeNormal,
                   iconSize: 52,
                 ),
                 LabelledIconButton(
-                  'Text scannen',
-                  Icons.image,
-                  false,
-                  () {},
+                  label: 'Text scannen',
+                  icon: Icons.image,
+                  isPrimary: false,
+                  onPressed: () {},
                 ),
               ],
             ),

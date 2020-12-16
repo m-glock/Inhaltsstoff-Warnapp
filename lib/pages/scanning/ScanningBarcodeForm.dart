@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 class ScanningBarcodeForm extends StatefulWidget {
   final Function onCancel;
   final Function onSubmit;
-  const ScanningBarcodeForm(this.onCancel, this.onSubmit, {Key key})
+  const ScanningBarcodeForm({Key key, this.onCancel, this.onSubmit,})
       : super(key: key);
 
   @override

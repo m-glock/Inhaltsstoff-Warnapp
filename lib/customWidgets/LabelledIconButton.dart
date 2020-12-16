@@ -7,12 +7,12 @@ class LabelledIconButton extends StatelessWidget {
   final double iconSize;
   final Function onPressed;
 
-  LabelledIconButton(
+  LabelledIconButton({
+    Key key,
     this.label,
     this.icon,
     this.isPrimary,
-    this.onPressed, {
-    Key key,
+    this.onPressed,
     this.iconSize = 24,
   }) : super(key: key);
 
