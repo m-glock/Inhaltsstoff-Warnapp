@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:Inhaltsstoff_Warnapp/backend/Ingredient.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -32,6 +32,8 @@ class DatabaseHelper {
   _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
+    // comment in and execute once to delete old database, the comment out again
+    // File(path).delete();
     return await openDatabase(path,
         version: _databaseVersion,
         onConfigure: _onConfigure,
@@ -44,10 +46,37 @@ class DatabaseHelper {
 
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
-    String fileText = await rootBundle.loadString('assets/database/create_tables_sql.txt');
-    List<String> queries = fileText.split(';');
-    queries.forEach((element) async {
-      await db.execute(element);
+
+    // load sql to create tables
+    String fileTextCreate = await rootBundle.loadString('assets/database/create_tables_sql.txt');
+    List<String> queriesCreate = fileTextCreate.split(';');
+    queriesCreate.forEach((element) async {
+      String query = element.replaceAll('\n', '').replaceAll('\r', '');
+      if(element.isNotEmpty)
+        await db.execute(query);
+    });
+
+    // load sql to insert the content into the DB that is static and does not changes during usage of the app
+    String fileTextInsert = await rootBundle.loadString('assets/database/insert_into_tables_sql.txt');
+    List<String> queriesInsert = fileTextInsert.split(';');
+    queriesInsert.forEach((element) async {
+      String query = element.replaceAll('\n', '').replaceAll('\r', '');
+      if(element.isNotEmpty)
+        await db.execute(query);
+    });
+
+    // get allergens and vitamins from foodapi and save them into the DB
+    List<String> allergens = await FoodApiAccess.getAllValuesForTag('allergens');
+    allergens.forEach((element) async {
+      if(element.isNotEmpty)
+        await db.execute('INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate) VALUES (1, \'$element\', null)');
+    });
+
+    List<String> vitamins = await FoodApiAccess.getAllValuesForTag('vitamins');
+    vitamins.forEach((element) async {
+      if(element.isNotEmpty)
+        // TODO make sure this works when only parent vitamins are added (one of the children right now has a stupid typo :/)
+        await db.execute('INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate) VALUES (2, \'$element\', null)');
     });
   }
 
