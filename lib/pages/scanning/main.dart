@@ -32,11 +32,7 @@ class _ScanningPageState extends State<ScanningPage> {
               case '/':
                 return ScanningRoot();
               case '/result':
-                return _testProduct == null
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : ScanningResult(_testProduct);
+                return ScanningResult(settings.arguments);
               //return ScanningResult(testProduct);
             }
           },
