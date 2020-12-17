@@ -78,6 +78,8 @@ class _ScanningRootState extends State<ScanningRoot> {
                   icon: Icons.text_fields,
                   isPrimary: false,
                   onPressed: () {
+                    Navigator.pushNamed(context, "/result");
+                    /*
                     showDialog(
                       context: context,
                       barrierDismissible: false,
@@ -92,7 +94,7 @@ class _ScanningRootState extends State<ScanningRoot> {
                           },
                         );
                       },
-                    );
+                    );*/
                   },
                 ),
                 LabelledIconButton(
