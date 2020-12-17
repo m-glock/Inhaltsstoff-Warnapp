@@ -48,7 +48,7 @@ class _ScanningRootState extends State<ScanningRoot> {
 
   Future<void> fetchProduct(String barcode) async {
     //var product = await FoodApiAccess.scanProduct('4009077020122');
-    Product product = await FoodApiAccess.scanProduct("4009077020122");
+    Product product = await FoodApiAccess.scanProduct("9001400005030");
     setState(() {
       _isLoading = false;
     });
@@ -85,23 +85,21 @@ class _ScanningRootState extends State<ScanningRoot> {
                         icon: Icons.text_fields,
                         isPrimary: false,
                         onPressed: () {
-                          Navigator.pushNamed(context, "/result");
-                          /*
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return ScanningBarcodeDialog(
-                          onCancel: () {
-                            Navigator.pop(context);
-                          },
-                          onSubmit: (String value) {
-                            Navigator.pop(context);
-                            //fetchProduct(value);
-                          },
-                        );
-                      },
-                    );*/
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return ScanningBarcodeDialog(
+                                onCancel: () {
+                                  Navigator.pop(context);
+                                },
+                                onSubmit: (String value) {
+                                  Navigator.pop(context);
+                                  fetchProduct(value);
+                                },
+                              );
+                            },
+                          );
                         },
                       ),
                       LabelledIconButton(
