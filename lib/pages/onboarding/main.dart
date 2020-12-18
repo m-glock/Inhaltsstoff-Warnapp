@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/backend/Enums/PreferenceType.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -6,6 +7,9 @@ import './OnboardingTitleWidget.dart';
 import '../HomePage.dart';
 import '../../customWidgets/RadioButtonTable.dart';
 import '../../customWidgets/CheckboxList.dart';
+import '../../backend/PreferenceManager.dart';
+import '../../backend/Ingredient.dart';
+import '../../backend/Enums/Type.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key key}) : super(key: key);
@@ -15,30 +19,33 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
-  final introKey = GlobalKey<IntroductionScreenState>();
+  final _introKey = GlobalKey<IntroductionScreenState>();
 
-  Map<String, List<String>> preferences = {
-    "allergens": [],
-    "nutrients": [],
-    "unwantedIngredientsFew": [],
-    "unwantedIngredientsNothing": [],
-  };
-  List<String> allergenOptions = [
-    "Nüsse",
-    "Lactose",
-    "Gluten",
-    "Histamin",
-    "Soja"
-  ];
-  List<String> nutrientOptions = ["B12", "Eisen", "Vitamin D", "Magnesium"];
-  List<String> ingredientOptions = [
-    "Palmöl",
-    "Zucker",
-    "Tierische Produkte",
-    "Verdickungsmittel"
-  ];
+  Map<Ingredient, PreferenceType> _allergenePreferences = Map.fromIterable(
+      PreferenceManager.getAllAvailableIngredients(type: Type.Allergen)
+          .where((ingredient) => ingredient.type == Type.Allergen),
+      key: (ingredient) => ingredient,
+      value: (ingredient) => ingredient.preferenceType);
 
-  void _onIntroEnd(context) {
+  Map<Ingredient, PreferenceType> _nutrientPreferences = Map.fromIterable(
+      PreferenceManager.getAllAvailableIngredients(type: Type.Nutriment)
+          .where((ingredient) => ingredient.type == Type.Nutriment),
+      key: (ingredient) => ingredient,
+      value: (ingredient) => ingredient.preferenceType);
+
+  Map<Ingredient, PreferenceType> _otherIngredientPreferences =
+      Map.fromIterable(
+          PreferenceManager.getAllAvailableIngredients(type: Type.General)
+              .where((ingredient) => ingredient.type == Type.General),
+          key: (ingredient) => ingredient,
+          value: (ingredient) => ingredient.preferenceType);
+
+  void _onFinishOnboarding(context) {
+    // save _preferences
+    PreferenceManager.changePreference(_allergenePreferences);
+    PreferenceManager.changePreference(_nutrientPreferences);
+    PreferenceManager.changePreference(_otherIngredientPreferences);
+
     Navigator.of(context).pushReplacement(
         new MaterialPageRoute(builder: (context) => new HomePage()));
   }
@@ -56,7 +63,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         : pageName == "nutrients"
             ? 2
             : 3;
-    introKey.currentState.animateScroll(pageIndex);
+    _introKey.currentState.animateScroll(pageIndex);
   }
 
   @override
@@ -83,7 +90,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       titlePadding: EdgeInsets.zero,
     );
     return IntroductionScreen(
-      key: introKey,
+      key: _introKey,
       pages: [
         PageViewModel(
           title: "Willkommen",
@@ -113,14 +120,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle: "Hast du irgendwelche Allergien?",
           ),
           bodyWidget: CheckboxList(
-            options: allergenOptions,
-            selectedItems: preferences["allergens"],
+            items: _allergenePreferences.map((ingredient, preference) =>
+                MapEntry(ingredient.name,
+                    preference == PreferenceType.None ? false : true)),
             onChange: (int index, bool hasBeenSelected) {
-              String changedItem = allergenOptions[index];
+              Ingredient changedIngredient =
+                  _allergenePreferences.keys.toList()[index];
               setState(() {
                 hasBeenSelected
-                    ? preferences["allergens"].add(changedItem)
-                    : preferences["allergens"].remove(changedItem);
+                    ? _allergenePreferences[changedIngredient] =
+                        PreferenceType.NotWanted
+                    : _allergenePreferences[changedIngredient] =
+                        PreferenceType.None;
               });
             },
           ),
@@ -133,14 +144,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 "Gibt es Nährstoffe, die du bewusst vermehrt aufnehmen möchtest?",
           ),
           bodyWidget: CheckboxList(
-            options: nutrientOptions,
-            selectedItems: preferences["nutrients"],
+            items: _nutrientPreferences.map((ingredient, preference) =>
+                MapEntry(ingredient.name,
+                    preference == PreferenceType.None ? false : true)),
             onChange: (int index, bool hasBeenSelected) {
-              String changedItem = nutrientOptions[index];
+              Ingredient changedIngredient =
+                  _nutrientPreferences.keys.toList()[index];
               setState(() {
                 hasBeenSelected
-                    ? preferences["nutrients"].add(changedItem)
-                    : preferences["nutrients"].remove(changedItem);
+                    ? _nutrientPreferences[changedIngredient] =
+                        PreferenceType.Preferred
+                    : _nutrientPreferences[changedIngredient] =
+                        PreferenceType.None;
               });
             },
           ),
@@ -153,38 +168,25 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
           ),
           bodyWidget: RadioButtonTable(
-            items: ingredientOptions,
+            items: _otherIngredientPreferences
+                .map((ingredient, preference) => MapEntry(
+                    ingredient.name,
+                    preference == PreferenceType.None
+                        ? "egal"
+                        : preference == PreferenceType.NotWanted
+                            ? "nichts"
+                            : "wenig")),
             options: ["nichts", "egal", "wenig"],
-            selectedItems: {
-              "wenig": preferences["unwantedIngredientsFew"],
-              "nichts": preferences["unwantedIngredientsNothing"],
-              "egal": ingredientOptions
-                  .where((element) =>
-                      !preferences["unwantedIngredientsFew"]
-                          .contains(element) &&
-                      !preferences["unwantedIngredientsNothing"]
-                          .contains(element))
-                  .toList(),
-            },
             onChange: (int index, String newPreferenceValue) {
-              String changedItem = ingredientOptions[index];
+              Ingredient changedIngredient =
+                  _otherIngredientPreferences.keys.toList()[index];
               setState(() {
-                switch (newPreferenceValue) {
-                  case "wenig":
-                    preferences["unwantedIngredientsNothing"]
-                        .remove(changedItem);
-                    preferences["unwantedIngredientsFew"].add(changedItem);
-                    break;
-                  case "nichts":
-                    preferences["unwantedIngredientsFew"].remove(changedItem);
-                    preferences["unwantedIngredientsNothing"].add(changedItem);
-                    break;
-                  case "egal":
-                    preferences["unwantedIngredientsFew"].remove(changedItem);
-                    preferences["unwantedIngredientsNothing"]
-                        .remove(changedItem);
-                    break;
-                }
+                _otherIngredientPreferences[changedIngredient] =
+                    newPreferenceValue == "wenig"
+                        ? PreferenceType.NotPreferred
+                        : newPreferenceValue == "nichts"
+                            ? PreferenceType.NotWanted
+                            : PreferenceType.None;
               });
             },
           ),
@@ -196,7 +198,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle: "Kontrolliere deine Auswahl und bearbeite sie wenn nötig",
           ),
           bodyWidget: OnboardingSummary(
-            preferences: preferences,
+            allergenePreferences: _allergenePreferences,
+            nutrientPreferences: _nutrientPreferences,
+            otherIngredientPreferences: _otherIngredientPreferences,
             onEditPreference: _animateToPage,
           ),
           decoration: summaryPageDecoration,
@@ -224,7 +228,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           decoration: imagePageDecoration,
         ),
       ],
-      onDone: () => _onIntroEnd(context),
+      onDone: () => _onFinishOnboarding(context),
       showSkipButton: true,
       dotsFlex: 0,
       skip: Text('Skip', style: TextStyle(fontWeight: FontWeight.w600)),

@@ -48,8 +48,9 @@ class PreferenceManager {
     ingredients.add(Ingredient('Milch', PreferenceType.NotWanted, ''));
     ingredients.add(Ingredient('Schokolade', PreferenceType.NotPreferred, ''));
     ingredients.add(Ingredient('Magnesium', PreferenceType.NotPreferred, ''));
-    ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, ''));
-    ingredients.add(Ingredient('Vitamin C', PreferenceType.None, ''));
+    ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, '', type: Type.Nutriment));
+    ingredients.add(Ingredient('Vitamin C', PreferenceType.None, '', type: Type.Nutriment));
+    ingredients.add(Ingredient('Histamin', PreferenceType.None, '', type: Type.Allergen));
     return ingredients;
   }
 
