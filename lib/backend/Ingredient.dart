@@ -16,7 +16,7 @@ class Ingredient extends DbTable {
   static final columns = ["name", "preferencesTypeId", "addDate", "id"];
 
   // Constructor
-  Ingredient(this._name, this._preferencesType, this._addDate, {int id})
+  Ingredient(this._name, this._preferencesType, this._addDate, this._types, {int id})
       : super(id);
 
   // Getter and Setter
@@ -51,6 +51,7 @@ class Ingredient extends DbTable {
     final map = new Map<String, dynamic>();
     map['name'] = name;
     //map['preferencesTypeId'] = preferencesTypeId;
+
     map['addDate'] = addDate;
     if (withId) map['id'] = super.id;
     //List<int> groupIds = new List();
@@ -60,7 +61,7 @@ class Ingredient extends DbTable {
   }
 
   static Ingredient fromMap(Map<String, dynamic> data) {
-    return new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'],
+    return new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'], data['types'],
         id: data['id']);
   }
 }
