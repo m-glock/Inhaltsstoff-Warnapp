@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 import './OnboardingTitleWidget.dart';
 import './OnboardingAllergensView.dart';
+import './OnboardingOtherIngredientsView.dart';
 import './OnboardingNutrientsView.dart';
 import '../HomePage.dart';
 import '../PreferencesSummary.dart';
-import '../../customWidgets/RadioButtonTable.dart';
 import '../../backend/PreferenceManager.dart';
 import '../../backend/Ingredient.dart';
 import '../../backend/Enums/Type.dart';
@@ -124,11 +124,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
             allergenePreferences: _allergenePreferences,
             onChange:
                 (Ingredient changedIngredient, PreferenceType newPreference) {
-              setState(
-                () {
-                  _allergenePreferences[changedIngredient] = newPreference;
-                },
-              );
+              setState(() {
+                _allergenePreferences[changedIngredient] = newPreference;
+              });
             },
           ),
           decoration: mainPageDecoration,
@@ -143,11 +141,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
             nutrientPreferences: _nutrientPreferences,
             onChange:
                 (Ingredient changedIngredient, PreferenceType newPreference) {
-              setState(
-                () {
-                  _nutrientPreferences[changedIngredient] = newPreference;
-                },
-              );
+              setState(() {
+                _nutrientPreferences[changedIngredient] = newPreference;
+              });
             },
           ),
           decoration: mainPageDecoration,
@@ -158,29 +154,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle:
                 "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
           ),
-          bodyWidget: RadioButtonTable(
-            items: _otherIngredientPreferences
-                .map((ingredient, preference) => MapEntry(
-                    ingredient.name,
-                    preference == PreferenceType.None
-                        ? "egal"
-                        : preference == PreferenceType.NotWanted
-                            ? "nichts"
-                            : "wenig")),
-            options: ["nichts", "egal", "wenig"],
-            onChange: (int index, String newPreferenceValue) {
-              Ingredient changedIngredient =
-                  _otherIngredientPreferences.keys.toList()[index];
-              setState(
-                () {
-                  _otherIngredientPreferences[changedIngredient] =
-                      newPreferenceValue == "wenig"
-                          ? PreferenceType.NotPreferred
-                          : newPreferenceValue == "nichts"
-                              ? PreferenceType.NotWanted
-                              : PreferenceType.None;
-                },
-              );
+          bodyWidget: OnboardingOtherIngredientsView(
+            otherIngredientPreferences: _otherIngredientPreferences,
+            onChange:
+                (Ingredient changedIngredient, PreferenceType newPreference) {
+              setState(() {
+                _otherIngredientPreferences[changedIngredient] = newPreference;
+              });
             },
           ),
           decoration: mainPageDecoration,

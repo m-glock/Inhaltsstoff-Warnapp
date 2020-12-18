@@ -1,5 +1,3 @@
-import 'package:Inhaltsstoff_Warnapp/backend/Enums/PreferenceType.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/Ingredient.dart';
 import 'package:flutter/material.dart';
 
 import '../../customWidgets/CheckboxList.dart';
