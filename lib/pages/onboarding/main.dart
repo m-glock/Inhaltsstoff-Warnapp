@@ -2,10 +2,11 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
 
 import './OnboardingTitleWidget.dart';
+import './OnboardingAllergensView.dart';
+import './OnboardingNutrientsView.dart';
 import '../HomePage.dart';
 import '../PreferencesSummary.dart';
 import '../../customWidgets/RadioButtonTable.dart';
-import '../../customWidgets/CheckboxList.dart';
 import '../../backend/PreferenceManager.dart';
 import '../../backend/Ingredient.dart';
 import '../../backend/Enums/Type.dart';
@@ -119,20 +120,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
             title: "Allergien",
             subTitle: "Hast du irgendwelche Allergien?",
           ),
-          bodyWidget: CheckboxList(
-            items: _allergenePreferences.map((ingredient, preference) =>
-                MapEntry(ingredient.name,
-                    preference == PreferenceType.None ? false : true)),
-            onChange: (int index, bool hasBeenSelected) {
-              Ingredient changedIngredient =
-                  _allergenePreferences.keys.toList()[index];
+          bodyWidget: OnboardingAllergensView(
+            allergenePreferences: _allergenePreferences,
+            onChange:
+                (Ingredient changedIngredient, PreferenceType newPreference) {
               setState(
                 () {
-                  hasBeenSelected
-                      ? _allergenePreferences[changedIngredient] =
-                          PreferenceType.NotWanted
-                      : _allergenePreferences[changedIngredient] =
-                          PreferenceType.None;
+                  _allergenePreferences[changedIngredient] = newPreference;
                 },
               );
             },
@@ -145,20 +139,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle:
                 "Gibt es Nährstoffe, die du bewusst vermehrt aufnehmen möchtest?",
           ),
-          bodyWidget: CheckboxList(
-            items: _nutrientPreferences.map((ingredient, preference) =>
-                MapEntry(ingredient.name,
-                    preference == PreferenceType.None ? false : true)),
-            onChange: (int index, bool hasBeenSelected) {
-              Ingredient changedIngredient =
-                  _nutrientPreferences.keys.toList()[index];
+          bodyWidget: OnboardingNutrientsView(
+            nutrientPreferences: _nutrientPreferences,
+            onChange:
+                (Ingredient changedIngredient, PreferenceType newPreference) {
               setState(
                 () {
-                  hasBeenSelected
-                      ? _nutrientPreferences[changedIngredient] =
-                          PreferenceType.Preferred
-                      : _nutrientPreferences[changedIngredient] =
-                          PreferenceType.None;
+                  _nutrientPreferences[changedIngredient] = newPreference;
                 },
               );
             },
