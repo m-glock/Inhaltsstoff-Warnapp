@@ -1,15 +1,15 @@
-import 'package:Inhaltsstoff_Warnapp/backend/Enums/PreferenceType.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
 
-import './OnboardingSummary.dart';
 import './OnboardingTitleWidget.dart';
 import '../HomePage.dart';
+import '../PreferencesSummary.dart';
 import '../../customWidgets/RadioButtonTable.dart';
 import '../../customWidgets/CheckboxList.dart';
 import '../../backend/PreferenceManager.dart';
 import '../../backend/Ingredient.dart';
 import '../../backend/Enums/Type.dart';
+import '../../backend/Enums/PreferenceType.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key key}) : super(key: key);
@@ -126,13 +126,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
             onChange: (int index, bool hasBeenSelected) {
               Ingredient changedIngredient =
                   _allergenePreferences.keys.toList()[index];
-              setState(() {
-                hasBeenSelected
-                    ? _allergenePreferences[changedIngredient] =
-                        PreferenceType.NotWanted
-                    : _allergenePreferences[changedIngredient] =
-                        PreferenceType.None;
-              });
+              setState(
+                () {
+                  hasBeenSelected
+                      ? _allergenePreferences[changedIngredient] =
+                          PreferenceType.NotWanted
+                      : _allergenePreferences[changedIngredient] =
+                          PreferenceType.None;
+                },
+              );
             },
           ),
           decoration: mainPageDecoration,
@@ -150,13 +152,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
             onChange: (int index, bool hasBeenSelected) {
               Ingredient changedIngredient =
                   _nutrientPreferences.keys.toList()[index];
-              setState(() {
-                hasBeenSelected
-                    ? _nutrientPreferences[changedIngredient] =
-                        PreferenceType.Preferred
-                    : _nutrientPreferences[changedIngredient] =
-                        PreferenceType.None;
-              });
+              setState(
+                () {
+                  hasBeenSelected
+                      ? _nutrientPreferences[changedIngredient] =
+                          PreferenceType.Preferred
+                      : _nutrientPreferences[changedIngredient] =
+                          PreferenceType.None;
+                },
+              );
             },
           ),
           decoration: mainPageDecoration,
@@ -180,14 +184,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
             onChange: (int index, String newPreferenceValue) {
               Ingredient changedIngredient =
                   _otherIngredientPreferences.keys.toList()[index];
-              setState(() {
-                _otherIngredientPreferences[changedIngredient] =
-                    newPreferenceValue == "wenig"
-                        ? PreferenceType.NotPreferred
-                        : newPreferenceValue == "nichts"
-                            ? PreferenceType.NotWanted
-                            : PreferenceType.None;
-              });
+              setState(
+                () {
+                  _otherIngredientPreferences[changedIngredient] =
+                      newPreferenceValue == "wenig"
+                          ? PreferenceType.NotPreferred
+                          : newPreferenceValue == "nichts"
+                              ? PreferenceType.NotWanted
+                              : PreferenceType.None;
+                },
+              );
             },
           ),
           decoration: mainPageDecoration,
@@ -197,7 +203,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             title: "Zusammenfassung",
             subTitle: "Kontrolliere deine Auswahl und bearbeite sie wenn nötig",
           ),
-          bodyWidget: OnboardingSummary(
+          bodyWidget: PreferencesSummary(
             allergenePreferences: _allergenePreferences,
             nutrientPreferences: _nutrientPreferences,
             otherIngredientPreferences: _otherIngredientPreferences,
