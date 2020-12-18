@@ -50,8 +50,7 @@ class Ingredient extends DbTable {
   Map<String, dynamic> toMap({bool withId: true}) {
     final map = new Map<String, dynamic>();
     map['name'] = name;
-    //map['preferencesTypeId'] = preferencesTypeId;
-
+    map['preferencesTypeId'] = preferenceType;
     map['addDate'] = addDate;
     if (withId) map['id'] = super.id;
     //List<int> groupIds = new List();

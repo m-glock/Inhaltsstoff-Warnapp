@@ -63,7 +63,11 @@ class MyApp extends StatelessWidget {
 
 
             //not correct
-            dbHelper.add(Ingredient('Zucker', PreferenceType.NotWanted, formatted));
+
+
+            //dbHelper.add(Ingredient('Zucker', PreferenceType.NotWanted, formatted));
+
+
             //dbHelper.add(Ingredient('Milch', PreferenceType.NotWanted, formatted));
             //dbHelper.add(Ingredient('Magnesium', PreferenceType.NotPreferred, formatted));
             //dbHelper.add(Ingredient('Wasser', PreferenceType.Preferred, formatted));

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'Enums/PreferenceType.dart';
+import 'Enums/Type.dart';
 import 'Ingredient.dart';
 import 'Product.dart';
 import 'package:http/http.dart' as http;
@@ -118,9 +119,13 @@ class FoodApiAccess{
   * */
   static Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<dynamic> ingredientNames, String tag) async {
     List<Ingredient> ingredients = List();
+    //TODO integrate types in this method, actually hardcoded lists
+    List<Type> types = List();
+    types.add(Type.Allergen);
+
     List<String> translatedIngredientNames = await _translateTagNames(tag, ingredientNames);
     translatedIngredientNames.forEach(
-            (element) => ingredients.add(Ingredient(element, PreferenceType.None, ''))
+            (element) => ingredients.add(Ingredient(element, PreferenceType.None, '', types))
     );
     return ingredients;
   }
