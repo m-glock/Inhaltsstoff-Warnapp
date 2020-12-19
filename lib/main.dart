@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'backend/Enums/PreferenceType.dart';
 import 'backend/Ingredient.dart';
+import 'backend/Enums/Type.dart';
 import 'backend/database/DbTableNames.dart';
 import 'backend/database/databaseHelper.dart';
 import 'pages/HomePage.dart';
@@ -53,13 +54,22 @@ class MyApp extends StatelessWidget {
             //List<Map> results_preference_type = await dbHelper.readAll(DbTableNames.preferenceType);
             //print(results_preference_type);
             //List<Ingredient> ingredients1 = List();
-            await db.rawInsert("Insert into type (name) values ('Allergen')");
-            await db.rawInsert("Insert into type (name) values ('Nutriment')");
-            await db.rawInsert("Insert into type (name) values ('General')");
-            await db.rawInsert("Insert into preferencetype (name) values ('notwanted')");
-            await db.rawInsert("Insert into preferencetype (name) values ('notpreferred')");
-            await db.rawInsert("Insert into preferencetype (name) values ('preferred')");
-            await db.rawInsert("Insert into preferencetype (name) values ('none')");
+
+
+            //initialize table
+            /*await db.rawInsert("INSERT INTO scanresult (name) VALUES ('Red')");
+            await db.rawInsert("INSERT INTO scanresult (name) VALUES ('Yellow')");
+            await db.rawInsert("INSERT INTO scanresult (name) VALUES ('Green')");
+            await db.rawInsert("INSERT INTO preferencetype (name) VALUES ('Not Wanted')");
+            await db.rawInsert("INSERT INTO preferencetype (name) VALUES ('Not Preferred')");
+            await db.rawInsert("INSERT INTO preferencetype (name) VALUES ('Preferred')");
+            await db.rawInsert("INSERT INTO preferencetype (name) VALUES ('None')");
+            await db.rawInsert("INSERT INTO type (name) VALUES ('Allergen')");
+            await db.rawInsert("INSERT INTO type (name) VALUES ('Nutriment')");
+            await db.rawInsert("INSERT INTO type (name) VALUES ('General')");*/
+
+            print(await dbHelper.readAll(DbTableNames.preferenceType));
+            print(await dbHelper.readAll(DbTableNames.type));
 
 
             //not correct
@@ -68,17 +78,22 @@ class MyApp extends StatelessWidget {
             //dbHelper.add(Ingredient('Zucker', PreferenceType.NotWanted, formatted));
 
 
-            //dbHelper.add(Ingredient('Milch', PreferenceType.NotWanted, formatted));
-            //dbHelper.add(Ingredient('Magnesium', PreferenceType.NotPreferred, formatted));
-            //dbHelper.add(Ingredient('Wasser', PreferenceType.Preferred, formatted));
+            dbHelper.add(Ingredient('Milch', PreferenceType.NotWanted, formatted));
+            //dbHelper.add(Ingredient('Magnesium', PreferenceType.NotPreferred, formatted, Type.Allergen));
+            //dbHelper.add(Ingredient('Wasser', PreferenceType.Preferred, formatted, Type.Nutriment));
 
-            //List<Map> results = await db.query("ingredient", columns: Ingredient.columns, orderBy: "id DESC");
-            List<Map> results = await db.rawQuery("select i.name, i.preferencesTypeId, i.addDate, i.id, p.name preferenceType from ingredient i join preferencetype p on i.preferencesTypeId=p.id where i.preferencesTypeId is not 'NONE'");
+
+
+            List<Map> results = await db.query("ingredient", columns: Ingredient.columns, orderBy: "id DESC");
+            //List<Map> results = await db.rawQuery("select i.name, i.preferenceTypeId, i.preferenceAddDate, i.id, p.name preferenceType from ingredient i join preferencetype p on i.preferenceTypeId=p.id where i.preferenceTypeId is not 'NONE'");
+
+            //print(results);
 
             results.forEach((element) {
               print(element);
             });
 
+            /*
             List<Ingredient> ingredients = new List();
             results.forEach((result) {
 
@@ -100,7 +115,7 @@ class MyApp extends StatelessWidget {
             print(test2);
 
 
-
+*/
 
           },
         ),

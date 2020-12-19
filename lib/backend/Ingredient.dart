@@ -10,19 +10,20 @@ class Ingredient extends DbTable {
   // Fields
   String _name;
   PreferenceType _preferencesType;
-  String _addDate;
-  Type _type;
+  String _preferenceAddDate;
+  //Type _type;
 
-  static final columns = ["name", "preferencesTypeId", "addDate", "id"];
+  static final columns = ["name", "preferenceTypeId", "preferenceAddDate", "id"];
 
   // Constructor
-  Ingredient(this._name, this._preferencesType, this._addDate, this._type, {int id})
+  Ingredient(this._name, this._preferencesType, this._preferenceAddDate, //this._type,
+      {int id})
       : super(id);
 
   // Getter and Setter
   String get name => _name;
-  Type get type => _type;
-  String get addDate => _addDate;
+  //Type get type => _type;
+  String get addDate => _preferenceAddDate;
   PreferenceType get preferenceType => _preferencesType;
 
   // Methods
@@ -50,8 +51,9 @@ class Ingredient extends DbTable {
   Map<String, dynamic> toMap({bool withId: true}) {
     final map = new Map<String, dynamic>();
     map['name'] = name;
-    map['preferencesTypeId'] = preferenceType;
-    map['addDate'] = addDate;
+    //map['preferencesTypeId'] = preferenceType;
+    //map['type'] = type;
+    map['preferenceAddDate'] = _preferenceAddDate;
     if (withId) map['id'] = super.id;
     //List<int> groupIds = new List();
     //_groups.forEach((element) => groupIds.add(element.id));
@@ -60,7 +62,7 @@ class Ingredient extends DbTable {
   }
 
   static Ingredient fromMap(Map<String, dynamic> data) {
-    return new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'], data['type'],
+    return new Ingredient(data['name'], data['preferenceTypeId'], data['preferenceAddDate'], //data['type'],
         id: data['id']);
   }
 }

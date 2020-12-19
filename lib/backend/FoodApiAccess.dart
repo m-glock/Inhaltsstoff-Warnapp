@@ -124,7 +124,8 @@ class FoodApiAccess{
 
     List<String> translatedIngredientNames = await _translateTagNames(tag, ingredientNames);
     translatedIngredientNames.forEach(
-            (element) => ingredients.add(Ingredient(element, PreferenceType.None, Ingredient.getCurrentDate(), type))
+            (element) => ingredients.add(Ingredient(element, PreferenceType.None, Ingredient.getCurrentDate()//, type
+            ))
     );
     return ingredients;
   }
