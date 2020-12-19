@@ -11,17 +11,17 @@ class Ingredient extends DbTable {
   String _name;
   PreferenceType _preferencesType;
   String _addDate;
-  List<Type> _types;
+  Type _type;
 
   static final columns = ["name", "preferencesTypeId", "addDate", "id"];
 
   // Constructor
-  Ingredient(this._name, this._preferencesType, this._addDate, this._types, {int id})
+  Ingredient(this._name, this._preferencesType, this._addDate, this._type, {int id})
       : super(id);
 
   // Getter and Setter
   String get name => _name;
-  List<Type> get types => _types;
+  Type get type => _type;
   String get addDate => _addDate;
   PreferenceType get preferenceType => _preferencesType;
 
@@ -31,7 +31,7 @@ class Ingredient extends DbTable {
   * from https://stackoverflow.com/questions/16126579/how-do-i-format-a-date-with-dart
   * @return: current date as a string in format yyyy-MM-dd-Hm
   * */
-  String getCurrentDate() {
+  static String getCurrentDate() {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('yyyy-MM-dd-Hm');
     return formatter.format(now);
@@ -60,7 +60,7 @@ class Ingredient extends DbTable {
   }
 
   static Ingredient fromMap(Map<String, dynamic> data) {
-    return new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'], data['types'],
+    return new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'], data['type'],
         id: data['id']);
   }
 }

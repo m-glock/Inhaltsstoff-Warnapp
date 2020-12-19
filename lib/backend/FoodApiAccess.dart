@@ -120,12 +120,11 @@ class FoodApiAccess{
   static Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<dynamic> ingredientNames, String tag) async {
     List<Ingredient> ingredients = List();
     //TODO integrate types in this method, actually hardcoded lists
-    List<Type> types = List();
-    types.add(Type.Allergen);
+    Type type = Type.Allergen;
 
     List<String> translatedIngredientNames = await _translateTagNames(tag, ingredientNames);
     translatedIngredientNames.forEach(
-            (element) => ingredients.add(Ingredient(element, PreferenceType.None, '', types))
+            (element) => ingredients.add(Ingredient(element, PreferenceType.None, Ingredient.getCurrentDate(), type))
     );
     return ingredients;
   }
