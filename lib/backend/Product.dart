@@ -71,22 +71,23 @@ class Product extends DbTable{
 
     // add Ingredients, Allergens, Vitamins, Additives and Traces
     List<Ingredient> ingredients = List();
+    FoodApiAccess foodApi = FoodApiAccess.instance;
     List<dynamic> ingredientNames = json['ingredients_tags'];
-    ingredients = await FoodApiAccess.getIngredientsWithTranslatedNames(ingredientNames, 'ingredients');
+    ingredients = await foodApi.getIngredientsWithTranslatedNames(ingredientNames, 'ingredients');
 
     var allergenNames = json['allergens_tags'];
-    ingredients.addAll(await FoodApiAccess.getIngredientsWithTranslatedNames(allergenNames, 'allergens'));
+    ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(allergenNames, 'allergens'));
 
     List<dynamic> vitaminNames = json['vitamins_tags'];
-    ingredients.addAll(await FoodApiAccess.getIngredientsWithTranslatedNames(vitaminNames, 'vitamins'));
+    ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(vitaminNames, 'vitamins'));
 
     List<dynamic> additiveNames = json['additives_tags'];
-    ingredients.addAll(await FoodApiAccess.getIngredientsWithTranslatedNames(additiveNames, 'additives'));
+    ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(additiveNames, 'additives'));
 
     newProduct._ingredients = ingredients;
 
     List<dynamic> tracesNames = json['traces_tags'];
-    newProduct._traces = await FoodApiAccess.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
+    newProduct._traces = await foodApi.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
 
     //TODO use itemizedScanResults in PreferenceManager to get the overall scanresult, right now only dummy data
     newProduct._scanResult = ScanResult.Yellow;

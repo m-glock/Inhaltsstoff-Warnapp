@@ -10,16 +10,45 @@ import 'package:http/http.dart' as http;
 
 class FoodApiAccess{
 
-  static final String _foodDbApiUrl = 'https://de-de.openfoodfacts.org';
-  static final String _taxonomyEndpoint = 'data/taxonomies';
-  static final String _productEndpoint = 'api/v0/product';
+  final String _foodDbApiUrl = 'https://de-de.openfoodfacts.org';
+  final String _taxonomyEndpoint = 'data/taxonomies';
+  final String _productEndpoint = 'api/v0/product';
+  Map _allergens;
+  Map _vitamins;
+  Map _ingredients;
+
+  // make this a singleton class
+  FoodApiAccess._privateConstructor(){
+    _setAllergens();
+    _setVitamins();
+    //_setIngredients();
+  }
+
+  static final FoodApiAccess instance = FoodApiAccess._privateConstructor();
+
+  void _setAllergens() async => _allergens = await getAllValuesForTag('allergens');
+  void _setVitamins() async => _vitamins = await getAllValuesForTag('vitamins');
+  //void _setIngredients() async => _ingredients = await getAllValuesForTag('ingredients');
+
+  Map<dynamic, dynamic> _getCorrespondingMap(String tag){
+    switch(tag){
+      case 'vitamins':
+        return _vitamins;
+      case 'allergens':
+        return _allergens;
+      case 'ingredients':
+        return _ingredients;
+      default:
+        return null;
+    }
+  }
 
   /*
   * sends an GET request to the food database API with the scanned barcode and creates a Product object containing the relevant information
   * @param barcode: the scanned barcode from a product
   * @return: an object for the scanned product with the relevant information or null if not found
   * */
-  static Future<Product> scanProduct(String barcode) async{
+  Future<Product> scanProduct(String barcode) async{
     String requestUrl = '$_foodDbApiUrl/$_productEndpoint/$barcode.json';
 
     http.Response response = await _getRequest(requestUrl);
@@ -42,11 +71,11 @@ class FoodApiAccess{
   }
 
   /*
-  * sends a GET request to the food database API to get all possible values for a tag in a product json
+  * get the json of all possible values of a tag
   * @param tag: the tag name from the product json
-  * @return a List of all possible values that exist in the API for this specific tag or null if tag was not found
+  * @return a map of all possible values that exist in the API for this specific tag or null if tag was not found
   * */
-  static Future<List<String>> getAllValuesForTag(String tag, {String languageCode:'de'}) async {
+  Future<Map<dynamic, dynamic>> getAllValuesForTag(String tag, {String languageCode:'de'}) async {
     String requestUrl = '$_foodDbApiUrl/$_taxonomyEndpoint/$tag.json';
 
     http.Response response = await _getRequest(requestUrl);
@@ -60,50 +89,46 @@ class FoodApiAccess{
     // if requested tag does not exist, the response body will be html and the decoding will return null
     Map<String, dynamic> decodedJson = json.decode(utf8.decode(response.bodyBytes));
     if(decodedJson == null) throw HttpException('404');
-    List<String> possibleValuesForTag = new List();
 
-    decodedJson.forEach((key, value) {
-      String tagValue = value['name'][languageCode];
-      if(tagValue == null) tagValue = value['name']['en'];
-      possibleValuesForTag.add(tagValue);
-    });
-
-    return possibleValuesForTag;
+    return decodedJson;
   }
 
   /*
-  * sends a GET request to the food database API to get the translation of a certain tag value
-  * @param tag: the tag from the product json that the value to translate belongs to
-  * @param tagValue: the name of the value to translate
-  * @param languageCode: the ISO 639-1 language code for the target language
-  * @return the translation of the tag Value according to the API or null if tag was not found
+  * get the translated names of all possible values for a tag in a product json
+  * @param tag: the tag name from the product json
+  * @param: tagValues: a list of specific values from this tag that should be translated
+  * @param: languageCode: code for that target language of the translation
+  * @return a List of all possible values that exist in the API for this specific tag or null if tag was not found
   * */
-  static Future<List<String>> _translateTagNames(String tag, List<dynamic> tagValues, {String languageCode:'de'}) async {
-    String requestUrl = '$_foodDbApiUrl/$_taxonomyEndpoint/$tag.json';
+  Future<List<String>> getTranslatedValuesForTag(String tag, {List<dynamic> tagValues, String languageCode:'de'}) async {
+    List<String> translatedTagValues = new List();
+    Map<dynamic, dynamic> allTagValues = _getCorrespondingMap(tag);
 
-    http.Response response = await _getRequest(requestUrl);
-    int status = response.statusCode;
+    if(tagValues == null || tagValues.isEmpty){ // translate all existing tag values
 
-    // check HTTP status
-    if (status == 404) return null;
-    else if(status != 200) throw HttpException('$status');
+      allTagValues.forEach((key, value) {
+        // TODO: only get vitamins that are parents
+        String tagValue = value['name'][languageCode];
+        if(tagValue == null) tagValue = value['name']['en'];
+        translatedTagValues.add(tagValue);
+      });
 
-    // utf8 decoding for umlaute
-    Map<String, dynamic> decodedJson = json.decode(utf8.decode(response.bodyBytes));
-    List<String> translatedTagValues = List();
+    } else { // translate only tag names in tagValues
 
-    tagValues.forEach((element) {
-      String translatedName;
-      if(decodedJson.containsKey(element)){
-        LinkedHashMap tagValueTranslations = decodedJson[element]['name'];
-        translatedName = tagValueTranslations.containsKey(languageCode) ? tagValueTranslations[languageCode] : tagValueTranslations['en'];
-      } else {
-        String name = element.toString();
-        translatedName = name.substring(name.indexOf(':') + 1);
-      }
+      tagValues.forEach((element) {
+        String translatedName;
+        if(allTagValues.containsKey(element)){
+          LinkedHashMap tagValueTranslations = allTagValues[element]['name'];
+          translatedName = tagValueTranslations.containsKey(languageCode) ? tagValueTranslations[languageCode] : tagValueTranslations['en'];
+        } else {
+          String name = element.toString();
+          translatedName = name.substring(name.indexOf(':') + 1);
+        }
 
-      translatedTagValues.add(translatedName);
-    });
+        translatedTagValues.add(translatedName);
+
+      });
+    }
 
     return translatedTagValues;
   }
@@ -116,9 +141,9 @@ class FoodApiAccess{
   * @param tag: Tag that the names belong to (allergens, vitamins, ingredients etc.)
   * @return: a List of ingredient
   * */
-  static Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<dynamic> ingredientNames, String tag) async {
+  Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<dynamic> ingredientNames, String tag) async {
     List<Ingredient> ingredients = List();
-    List<String> translatedIngredientNames = await _translateTagNames(tag, ingredientNames);
+    List<String> translatedIngredientNames = await getTranslatedValuesForTag(tag, tagValues: ingredientNames);
     translatedIngredientNames.forEach(
             (element) => ingredients.add(Ingredient(element, PreferenceType.None, ''))
     );
@@ -130,7 +155,7 @@ class FoodApiAccess{
   * @param url: the url to send the request to
   * @return: the http response that the GET call returned
   * */
-  static Future<http.Response> _getRequest(String url) {
+  Future<http.Response> _getRequest(String url) {
     return http.get(
         url,
         headers: <String, String>{
