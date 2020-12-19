@@ -1,8 +1,8 @@
-import './SettingsAgb.dart';
-import './SettingsGeneral.dart';
-import './SettingsHelp.dart';
-import './SettingsImpressum.dart';
-import './SettingsPreferences.dart';
+import 'SettingsAgb.dart';
+import 'SettingsGeneral.dart';
+import 'SettingsHelp.dart';
+import 'SettingsImpressum.dart';
+import 'SettingsPreferences.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage {

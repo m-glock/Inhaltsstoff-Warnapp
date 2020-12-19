@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'AnalysisRoot.dart';
+import 'HistoryRootPage.dart';
 
-class AnalysisPage extends StatefulWidget {
-  const AnalysisPage({ Key key }) : super(key: key);
+class HistoryPage extends StatefulWidget {
+  const HistoryPage({ Key key }) : super(key: key);
 
   @override
-  _AnalysisPageState createState() => _AnalysisPageState();
+  _HistoryPageState createState() => _HistoryPageState();
 }
 
-class _AnalysisPageState extends State<AnalysisPage> {
+class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Navigator(
@@ -18,7 +18,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
           builder: (BuildContext context) {
             switch(settings.name) {
               case '/':
-                return AnalysisRoot();
+                return HistoryRootPage();
             }
           },
         );

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'FavouritesRoot.dart';
-import 'FavouritesSecond.dart';
+import 'ComparisonRootPage.dart';
 
-class FavouritesPage extends StatefulWidget {
-  const FavouritesPage({ Key key }) : super(key: key);
+class ComparisonPage extends StatefulWidget {
+  const ComparisonPage({ Key key }) : super(key: key);
 
   @override
-  _FavouritesPageState createState() => _FavouritesPageState();
+  _ComparisonPageState createState() => _ComparisonPageState();
 }
 
-class _FavouritesPageState extends State<FavouritesPage> {
+class _ComparisonPageState extends State<ComparisonPage> {
   @override
   Widget build(BuildContext context) {
     return Navigator(
@@ -19,9 +18,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
           builder: (BuildContext context) {
             switch(settings.name) {
               case '/':
-                return FavouritesRoot();
-              case '/second':
-                return FavouritesSecond();
+                return ComparisonRootPage();
             }
           },
         );

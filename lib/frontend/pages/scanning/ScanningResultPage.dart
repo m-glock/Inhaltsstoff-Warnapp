@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../backend/Enums/ScanResult.dart';
-import '../../backend/PreferenceManager.dart';
-import '../../backend/Product.dart';
+import '../../../backend/Enums/ScanResult.dart';
+import '../../../backend/PreferenceManager.dart';
+import '../../../backend/Product.dart';
 import '../../customWidgets/CustomAppBar.dart';
 import '../../customWidgets/ResultCircle.dart';
-import './scanningCustomWidgets/ScanningInfoLine.dart';
-import './scanningCustomWidgets/ScanningProductDetails.dart';
-import './scanningCustomWidgets/ScanningProductNutrimentsInfo.dart';
+import 'scanningCustomWidgets/ScanningInfoLine.dart';
+import 'scanningCustomWidgets/ScanningProductDetails.dart';
+import 'scanningCustomWidgets/ScanningProductNutrimentsInfo.dart';
 
 class ProductActionButton {
   ProductActionButton(this.title, this.icon, this.onPressed);
@@ -35,8 +35,8 @@ class ScanResultAppearance {
   String explanationText;
 }
 
-class ScanningResult extends StatelessWidget {
-  ScanningResult(this.scannedProduct, {Key key}) : super(key: key);
+class ScanningResultPage extends StatelessWidget {
+  ScanningResultPage(this.scannedProduct, {Key key}) : super(key: key);
 
   final Product scannedProduct;
 

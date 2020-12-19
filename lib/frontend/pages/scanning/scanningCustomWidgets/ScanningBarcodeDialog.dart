@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './ScanningBarcodeForm.dart';
+import 'ScanningBarcodeForm.dart';
 
 class ScanningBarcodeDialog extends StatelessWidget {
   final Function onCancel;

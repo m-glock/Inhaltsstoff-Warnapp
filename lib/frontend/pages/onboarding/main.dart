@@ -1,8 +1,8 @@
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
 
-import './OnboardingSummary.dart';
-import './OnboardingTitleWidget.dart';
+import 'onboardingCustomWidgets/OnboardingSummary.dart';
+import 'onboardingCustomWidgets/OnboardingTitleWidget.dart';
 import '../HomePage.dart';
 import '../../customWidgets/RadioButtonTable.dart';
 import '../../customWidgets/CheckboxList.dart';

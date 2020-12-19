@@ -1,14 +1,14 @@
 import '../../customWidgets/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 
-class FavouritesSecond extends StatefulWidget {
-  const FavouritesSecond({ Key key }) : super(key: key);
+class FavouritesSecondPage extends StatefulWidget {
+  const FavouritesSecondPage({ Key key }) : super(key: key);
 
   @override
-  _FavouritesSecondState createState() => _FavouritesSecondState();
+  _FavouritesSecondPageState createState() => _FavouritesSecondPageState();
 }
 
-class _FavouritesSecondState extends State<FavouritesSecond> {
+class _FavouritesSecondPageState extends State<FavouritesSecondPage> {
   TextEditingController _textController;
 
   @override

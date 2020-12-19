@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import '../../customWidgets/CustomAppBar.dart';
 
-class AnalysisRoot extends StatefulWidget {
-  const AnalysisRoot({ Key key }) : super(key: key);
+class ComparisonRootPage extends StatefulWidget {
+  const ComparisonRootPage({ Key key }) : super(key: key);
 
   @override
-  _AnalysisRootState createState() => _AnalysisRootState();
+  _ComparisonRootPageState createState() => _ComparisonRootPageState();
 }
 
-class _AnalysisRootState extends State<AnalysisRoot> {
+class _ComparisonRootPageState extends State<ComparisonRootPage> {
   TextEditingController _textController;
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(
-      text: "Analysis",
+      text: "Comparison",
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar('Analyse'),
+      appBar: CustomAppBar('Vergleich'),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(32.0),

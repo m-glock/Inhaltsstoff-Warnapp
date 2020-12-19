@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './ScanningInfoLine.dart';
+import 'ScanningInfoLine.dart';
 
 class ScanningProductNutrimentsInfo extends StatelessWidget {
   ScanningProductNutrimentsInfo({Key key, this.nutriments}) : super(key: key);

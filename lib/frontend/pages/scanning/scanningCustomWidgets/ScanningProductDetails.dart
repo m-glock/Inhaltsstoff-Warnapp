@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-import '../../../backend/Ingredient.dart';
-import '../../../backend/Enums/ScanResult.dart';
+import '../../../../backend/Ingredient.dart';
+import '../../../../backend/Enums/ScanResult.dart';
 import '../../../customWidgets/ResultCircle.dart';
 
 class ScanningProductDetails extends StatelessWidget {

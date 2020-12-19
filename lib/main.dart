@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
-import 'pages/HomePage.dart';
-import 'pages/onboarding/main.dart';
-import 'theme/style.dart';
+import './frontend/pages/HomePage.dart';
+import './frontend/pages/onboarding/main.dart';
+import './frontend/theme/style.dart';
 
 void main() {
   SharedPreferences.setMockInitialValues(

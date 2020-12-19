@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../backend/Enums/ScanResult.dart';
+import '../../backend/Enums/ScanResult.dart';
 
 class ResultCircle extends StatelessWidget {
   ScanResult result;

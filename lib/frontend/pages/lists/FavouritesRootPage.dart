@@ -1,14 +1,14 @@
-import 'package:Inhaltsstoff_Warnapp/customWidgets/CustomAppBar.dart';
+import 'package:Inhaltsstoff_Warnapp/frontend/customWidgets/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 
-class FavouritesRoot extends StatefulWidget {
-  const FavouritesRoot({Key key}) : super(key: key);
+class FavouritesRootPage extends StatefulWidget {
+  const FavouritesRootPage({Key key}) : super(key: key);
 
   @override
-  _FavouritesRootState createState() => _FavouritesRootState();
+  _FavouritesRootPageState createState() => _FavouritesRootPageState();
 }
 
-class _FavouritesRootState extends State<FavouritesRoot> {
+class _FavouritesRootPageState extends State<FavouritesRootPage> {
   TextEditingController _textController;
 
   @override

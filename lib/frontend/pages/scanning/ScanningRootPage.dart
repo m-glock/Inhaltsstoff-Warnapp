@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
-import '../../backend/FoodApiAccess.dart';
-import '../../backend/Product.dart';
+import '../../../backend/FoodApiAccess.dart';
+import '../../../backend/Product.dart';
 import '../../customWidgets/CustomAppBar.dart';
 import '../../customWidgets/LabelledIconButton.dart';
-import './ScanningBarcodeDialog.dart';
+import 'scanningCustomWidgets/ScanningBarcodeDialog.dart';
 
-class ScanningRoot extends StatefulWidget {
-  const ScanningRoot({Key key}) : super(key: key);
+class ScanningRootPage extends StatefulWidget {
+  const ScanningRootPage({Key key}) : super(key: key);
 
   @override
-  _ScanningRootState createState() => _ScanningRootState();
+  _ScanningRootPageState createState() => _ScanningRootPageState();
 }
 
-class _ScanningRootState extends State<ScanningRoot> {
+class _ScanningRootPageState extends State<ScanningRootPage> {
   bool _isLoading = false;
 
   _getHexPrimaryColor() {

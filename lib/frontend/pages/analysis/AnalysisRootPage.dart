@@ -1,28 +1,28 @@
-import '../../customWidgets/CustomAppBar.dart';
 import 'package:flutter/material.dart';
+import '../../customWidgets/CustomAppBar.dart';
 
-class HistoryRoot extends StatefulWidget {
-  const HistoryRoot({ Key key }) : super(key: key);
+class AnalysisRootPage extends StatefulWidget {
+  const AnalysisRootPage({ Key key }) : super(key: key);
 
   @override
-  _HistoryRootState createState() => _HistoryRootState();
+  _AnalysisRootPageState createState() => _AnalysisRootPageState();
 }
 
-class _HistoryRootState extends State<HistoryRoot> {
+class _AnalysisRootPageState extends State<AnalysisRootPage> {
   TextEditingController _textController;
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(
-      text: "History",
+      text: "Analysis",
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar('Verlauf'),
+      appBar: CustomAppBar('Analyse'),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(32.0),

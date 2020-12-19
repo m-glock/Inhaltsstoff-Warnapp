@@ -1,28 +1,28 @@
-import 'package:flutter/material.dart';
 import '../../customWidgets/CustomAppBar.dart';
+import 'package:flutter/material.dart';
 
-class ComparisonRoot extends StatefulWidget {
-  const ComparisonRoot({ Key key }) : super(key: key);
+class HistoryRootPage extends StatefulWidget {
+  const HistoryRootPage({ Key key }) : super(key: key);
 
   @override
-  _ComparisonRootState createState() => _ComparisonRootState();
+  _HistoryRootPageState createState() => _HistoryRootPageState();
 }
 
-class _ComparisonRootState extends State<ComparisonRoot> {
+class _HistoryRootPageState extends State<HistoryRootPage> {
   TextEditingController _textController;
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(
-      text: "Comparison",
+      text: "History",
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar('Vergleich'),
+      appBar: CustomAppBar('Verlauf'),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(32.0),

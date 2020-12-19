@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './ScanningResult.dart';
-import './ScanningRoot.dart';
+import 'ScanningResultPage.dart';
+import 'ScanningRootPage.dart';
 
 class ScanningPage extends StatefulWidget {
   const ScanningPage({Key key}) : super(key: key);
@@ -21,9 +21,9 @@ class _ScanningPageState extends State<ScanningPage> {
           builder: (BuildContext context) {
             switch (settings.name) {
               case '/':
-                return ScanningRoot();
+                return ScanningRootPage();
               case '/result':
-                return ScanningResult(settings.arguments);
+                return ScanningResultPage(settings.arguments);
               //return ScanningResult(testProduct);
             }
           },
