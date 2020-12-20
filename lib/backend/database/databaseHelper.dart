@@ -72,24 +72,29 @@ class DatabaseHelper {
     allergens.forEach((element) async {
       if(element.isNotEmpty)
         await db.execute(
-            'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate) VALUES (1, \'$element\', null)');
+            'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (1, \'$element\', null, 1)');
     });
 
     List<String> vitamins = await foodApi.getTranslatedValuesForTag('vitamins');
     vitamins.forEach((element) async {
       if(element.isNotEmpty)
         await db.execute(
-            'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate) VALUES (2, \'$element\', null)');
+            'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (2, \'$element\', null, 2)');
     });
 
+    // special nutriments that are contained in ingredient list, but need to be handled separately
+    List<String> nutriments = ['Calcium', 'Natrium', 'Kalium', 'Phosphor', 'Magnesium', 'Eisen', 'Jod', 'Fluorid', 'Zink', 'Selen'];
     List<String> ingredients = await foodApi.getTranslatedValuesForTag('ingredients');
+
     ingredients.forEach((element) async {
       if(element.isNotEmpty){
         element = element.replaceAll('\'', '\'\'');
-        await db.execute('INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (1, \'$element\', null, 3)');
+        // ingredient is a nutriment, it will be inserted with the type id 2 for nutriment, otherwise with 3 for general
+        int typeId = nutriments.contains(element) ? 2 : 3;
+        await db.execute(
+            'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (1, \'$element\', null, $typeId)');
       }
     });
-    // TODO: get all ingredients from API, filter out the nutriment ones and save all others with type general in the DB
   }
 
   // insert one row into a table
