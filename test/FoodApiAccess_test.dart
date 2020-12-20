@@ -23,11 +23,6 @@ void main() {
     assert(allergenNames.isNotEmpty);
   });*/
 
-  test('Get all values for the tag allergies which does not exist in the database', () async {
-    List<String> allergenNames = await foodApi.getAllValuesForTag('allergies');
-    assert(allergenNames == null);
-  });*/
-
   test('translate a list of one ingredient to german', () async {
     List<String> englishNames = List();
     englishNames.add('en:gluten');
