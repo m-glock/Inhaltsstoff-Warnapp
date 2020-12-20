@@ -18,7 +18,7 @@ class Product extends DbTable{
   List<Ingredient> _ingredients;
   List<Ingredient> _traces;
 
-  double _quantity;
+  String _quantity;
   String _origin;
   String _manufacturingPlaces;
   String _stores;
@@ -35,7 +35,7 @@ class Product extends DbTable{
   List<Ingredient> get ingredients => _ingredients;
   List<Ingredient> get traces => _traces;
 
-  double get quantity => _quantity;
+  String get quantity => _quantity;
   String get origin => _origin;
   String get manufacturingPlaces => _manufacturingPlaces;
   String get stores => _stores;
@@ -63,8 +63,7 @@ class Product extends DbTable{
     newProduct._lastUpdated = DateTime.fromMillisecondsSinceEpoch(dateTime);
     newProduct._nutriscore = json['nutriscore_grade'];
 
-    String quantityString = (json['quantity'] as String).trim().replaceAll(new RegExp('[a-zA-Z]'), '');
-    newProduct._quantity = quantityString.isEmpty ? 0 : double.parse(quantityString);
+    newProduct._quantity = json['quantity'];
     newProduct._origin = json['origins'];
     newProduct._manufacturingPlaces = json['manufacturing_places'];
     newProduct._stores = json['stores'];
@@ -72,22 +71,23 @@ class Product extends DbTable{
     // add Ingredients, Allergens, Vitamins, Additives and Traces
     FoodApiAccess api = FoodApiAccess.instance;
     List<Ingredient> ingredients = List();
+    FoodApiAccess foodApi = FoodApiAccess.instance;
     List<dynamic> ingredientNames = json['ingredients_tags'];
-    ingredients = await api.getIngredientsWithTranslatedNames(ingredientNames, 'ingredients');
+    ingredients = await foodApi.getIngredientsWithTranslatedNames(ingredientNames, 'ingredients');
 
     var allergenNames = json['allergens_tags'];
-    ingredients.addAll(await api.getIngredientsWithTranslatedNames(allergenNames, 'allergens'));
+    ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(allergenNames, 'allergens'));
 
     List<dynamic> vitaminNames = json['vitamins_tags'];
-    ingredients.addAll(await api.getIngredientsWithTranslatedNames(vitaminNames, 'vitamins'));
+    ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(vitaminNames, 'vitamins'));
 
     List<dynamic> additiveNames = json['additives_tags'];
-    ingredients.addAll(await api.getIngredientsWithTranslatedNames(additiveNames, 'additives'));
+    ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(additiveNames, 'additives'));
 
     newProduct._ingredients = ingredients;
 
     List<dynamic> tracesNames = json['traces_tags'];
-    newProduct._traces = await api.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
+    newProduct._traces = await foodApi.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
 
     //TODO use itemizedScanResults in PreferenceManager to get the overall scanresult, right now only dummy data
     newProduct._scanResult = ScanResult.Yellow;

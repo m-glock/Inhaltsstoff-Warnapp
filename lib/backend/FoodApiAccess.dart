@@ -18,19 +18,14 @@ class FoodApiAccess{
   Map _ingredients;
 
   // make this a singleton class
-  FoodApiAccess._privateConstructor(){
-      _setAllergens();
-      _setVitamins();
-      //_setIngredients();
-  }
-
+  FoodApiAccess._privateConstructor();
   static final FoodApiAccess instance = FoodApiAccess._privateConstructor();
 
-  void _setAllergens() async => _allergens = await getAllValuesForTag('allergens');
-  void _setVitamins() async => _vitamins = await getAllValuesForTag('vitamins');
-  //void _setIngredients() async => _ingredients = await getAllValuesForTag('ingredients');
+  Future<Map> _getCorrespondingMap(String tag) async {
+    if(_allergens == null) _allergens = await _getAllValuesForTag('allergens');
+    if(_vitamins == null) _vitamins = await _getAllValuesForTag('vitamins');
+    if(_ingredients == null) _ingredients = await _getAllValuesForTag('ingredients');
 
-  Map<dynamic, dynamic> _getCorresponsingMap(String tag){
     switch(tag){
       case 'vitamins':
         return _vitamins;
@@ -75,7 +70,7 @@ class FoodApiAccess{
   * @param tag: the tag name from the product json
   * @return a map of all possible values that exist in the API for this specific tag or null if tag was not found
   * */
-  Future<Map<dynamic, dynamic>> getAllValuesForTag(String tag, {String languageCode:'de'}) async {
+  Future<Map<dynamic, dynamic>> _getAllValuesForTag(String tag) async {
     String requestUrl = '$_foodDbApiUrl/$_taxonomyEndpoint/$tag.json';
 
     http.Response response = await _getRequest(requestUrl);
@@ -102,15 +97,27 @@ class FoodApiAccess{
   * */
   Future<List<String>> getTranslatedValuesForTag(String tag, {List<dynamic> tagValues, String languageCode:'de'}) async {
     List<String> translatedTagValues = new List();
-    Map<dynamic, dynamic> allTagValues = _getCorresponsingMap(tag);
+    Map<dynamic, dynamic> allTagValues = await _getCorrespondingMap(tag);
 
     if(tagValues == null || tagValues.isEmpty){ // translate all existing tag values
 
-      allTagValues.forEach((key, value) {
-        String tagValue = value['name'][languageCode];
-        if(tagValue == null) tagValue = value['name']['en'];
-        translatedTagValues.add(tagValue);
-      });
+      for(final keyValuePair in allTagValues.entries){
+        if(tag == 'vitamins' && keyValuePair.value['children'] == null)
+          continue;
+
+        String tagValue = keyValuePair.value['name'][languageCode];
+        if(tagValue == null){
+          String tagValueEn = keyValuePair.value['name']['en'];
+          tagValue = tagValueEn != null
+              ? tagValueEn
+              : keyValuePair.key;
+        }
+
+        if(tagValue != 'None'){
+          tagValue = tagValue.substring(tagValue.indexOf(':') + 1);
+          translatedTagValues.add(tagValue);
+        }
+      }
 
     } else { // translate only tag names in tagValues
 
