@@ -81,6 +81,8 @@ class MyApp extends StatelessWidget {
 
             //dbHelper.add(Ingredient('Milch', PreferenceType.NotWanted, formatted));
             Ingredient ingredient_milch = Ingredient("Hydroxocobalamin", PreferenceType.NotPreferred, "null");
+
+            //await dbHelper.read(62, DbTableNames.ingredient);
             Map<Ingredient, PreferenceType> preferenceToChange = {ingredient_milch:PreferenceType.Preferred};
 
             PreferenceManager.changePreference(preferenceToChange);

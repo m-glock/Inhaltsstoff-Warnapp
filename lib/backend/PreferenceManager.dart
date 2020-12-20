@@ -25,11 +25,28 @@ class PreferenceManager {
 
       //await dbHelper.update(Ingredient(this._name, preferenceTypeToChange, getCurrentDate()));
 
+      var resultSet = await db.rawQuery('select preferencetypeid AS r_id from Ingredient where name = ?',[ingredient.name]);
+      // Get first result
+      var dbItem = resultSet.first;
+      // Access its id
+      var resourceId = dbItem['r_id'] as int;
+
+
+        print(resourceId);
+
+
+
+
       print('-------------');
+      print(ingredient.id);
+      print(ingredient.preferenceType);
+      print(ingredient.name);
+      print(preferenceType);
       //print(preferenceTypeId);
-      //await db.rawQuery('select name from preferencetype where id=?',[await db.rawQuery('select preferencetypeid from Ingredient where name = ?',[ingredient.name])]);
-      await db.rawUpdate('UPDATE Ingredient SET preferencesType = ? WHERE name = ? and id = ?',
-          [preferenceType.name, ingredient.name, ingredient.id]);
+      //await db.rawQuery('select name from preferencetype where id=?',[;
+
+      //await db.rawUpdate('UPDATE Ingredient SET preferencesType = ? WHERE name = ? and id = ?',
+      //    [preferenceType.name, ingredient.name, ingredient.id]);
 
     });
 
