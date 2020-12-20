@@ -78,12 +78,17 @@ class DatabaseHelper {
     List<String> vitamins = await foodApi.getTranslatedValuesForTag('vitamins');
     vitamins.forEach((element) async {
       if(element.isNotEmpty)
-        // TODO make sure this works when only parent vitamins are added (one of the children right now has a stupid typo :/)
         await db.execute(
             'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate) VALUES (2, \'$element\', null)');
     });
 
     List<String> ingredients = await foodApi.getTranslatedValuesForTag('ingredients');
+    ingredients.forEach((element) async {
+      if(element.isNotEmpty){
+        element = element.replaceAll('\'', '\'\'');
+        await db.execute('INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (1, \'$element\', null, 3)');
+      }
+    });
     // TODO: get all ingredients from API, filter out the nutriment ones and save all others with type general in the DB
   }
 

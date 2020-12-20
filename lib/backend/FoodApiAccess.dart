@@ -101,12 +101,23 @@ class FoodApiAccess{
 
     if(tagValues == null || tagValues.isEmpty){ // translate all existing tag values
 
-      allTagValues.forEach((key, value) {
-        // TODO: only get vitamins that are parents
-        String tagValue = value['name'][languageCode];
-        if(tagValue == null) tagValue = value['name']['en'];
-        translatedTagValues.add(tagValue);
-      });
+      for(final keyValuePair in allTagValues.entries){
+        if(tag == 'vitamins' && keyValuePair.value['children'] == null)
+          continue;
+
+        String tagValue = keyValuePair.value['name'][languageCode];
+        if(tagValue == null){
+          String tagValueEn = keyValuePair.value['name']['en'];
+          tagValue = tagValueEn != null
+              ? tagValueEn
+              : keyValuePair.key;
+        }
+
+        if(tagValue != 'None'){
+          tagValue = tagValue.substring(tagValue.indexOf(':') + 1);
+          translatedTagValues.add(tagValue);
+        }
+      }
 
     } else { // translate only tag names in tagValues
 
