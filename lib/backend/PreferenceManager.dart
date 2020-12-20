@@ -24,8 +24,12 @@ class PreferenceManager {
       //PreferenceType preferenceTypeToChange = preferenceType;
 
       //await dbHelper.update(Ingredient(this._name, preferenceTypeToChange, getCurrentDate()));
+
+      print('-------------');
+      //print(preferenceTypeId);
+      //await db.rawQuery('select name from preferencetype where id=?',[await db.rawQuery('select preferencetypeid from Ingredient where name = ?',[ingredient.name])]);
       await db.rawUpdate('UPDATE Ingredient SET preferencesType = ? WHERE name = ? and id = ?',
-          [preferenceType, ingredient.name, ingredient.id]);
+          [preferenceType.name, ingredient.name, ingredient.id]);
 
     });
 

@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -78,10 +79,14 @@ class MyApp extends StatelessWidget {
             //dbHelper.add(Ingredient('Zucker', PreferenceType.NotWanted, formatted));
 
 
-            dbHelper.add(Ingredient('Milch', PreferenceType.NotWanted, formatted));
+            //dbHelper.add(Ingredient('Milch', PreferenceType.NotWanted, formatted));
+            Ingredient ingredient_milch = Ingredient("Hydroxocobalamin", PreferenceType.NotPreferred, "null");
+            Map<Ingredient, PreferenceType> preferenceToChange = {ingredient_milch:PreferenceType.Preferred};
+
+            PreferenceManager.changePreference(preferenceToChange);
+            
             //dbHelper.add(Ingredient('Magnesium', PreferenceType.NotPreferred, formatted, Type.Allergen));
             //dbHelper.add(Ingredient('Wasser', PreferenceType.Preferred, formatted, Type.Nutriment));
-
 
 
             List<Map> results = await db.query("ingredient", columns: Ingredient.columns, orderBy: "id DESC");
@@ -92,6 +97,8 @@ class MyApp extends StatelessWidget {
             results.forEach((element) {
               print(element);
             });
+            
+            
 
             /*
             List<Ingredient> ingredients = new List();
