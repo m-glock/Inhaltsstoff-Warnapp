@@ -232,7 +232,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
       done: Text('Starten', style: TextStyle(fontWeight: FontWeight.w600)),
       dotsDecorator: DotsDecorator(
         size: Size(10.0, 10.0),
-        color: Color(0xFFBDBDBD),
+        color: Theme.of(context).disabledColor,
+        activeColor: Theme.of(context).primaryColor,
         activeSize: Size(22.0, 10.0),
         activeShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(25.0)),
