@@ -118,11 +118,14 @@ class DatabaseHelper {
   }
 
   // get a row with a specific id from a table
-  Future<DbTable> read(int id, DbTableNames table) async {
+  Future<DbTable> read(DbTableNames tableType, List<dynamic> whereargs, {String whereColumn = 'id'}) async {
     Database db = await instance.database;
-    List<Map> list = await db.query(table.name, where: 'id = ?', whereArgs: [id]);
-    int length = list.length;
-    return length > 0 ? table.fromMap(list[0]) : null;
+    if(whereargs.length != 1)
+      throw Exception('Wrong number of arguments. If you want to get more than one element, please use the readAll method.');
+
+    List<Map> list = await db.query(tableType.name, where: '$whereColumn = ?', whereArgs: whereargs);
+    DbTable table = tableType.fromMap(list[0]);
+    return list.length > 0 ? table : null;
   }
 
   // read all rows with specific values
