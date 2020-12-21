@@ -129,11 +129,22 @@ class DatabaseHelper {
   }
 
   // read all rows with specific values
-  // TODO: in progress
-  Future<List <Map>> readAll(DbTableNames tableType) async {
+  Future<List<DbTable>> readAll(DbTableNames tableType, {String whereColumn, List<dynamic> whereArgs}) async {
     Database db = await instance.database;
-    List<Map> list = await db.query(tableType.name);
-    return list;
+    if(whereArgs != null && whereArgs.length != 1)
+      throw Exception('Wrong number of arguments.');
+
+    List<Map> list;
+    if(whereColumn == null)
+      list = await db.query(tableType.name);
+    else
+      list = await db.query(tableType.name, where: '$whereColumn = ?', whereArgs: whereArgs);
+
+    List<DbTable> objectList = new List();
+    list.forEach((element) {
+      objectList.add(tableType.fromMap(element));
+    });
+    return objectList;
   }
 
   // update a specific row in a table
