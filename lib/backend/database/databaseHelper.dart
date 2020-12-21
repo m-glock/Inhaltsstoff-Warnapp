@@ -40,6 +40,7 @@ class DatabaseHelper {
         onCreate: _onCreate);
   }
 
+  // set flag to use foreign keys
   static Future _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
   }
@@ -68,6 +69,9 @@ class DatabaseHelper {
           await db.execute(
               'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (1, \'$element\', null, $typeId)');
         } catch(exception) {
+          // some ingredients have already been added as allergens or vitamins
+          // ingredients should not have duplicates in the DB, so we make sure
+          // not to insert ingredients that are already in the DB
           DatabaseException ex = exception as DatabaseException;
           if(!ex.isUniqueConstraintError())
             print('Database Error when inserting the ingredients into the database.');
@@ -76,6 +80,7 @@ class DatabaseHelper {
     });
   }
 
+  // execute sql queries that are saved in a text file in the assets folder
   Future<void> _executeQueriesFromFile(Database db, String filename) async {
     String fileText = await rootBundle.loadString('assets/database/$filename.txt');
     List<String> queries = fileText.split(';');
@@ -86,6 +91,8 @@ class DatabaseHelper {
     });
   }
 
+  // insert ingredients that are saved in the food api under a certain tag
+  // (such as vitamins) into the DB
   Future<void> _insertIngredientsFromFoodApi(Database db, String tag, int typeId) async {
     List<String> allergens = await FoodApiAccess.instance.getTranslatedValuesForTag(tag);
     allergens.forEach((element) async {
@@ -117,7 +124,7 @@ class DatabaseHelper {
     return newRowIds;
   }
 
-  // get a row with a specific id from a table
+  // get a row with a specific value from a table (id is the default column)
   Future<DbTable> read(DbTableNames tableType, List<dynamic> whereargs, {String whereColumn = 'id'}) async {
     Database db = await instance.database;
     if(whereargs.length != 1)
