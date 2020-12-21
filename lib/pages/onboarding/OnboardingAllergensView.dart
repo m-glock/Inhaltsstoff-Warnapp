@@ -11,7 +11,7 @@ class OnboardingAllergensView extends StatelessWidget {
   });
 
   final Map<Ingredient, PreferenceType> allergenePreferences;
-  final Function onChange;
+  final void Function(Ingredient, PreferenceType) onChange;
 
   @override
   Widget build(BuildContext context) {
