@@ -47,37 +47,15 @@ class DatabaseHelper {
 
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
-
     // load sql to create tables and insert enum content
     await _executeQueriesFromFile(db, 'create_tables_sql');
     await _executeQueriesFromFile(db, 'insert_into_tables_sql');
 
-    // get allergens and vitamins from foodapi and save them into the DB
+    // get lists of ingredients from food api and save them into the DB
     await _insertIngredientsFromFoodApi(db, 'allergens', 1);
     await _insertIngredientsFromFoodApi(db, 'vitamins', 2);
-
-    // special nutriments that are contained in ingredient list, but need to be handled separately
-    List<String> nutriments = ['Calcium', 'Natrium', 'Kalium', 'Phosphor', 'Magnesium', 'Eisen', 'Jod', 'Fluorid', 'Zink', 'Selen'];
-    List<String> ingredients = await FoodApiAccess.instance.getTranslatedValuesForTag('ingredients');
-
-    ingredients.forEach((element) async {
-      if(element.isNotEmpty){
-        element = element.replaceAll('\'', '\'\'');
-        // ingredient is a nutriment, it will be inserted with the type id 2 for nutriment, otherwise with 3 for general
-        int typeId = nutriments.contains(element) ? 2 : 3;
-        try{
-          await db.execute(
-              'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (1, \'$element\', null, $typeId)');
-        } catch(exception) {
-          // some ingredients have already been added as allergens or vitamins
-          // ingredients should not have duplicates in the DB, so we make sure
-          // not to insert ingredients that are already in the DB
-          DatabaseException ex = exception as DatabaseException;
-          if(!ex.isUniqueConstraintError())
-            print('Database Error when inserting the ingredients into the database.');
-        }
-      }
-    });
+    await _insertIngredientsFromFoodApi(db, 'minerals', 2);
+    await _insertIngredientsFromFoodApi(db, 'ingredients', 3);
   }
 
   // execute sql queries that are saved in a text file in the assets folder
@@ -94,11 +72,22 @@ class DatabaseHelper {
   // insert ingredients that are saved in the food api under a certain tag
   // (such as vitamins) into the DB
   Future<void> _insertIngredientsFromFoodApi(Database db, String tag, int typeId) async {
-    List<String> allergens = await FoodApiAccess.instance.getTranslatedValuesForTag(tag);
-    allergens.forEach((element) async {
-      if(element.isNotEmpty)
-        await db.execute(
-            'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (1, \'$element\', null, $typeId)');
+    List<String> ingredients = await FoodApiAccess.instance.getTranslatedValuesForTag(tag);
+    ingredients.forEach((element) async {
+      if(element.isNotEmpty){
+        try{
+          element = element.replaceAll('\'', '\'\'');
+          await db.execute(
+              'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (1, \'$element\', null, $typeId)');
+        } catch(exception) {
+          // some ingredients have already been added as allergens or vitamins
+          // ingredients should not have duplicates in the DB, so we make sure
+          // not to insert ingredients that are already in the DB
+          DatabaseException ex = exception as DatabaseException;
+          if(!ex.isUniqueConstraintError())
+            print('Database Error when inserting the ingredients into the database.');
+        }
+      }
     });
   }
 
