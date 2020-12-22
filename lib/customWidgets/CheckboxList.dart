@@ -8,6 +8,7 @@ class CheckboxList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(" inside CheckboxList: " + items.toString());
     return Container(
       child: Column(
         children: List.generate(
