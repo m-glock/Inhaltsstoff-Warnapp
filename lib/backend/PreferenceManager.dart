@@ -21,32 +21,21 @@ class PreferenceManager {
     final db = await dbHelper.database;
 
     preferenceChanges.forEach((ingredient, preferenceType) async {
-      //PreferenceType preferenceTypeToChange = preferenceType;
 
-      //await dbHelper.update(Ingredient(this._name, preferenceTypeToChange, getCurrentDate()));
+      //retrieve preferencetypeid and ingredient_id from the db
+      var resultSetIngredient = await db.rawQuery('select i.preferencetypeid as pr_id, i.id as ing_id from ingredient i join preferencetype p where i.name = ? and i.preferencetypeid=p.id',[ingredient.name]);
+      var dbItem = resultSetIngredient.first;
+      var preferenceTypeId = dbItem['pr_id'] as int;
+      var ingrId = dbItem['ing_id'] as int;
 
-      var resultSet = await db.rawQuery('select preferencetypeid AS r_id from Ingredient where name = ?',[ingredient.name]);
-      // Get first result
-      var dbItem = resultSet.first;
-      // Access its id
-      var resourceId = dbItem['r_id'] as int;
+      //retrieve id from the new preferenceType
+      var resultSetPreferenceType = await db.rawQuery('select id as pr_id from preferencetype where name = ?',[preferenceType.name]);
+      var dbItem_1 = resultSetPreferenceType.first;
+      var preferenceTypeIdNew = dbItem_1['pr_id'] as int;
 
-
-        print(resourceId);
-
-
-
-
-      print('-------------');
-      print(ingredient.id);
-      print(ingredient.preferenceType);
-      print(ingredient.name);
-      print(preferenceType);
-      //print(preferenceTypeId);
-      //await db.rawQuery('select name from preferencetype where id=?',[;
-
-      //await db.rawUpdate('UPDATE Ingredient SET preferencesType = ? WHERE name = ? and id = ?',
-      //    [preferenceType.name, ingredient.name, ingredient.id]);
+      // update preferencetypeid in ingredient
+      await db.rawUpdate('UPDATE Ingredient SET preferencetypeid = ?, preferenceAddDate = ? WHERE id = ?',
+          [preferenceTypeIdNew, Ingredient.getCurrentDate(), ingrId]);
 
     });
 
@@ -54,19 +43,11 @@ class PreferenceManager {
   }
 
   /*
-  * changes the preference type of this ingredient
-  * @param preferenceType: the new preference for this ingredient
-  * */
-  //void changePreference(PreferenceType preferenceType) async {
-  
-
-  /*
   * get all Ingredients that are saved in the DB that have a preferenceType other than NONE
   * @param preferenceTypes: if only ingredients with a specific preference type are requested
   * @return: a list of all ingredients that the user has preferenced
   * */
   static Future<List<Ingredient>> getPreferencedIngredients({List<PreferenceType> preferenceTypes}) async {
-    // implement status: ongoing
     final dbHelper = DatabaseHelper.instance;
     final db = await dbHelper.database;
 

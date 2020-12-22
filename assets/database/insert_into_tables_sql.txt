@@ -6,7 +6,6 @@ INSERT INTO preferencetype (name) VALUES ('None');
 INSERT INTO preferencetype (name) VALUES ('Not Wanted');
 INSERT INTO preferencetype (name) VALUES ('Not Preferred');
 INSERT INTO preferencetype (name) VALUES ('Preferred');
-INSERT INTO preferencetype (name) VALUES ('None');
 
 INSERT INTO type (name) VALUES ('Allergen');
 INSERT INTO type (name) VALUES ('Nutriment');

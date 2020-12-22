@@ -79,17 +79,20 @@ class MyApp extends StatelessWidget {
             //dbHelper.add(Ingredient('Zucker', PreferenceType.NotWanted, formatted));
 
 
-            //dbHelper.add(Ingredient('Milch', PreferenceType.NotWanted, formatted));
-            Ingredient ingredient_milch = Ingredient("Hydroxocobalamin", PreferenceType.NotPreferred, "null");
+            dbHelper.add(Ingredient('MilchTestIngredient', PreferenceType.NotWanted, formatted));
+            Ingredient ingredient_milch = Ingredient("MilchTestIngredient", PreferenceType.NotPreferred, "null");
 
             //await dbHelper.read(62, DbTableNames.ingredient);
             Map<Ingredient, PreferenceType> preferenceToChange = {ingredient_milch:PreferenceType.Preferred};
 
             PreferenceManager.changePreference(preferenceToChange);
-            
+
+
             //dbHelper.add(Ingredient('Magnesium', PreferenceType.NotPreferred, formatted, Type.Allergen));
             //dbHelper.add(Ingredient('Wasser', PreferenceType.Preferred, formatted, Type.Nutriment));
 
+
+            print(await dbHelper.readAll(DbTableNames.preferenceType));
 
             List<Map> results = await db.query("ingredient", columns: Ingredient.columns, orderBy: "id DESC");
             //List<Map> results = await db.rawQuery("select i.name, i.preferenceTypeId, i.preferenceAddDate, i.id, p.name preferenceType from ingredient i join preferencetype p on i.preferenceTypeId=p.id where i.preferenceTypeId is not 'NONE'");
