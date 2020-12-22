@@ -20,27 +20,30 @@ class PreferencesAllergensView extends StatefulWidget {
 }
 
 class _PreferencesAllergensViewState extends State<PreferencesAllergensView> {
-  Map<Ingredient, PreferenceType> _filteredAllergenePreferences;
+  List<Ingredient> _filteredIngredients;
 
   @override
   void initState() {
     super.initState();
-    _filteredAllergenePreferences = widget.allergenePreferences;
+    _filteredIngredients = widget.allergenePreferences.keys.toList();
   }
 
   void _onFilterList(List<String> newFilteredList) {
-    List<Ingredient> filteredIngredients = widget.allergenePreferences.keys
-        .toList()
-        .where((ingredient) => newFilteredList.contains(ingredient.name))
-        .toList();
+    setState(() {
+      _filteredIngredients = widget.allergenePreferences.keys
+          .toList()
+          .where((ingredient) => newFilteredList.contains(ingredient.name))
+          .toList();
+    });
+  }
+
+  Map<Ingredient, PreferenceType> get _filteredAllergenePreferences {
     Map<Ingredient, PreferenceType> newAllergenePreferences = {};
-    filteredIngredients.forEach((ingredient) {
+    _filteredIngredients.forEach((ingredient) {
       newAllergenePreferences[ingredient] =
           widget.allergenePreferences[ingredient];
     });
-    setState(() {
-      _filteredAllergenePreferences = newAllergenePreferences;
-    });
+    return newAllergenePreferences;
   }
 
   @override
