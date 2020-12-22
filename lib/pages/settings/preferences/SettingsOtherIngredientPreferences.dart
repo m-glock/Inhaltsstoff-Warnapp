@@ -1,22 +1,59 @@
 import 'package:flutter/material.dart';
 
-class SettingsOtherIngredientPreferences extends StatelessWidget {
+import '../../../backend/Enums/PreferenceType.dart';
+import '../../../backend/Ingredient.dart';
+import '../../preferences/PreferencesOtherIngredientsView.dart';
+import '../../../backend/PreferenceManager.dart';
+import '../../../backend/Enums/Type.dart';
+
+class SettingsOtherIngredientPreferences extends StatefulWidget {
   const SettingsOtherIngredientPreferences({
-    Key key,
-  }) : super(key: key);
+    @required this.onSave,
+  });
+
+  final Function onSave;
+
+  @override
+  _SettingsOtherIngredientPreferencesState createState() =>
+      _SettingsOtherIngredientPreferencesState();
+}
+
+class _SettingsOtherIngredientPreferencesState
+    extends State<SettingsOtherIngredientPreferences> {
+  Map<Ingredient, PreferenceType> _otherIngredientPreferences = Map.fromIterable(
+      PreferenceManager.getAllAvailableIngredients(type: Type.Allergen)
+          .where((ingredient) => ingredient.type == Type.Allergen),
+      key: (ingredient) => ingredient,
+      value: (ingredient) => ingredient.preferenceType);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Other Ingredient Preferences'),
+        title: Text('Unerwünschte Inhaltsstoffe'),
         backgroundColor: Theme.of(context).primaryColor,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.save,
+              color: Colors.white,
+            ),
+            onPressed: () => widget.onSave(_otherIngredientPreferences),
+          ),
+        ],
       ),
       backgroundColor: Colors.white,
-      body: Container(
-        padding: const EdgeInsets.all(32.0),
-        alignment: Alignment.center,
-        child: Text('Hier sieht man die anderen Inhaltsstoffe.'),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: PreferencesOtherIngredientsView(
+          otherIngredientPreferences: _otherIngredientPreferences,
+          onChange:
+              (Ingredient changedIngredient, PreferenceType newPreference) {
+            setState(() {
+              _otherIngredientPreferences[changedIngredient] = newPreference;
+            });
+          },
+        ),
       ),
     );
   }

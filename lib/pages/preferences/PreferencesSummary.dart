@@ -1,8 +1,8 @@
-import 'package:Inhaltsstoff_Warnapp/customWidgets/EditableChipsList.dart';
 import 'package:flutter/material.dart';
 
-import '../backend/Ingredient.dart';
-import '../backend/Enums/PreferenceType.dart';
+import '../../backend/Ingredient.dart';
+import '../../backend/Enums/PreferenceType.dart';
+import '../../customWidgets/EditableChipsList.dart';
 
 class PreferencesSummary extends StatelessWidget {
   PreferencesSummary({

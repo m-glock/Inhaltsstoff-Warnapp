@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../backend/Enums/PreferenceType.dart';
 import '../../../backend/Ingredient.dart';
-import '../../onboarding/OnboardingAllergensView.dart';
+import '../../preferences/PreferencesAllergensView.dart';
 import '../../../backend/PreferenceManager.dart';
 import '../../../backend/Enums/Type.dart';
 
@@ -30,7 +30,7 @@ class _SettingsAllergenePreferencesState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Allergene Preferences'),
+        title: Text('Allergien'),
         backgroundColor: Theme.of(context).primaryColor,
         actions: [
           IconButton(
@@ -45,7 +45,7 @@ class _SettingsAllergenePreferencesState
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: OnboardingAllergensView(
+        child: PreferencesAllergensView(
           allergenePreferences: _allergenePreferences,
           onChange:
               (Ingredient changedIngredient, PreferenceType newPreference) {

@@ -4,7 +4,7 @@ import '../../../backend/Enums/PreferenceType.dart';
 import '../../../backend/Ingredient.dart';
 import '../../../backend/PreferenceManager.dart';
 import '../../../backend/Enums/Type.dart';
-import '../../PreferencesSummary.dart';
+import '../../preferences/PreferencesSummary.dart';
 import './SettingsAllergenePreferences.dart';
 import './SettingsNutrientPreferences.dart';
 import './SettingsOtherIngredientPreferences.dart';
@@ -63,13 +63,27 @@ class _SettingsPreferencesSummaryState
         case "nutrients":
           Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) =>
-                  SettingsNutrientPreferences()));
+                  SettingsNutrientPreferences(onSave:
+                    (Map<Ingredient, PreferenceType> newNutrientPreferences) {
+                  setState(() {
+                    PreferenceManager.changePreference(newNutrientPreferences);
+                    _nutrientPreferences = newNutrientPreferences;
+                    Navigator.pop(context);
+                  });
+                },)));
           break;
         case "unwantedIngredients":
         case "unpreferredIngredients":
           Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) =>
-                  SettingsOtherIngredientPreferences()));
+                  SettingsOtherIngredientPreferences(onSave:
+                    (Map<Ingredient, PreferenceType> newOtherIngredientPreferences) {
+                  setState(() {
+                    PreferenceManager.changePreference(newOtherIngredientPreferences);
+                    _otherIngredientPreferences = newOtherIngredientPreferences;
+                    Navigator.pop(context);
+                  });
+                },)));
           break;
         default:
           throw ('Illegal state: tried to navigate to sub page of SettingsPreferences but new Page ${pageName} does not exist');

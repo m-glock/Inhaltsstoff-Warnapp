@@ -2,11 +2,11 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
 
 import './OnboardingTitleWidget.dart';
-import './OnboardingAllergensView.dart';
-import './OnboardingOtherIngredientsView.dart';
-import './OnboardingNutrientsView.dart';
+import '../preferences/PreferencesAllergensView.dart';
+import '../preferences/PreferencesNutrientsView.dart';
+import '../preferences/PreferencesOtherIngredientsView.dart';
+import '../preferences/PreferencesSummary.dart';
 import '../HomePage.dart';
-import '../PreferencesSummary.dart';
 import '../../backend/PreferenceManager.dart';
 import '../../backend/Ingredient.dart';
 import '../../backend/Enums/Type.dart';
@@ -120,7 +120,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             title: "Allergien",
             subTitle: "Hast du irgendwelche Allergien?",
           ),
-          bodyWidget: OnboardingAllergensView(
+          bodyWidget: PreferencesAllergensView(
             allergenePreferences: _allergenePreferences,
             onChange:
                 (Ingredient changedIngredient, PreferenceType newPreference) {
@@ -137,7 +137,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle:
                 "Gibt es Nährstoffe, die du bewusst vermehrt aufnehmen möchtest?",
           ),
-          bodyWidget: OnboardingNutrientsView(
+          bodyWidget: PreferencesNutrientsView(
             nutrientPreferences: _nutrientPreferences,
             onChange:
                 (Ingredient changedIngredient, PreferenceType newPreference) {
@@ -154,7 +154,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle:
                 "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
           ),
-          bodyWidget: OnboardingOtherIngredientsView(
+          bodyWidget: PreferencesOtherIngredientsView(
             otherIngredientPreferences: _otherIngredientPreferences,
             onChange:
                 (Ingredient changedIngredient, PreferenceType newPreference) {
