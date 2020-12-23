@@ -50,8 +50,8 @@ class Ingredient extends DbTable {
   @override
   Map<String, dynamic> toMap({bool withId: true}) {
     final map = new Map<String, dynamic>();
-    map['name'] = name;
-    map['preferencesTypeId'] = preferenceType;
+    map['name'] = _name;
+    map['preferenceType'] = _preferencesType;
     //map['type'] = type;
     map['preferenceAddDate'] = _preferenceAddDate;
     if (withId) map['id'] = super.id;

@@ -10,59 +10,77 @@ import 'database/DbTableNames.dart';
 import 'database/databaseHelper.dart';
 
 class PreferenceManager {
-
   /*
   * When the user changes the preference of one or multiple Ingredients, this method is called and
   * saves the information in the database
   * @param preferenceChanges: a map of ingredients and the preference types they should change to
   * */
-  static void changePreference(Map<Ingredient, PreferenceType> preferenceChanges) async {
+  static void changePreference(
+      Map<Ingredient, PreferenceType> preferenceChanges) async {
     final dbHelper = DatabaseHelper.instance;
     final db = await dbHelper.database;
 
     preferenceChanges.forEach((ingredient, preferenceType) async {
-
       //retrieve preferencetypeid and ingredient_id from the db
-      var resultSetIngredient = await db.rawQuery('select i.preferencetypeid as pr_id, i.id as ing_id from ingredient i join preferencetype p where i.name = ? and i.preferencetypeid=p.id',[ingredient.name]);
+      var resultSetIngredient = await db.rawQuery(
+          'select i.preferencetypeid as pr_id, i.id as ing_id from ingredient i join preferencetype p where i.name = ? and i.preferencetypeid=p.id',
+          [ingredient.name]);
       var dbItem = resultSetIngredient.first;
       var preferenceTypeId = dbItem['pr_id'] as int;
       var ingrId = dbItem['ing_id'] as int;
 
       //retrieve id from the new preferenceType
-      var resultSetPreferenceType = await db.rawQuery('select id as pr_id from preferencetype where name = ?',[preferenceType.name]);
+      var resultSetPreferenceType = await db.rawQuery(
+          'select id as pr_id from preferencetype where name = ?',
+          [preferenceType.name]);
       var dbItem_1 = resultSetPreferenceType.first;
       var preferenceTypeIdNew = dbItem_1['pr_id'] as int;
 
       // update preferencetypeid in ingredient
-      await db.rawUpdate('UPDATE Ingredient SET preferencetypeid = ?, preferenceAddDate = ? WHERE id = ?',
+      await db.rawUpdate(
+          'UPDATE Ingredient SET preferencetypeid = ?, preferenceAddDate = ? WHERE id = ?',
           [preferenceTypeIdNew, Ingredient.getCurrentDate(), ingrId]);
-
     });
-
-
   }
 
   /*
   * get all Ingredients that are saved in the DB that have a preferenceType other than NONE
   * @param preferenceTypes: if only ingredients with a specific preference type are requested
-  * @return: a list of all ingredients that the user has preferenced
+  * @return: a list of all ingredients that the user has preferred
   * */
-  static Future<List<Ingredient>> getPreferencedIngredients({List<PreferenceType> preferenceTypes}) async {
+  static Future<List<Ingredient>> getPreferencedIngredients(
+      [List<PreferenceType> preferenceTypes]) async {
     final dbHelper = DatabaseHelper.instance;
     final db = await dbHelper.database;
-
-    List<Map> results = await db.rawQuery("select i.name, i.preferencesTypeId, i.addDate, i.id, p.name preferenceType from ingredient i join preferencetype p on i.preferencesTypeId=p.id where i.preferencesTypeId is not 'NONE'");
-
-    // results.forEach((element) {
-    //   print(element);
-    // });
-
     List<Ingredient> ingredients = new List();
-    results.forEach((result) {
 
-      Ingredient ingredient = Ingredient.fromMap(result);
-      ingredients.add(ingredient);
-    });
+    if (preferenceTypes?.isEmpty ?? true) {
+      List<Map> results = await db.rawQuery(
+          "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id where p.name is not 'None'");
+      results.forEach((result) {
+        //print(result);
+        Ingredient ingredient = Ingredient.fromMap(result);
+        ingredients.add(ingredient);
+      });
+    }
+
+    if (preferenceTypes?.isNotEmpty ?? true) {
+      preferenceTypes.forEach((element) async {
+        String element_name = element.name;
+        //print(element_name);
+
+        List<Map> results = await db.rawQuery(
+            "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id where p.name = ?",
+            [element_name]);
+        results.forEach((result) {
+          //print(result);
+          Ingredient ingredient = Ingredient.fromMap(result);
+          ingredients.add(ingredient);
+        });
+      });
+    }
+
+    return ingredients;
 
     // ingredients.forEach((element) {
     //   print(element);
@@ -74,7 +92,6 @@ class PreferenceManager {
     // ingredients.add(Ingredient('Magnesium', PreferenceType.NotPreferred, ''));
     // ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, ''));
     // //await dbHelper.readAll(DbTableNames.ingredient);
-    return ingredients;
   }
 
   /*

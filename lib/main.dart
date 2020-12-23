@@ -69,8 +69,8 @@ class MyApp extends StatelessWidget {
             await db.rawInsert("INSERT INTO type (name) VALUES ('Nutriment')");
             await db.rawInsert("INSERT INTO type (name) VALUES ('General')");*/
 
-            print(await dbHelper.readAll(DbTableNames.preferenceType));
-            print(await dbHelper.readAll(DbTableNames.type));
+            //print(await dbHelper.readAll(DbTableNames.preferenceType));
+            //print(await dbHelper.readAll(DbTableNames.type));
 
 
             //not correct
@@ -79,29 +79,37 @@ class MyApp extends StatelessWidget {
             //dbHelper.add(Ingredient('Zucker', PreferenceType.NotWanted, formatted));
 
 
-            dbHelper.add(Ingredient('MilchTestIngredient', PreferenceType.NotWanted, formatted));
-            Ingredient ingredient_milch = Ingredient("MilchTestIngredient", PreferenceType.NotPreferred, "null");
+            //dbHelper.add(Ingredient('Milch', PreferenceType.NotWanted, formatted));
+            //Ingredient ingredient_milch = Ingredient("Hydroxocobalamin", PreferenceType.NotPreferred, "null");
 
             //await dbHelper.read(62, DbTableNames.ingredient);
-            Map<Ingredient, PreferenceType> preferenceToChange = {ingredient_milch:PreferenceType.Preferred};
+            //Map<Ingredient, PreferenceType> preferenceToChange = {ingredient_milch:PreferenceType.Preferred};
 
-            PreferenceManager.changePreference(preferenceToChange);
+            //PreferenceManager.changePreference(preferenceToChange);
+            List<PreferenceType> preferenceTypes = List<PreferenceType>();
+            preferenceTypes.add(PreferenceType.NotWanted);
+            //print(preferenceTypes);
+
+            PreferenceManager.getPreferencedIngredients(preferenceTypes);
+
+
+
 
 
             //dbHelper.add(Ingredient('Magnesium', PreferenceType.NotPreferred, formatted, Type.Allergen));
             //dbHelper.add(Ingredient('Wasser', PreferenceType.Preferred, formatted, Type.Nutriment));
 
 
-            print(await dbHelper.readAll(DbTableNames.preferenceType));
+            //print(await dbHelper.readAll(DbTableNames.preferenceType));
 
-            List<Map> results = await db.query("ingredient", columns: Ingredient.columns, orderBy: "id DESC");
+            //List<Map> results = await db.query("ingredient", columns: Ingredient.columns, orderBy: "id DESC");
             //List<Map> results = await db.rawQuery("select i.name, i.preferenceTypeId, i.preferenceAddDate, i.id, p.name preferenceType from ingredient i join preferencetype p on i.preferenceTypeId=p.id where i.preferenceTypeId is not 'NONE'");
 
             //print(results);
 
-            results.forEach((element) {
-              print(element);
-            });
+            // results.forEach((element) {
+            //   print(element);
+            // });
             
             
 
