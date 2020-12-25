@@ -15,8 +15,7 @@ class PreferenceManager {
   * saves the information in the database
   * @param preferenceChanges: a map of ingredients and the preference types they should change to
   * */
-  static void changePreference(
-      Map<Ingredient, PreferenceType> preferenceChanges) async {
+  static void changePreference(Map<Ingredient, PreferenceType> preferenceChanges) async {
     final dbHelper = DatabaseHelper.instance;
     final db = await dbHelper.database;
 
@@ -48,15 +47,14 @@ class PreferenceManager {
   * @param preferenceTypes: if only ingredients with a specific preference type are requested
   * @return: a list of all ingredients that the user has preferred
   * */
-  static Future<List<Ingredient>> getPreferencedIngredients(
-      [List<PreferenceType> preferenceTypes]) async {
+  static Future<List<Ingredient>> getPreferencedIngredients([List<PreferenceType> preferenceTypes]) async {
     final dbHelper = DatabaseHelper.instance;
     final db = await dbHelper.database;
     List<Ingredient> ingredients = new List();
 
     if (preferenceTypes?.isEmpty ?? true) {
       List<Map> results = await db.rawQuery(
-          "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id where p.name is not 'None'");
+          "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where p.name is not 'None'");
       results.forEach((result) {
         //print(result);
         Ingredient ingredient = Ingredient.fromMap(result);
@@ -70,10 +68,10 @@ class PreferenceManager {
         //print(element_name);
 
         List<Map> results = await db.rawQuery(
-            "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id where p.name = ?",
+            "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where p.name = ?",
             [element_name]);
         results.forEach((result) {
-          //print(result);
+          print(result);
           Ingredient ingredient = Ingredient.fromMap(result);
           ingredients.add(ingredient);
         });

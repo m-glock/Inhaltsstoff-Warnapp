@@ -12,7 +12,7 @@ import 'DbTableNames.dart';
 // code adapted from https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
 class DatabaseHelper {
 
-  static final _databaseName = "MyDatabase8.db";
+  static final _databaseName = "MyDatabase10.db";
   static final _databaseVersion = 1;
 
   // make this a singleton class
@@ -120,6 +120,7 @@ class DatabaseHelper {
   }
 
   // get a row with a specific id from a table
+  //TODO check, if works? for example "await dbHelper.read(1, DbTableNames.ingredient);"
   Future<DbTable> read(int id, DbTableNames table) async {
     Database db = await instance.database;
     List<Map> list = await db.query(table.name, where: 'id = ?', whereArgs: [id]);

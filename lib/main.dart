@@ -69,8 +69,9 @@ class MyApp extends StatelessWidget {
             await db.rawInsert("INSERT INTO type (name) VALUES ('Nutriment')");
             await db.rawInsert("INSERT INTO type (name) VALUES ('General')");*/
 
-            //print(await dbHelper.readAll(DbTableNames.preferenceType));
-            //print(await dbHelper.readAll(DbTableNames.type));
+            print(await dbHelper.readAll(DbTableNames.preferenceType));
+            print(await dbHelper.readAll(DbTableNames.type));
+            print(await dbHelper.readAll(DbTableNames.ingredient));
 
 
             //not correct
@@ -80,18 +81,23 @@ class MyApp extends StatelessWidget {
 
 
             //dbHelper.add(Ingredient('Milch', PreferenceType.NotWanted, formatted));
-            //Ingredient ingredient_milch = Ingredient("Hydroxocobalamin", PreferenceType.NotPreferred, "null");
+            //Ingredient ingredient_milch = Ingredient("Hydroxocobalamin", PreferenceType.NotPreferred, Type.General, "null" );
 
-            //await dbHelper.read(62, DbTableNames.ingredient);
+
+            await dbHelper.read(1, DbTableNames.ingredient);
             //Map<Ingredient, PreferenceType> preferenceToChange = {ingredient_milch:PreferenceType.Preferred};
 
             //PreferenceManager.changePreference(preferenceToChange);
+            print(await dbHelper.read(62, DbTableNames.ingredient));
+
+
+            /*
             List<PreferenceType> preferenceTypes = List<PreferenceType>();
             preferenceTypes.add(PreferenceType.NotWanted);
-            //print(preferenceTypes);
+            print(preferenceTypes);
 
             PreferenceManager.getPreferencedIngredients(preferenceTypes);
-
+*/
 
 
 
