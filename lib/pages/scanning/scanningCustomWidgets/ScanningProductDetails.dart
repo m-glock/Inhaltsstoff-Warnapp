@@ -51,7 +51,6 @@ class ScanningProductDetails extends StatelessWidget {
                 ),
               )
               .toList(),
-        ),
         ),*/
         ExpansionTile(
           title: Text(
