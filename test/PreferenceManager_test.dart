@@ -49,4 +49,28 @@ void main() async {
     var ingredients = PreferenceManager.getPreferencedIngredients();
     assert(ingredients != null);
   });
+
+  //TODO check
+  test('get all available ingredients without a type', () async {
+    var ingredients = PreferenceManager.getAllAvailableIngredients();
+    assert(ingredients != null);
+  });
+
+  //TODO check
+  test('get all available ingredients with a specific type', () async {
+    var ingredients = PreferenceManager.getAllAvailableIngredients(Type.General);
+    assert(ingredients != null);
+  });
+
+  //TODO check
+  test('get itemized scan results: red', () async {
+    //var ingredients = //PreferenceManager.getItemizedScanResults(Product(_name, _imageUrl, _barcode, _scanDate));
+    //assert(ingredients != null);
+  });
+
+
+
+
+
+
 }

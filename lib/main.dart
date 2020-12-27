@@ -1,4 +1,5 @@
 import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/Product.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -69,9 +70,9 @@ class MyApp extends StatelessWidget {
             await db.rawInsert("INSERT INTO type (name) VALUES ('Nutriment')");
             await db.rawInsert("INSERT INTO type (name) VALUES ('General')");*/
 
-            print(await dbHelper.readAll(DbTableNames.preferenceType));
-            print(await dbHelper.readAll(DbTableNames.type));
-            print(await dbHelper.readAll(DbTableNames.ingredient));
+            //print(await dbHelper.readAll(DbTableNames.preferenceType));
+           // print(await dbHelper.readAll(DbTableNames.type));
+           // print(await dbHelper.readAll(DbTableNames.ingredient));
 
 
             //not correct
@@ -81,14 +82,18 @@ class MyApp extends StatelessWidget {
 
 
             //dbHelper.add(Ingredient('Milch', PreferenceType.NotWanted, formatted));
-            //Ingredient ingredient_milch = Ingredient("Hydroxocobalamin", PreferenceType.NotPreferred, Type.General, "null" );
+            //Ingredient ingredient_milch = Ingredient("Gluten", PreferenceType.NotWanted, Type.General, "null" );
 
 
-            await dbHelper.read(1, DbTableNames.ingredient);
-            //Map<Ingredient, PreferenceType> preferenceToChange = {ingredient_milch:PreferenceType.Preferred};
+            //await dbHelper.readAll(DbTableNames.ingredient);
+            //Map<Ingredient, PreferenceType> preferenceToChange = {ingredient_milch:PreferenceType.NotPreferred};
 
             //PreferenceManager.changePreference(preferenceToChange);
-            print(await dbHelper.read(62, DbTableNames.ingredient));
+
+            //await dbHelper.readAll(DbTableNames.product);
+            //await dbHelper.read(1, DbTableNames.preferenceType);
+
+            //PreferenceManager.getItemizedScanResults(Product(_name, _imageUrl, _barcode, _scanDate))
 
 
             /*

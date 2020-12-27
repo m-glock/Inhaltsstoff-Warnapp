@@ -79,17 +79,6 @@ class PreferenceManager {
     }
 
     return ingredients;
-
-    // ingredients.forEach((element) {
-    //   print(element);
-    // });
-
-    // List<Ingredient> ingredients = List();
-    // ingredients.add(Ingredient('Zucker', PreferenceType.NotWanted, ''));
-    // ingredients.add(Ingredient('Milch', PreferenceType.NotWanted, ''));
-    // ingredients.add(Ingredient('Magnesium', PreferenceType.NotPreferred, ''));
-    // ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, ''));
-    // //await dbHelper.readAll(DbTableNames.ingredient);
   }
 
   /*
@@ -97,16 +86,36 @@ class PreferenceManager {
   * @param type: if only the ingredients of a specific type are relevant (i.e. vitamins, allergens)
   * @return: all Ingredients that are available in the database
   * */
-  static List<Ingredient> getAllAvailableIngredients({Type type}) {
-    //TODO implement
-    List<Ingredient> ingredients = List();
-    // ingredients.add(Ingredient('Zucker', PreferenceType.NotWanted, ''));
-    // ingredients.add(Ingredient('Milch', PreferenceType.NotWanted, ''));
-    // ingredients.add(Ingredient('Schokolade', PreferenceType.NotPreferred, ''));
-    // ingredients.add(Ingredient('Magnesium', PreferenceType.NotPreferred, ''));
-    // ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, ''));
-    // ingredients.add(Ingredient('Vitamin C', PreferenceType.None, ''));
+  static Future<List<Ingredient>> getAllAvailableIngredients([Type type]) async {
+    final dbHelper = DatabaseHelper.instance;
+    final db = await dbHelper.database;
+    List<Ingredient> ingredients = new List();
+
+    if (type == null) {
+      List<Map> results = await db.rawQuery(
+          "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id");
+      results.forEach((result) {
+        print(result);
+        Ingredient ingredient = Ingredient.fromMap(result);
+        ingredients.add(ingredient);
+      });
+    }
+    ;
+
+    if (type != null) {
+      String element_name = type.name;
+      List<Map> results = await db.rawQuery(
+          "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where t.name = ?",
+          [element_name]);
+      results.forEach((result) {
+        print(result);
+        Ingredient ingredient = Ingredient.fromMap(result);
+        ingredients.add(ingredient);
+      });
+    }
+
     return ingredients;
+
   }
 
   /*
@@ -118,14 +127,48 @@ class PreferenceManager {
   * @param product: the product whose ingredient should be compared to the preferred ingredients
   * @return: a Map for each preferred Ingredient and its respective ScanResult to the product
   * */
-  static Map<Ingredient, ScanResult> getItemizedScanResults(Product product) {
-    Map<Ingredient, ScanResult> itemizedScanResults = Map();
+  static Future<Map<Ingredient, ScanResult>> getItemizedScanResults(Product product) async {
+    Map <Ingredient, ScanResult> itemizedScanResults = Map();
+    final dbHelper = DatabaseHelper.instance;
+    final db = await dbHelper.database;
+
+    // red
+    String productname = product.name;
+
+    List<Map> results = await db.rawQuery(
+        "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id join productingredient pi on i.id=pi.ingredientId join product pr on pr.id=pi.productId where pr.name = ?",[productname]);
+    // CREATE TABLE ingredient ( id INTEGER PRIMARY KEY AUTOINCREMENT, preferenceTypeId INTEGER DEFAULT NULL, name TEXT NOT NULL, preferenceAddDate DATE DEFAULT NULL, typeId INTEGER NOT NULL, FOREIGN KEY(preferenceTypeId) REFERENCES preferencetype(id), FOREIGN KEY(typeId) REFERENCES type(id));
+    // CREATE TABLE scanresult ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL );
+    // CREATE TABLE list ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, parent INTEGER DEFAULT NULL, FOREIGN KEY(parent) REFERENCES list(id) );
+    // CREATE TABLE product ( id INTEGER PRIMARY KEY AUTOINCREMENT, scanResultId INTEGER NOT NULL, name TEXT NOT NULL, imageUrl TEXT DEFAULT NULL, barcode TEXT NOT NULL, scanDate INTEGER NOT NULL, lastUpdated INTEGER DEFAULT NULL, nutriScore INTEGER DEFAULT NULL, quantity INTEGER DEFAULT NULL, originCountry TEXT DEFAULT NULL, manufactoringPlaces TEXT DEFAULT NULL, stores TEXT DEFAULT NULL, FOREIGN KEY(scanResultId) REFERENCES scanresult(id) );CREATE TABLE productlist ( listId INTEGER NOT NULL, productId INTEGER NOT NULL, FOREIGN KEY(listId) REFERENCES list(id), FOREIGN KEY(productId) REFERENCES product(id) );
+    // CREATE TABLE productingredient ( productId INTEGER NOT NULL, ingredientId INTEGER NOT NULL,
+    results.forEach((result) {
+      print(result);
+      Ingredient ingredient = Ingredient.fromMap(result);
+      ScanResult scanresult = ScanResult.Red;
+
+      //ingredients.add(ingredient);
+    });
+
+
+    return itemizedScanResults;
+  }
+
+    // yellow
+
+    // green
+
+
+
+
+      //retrieve id from the new preferenceType
+
+
 
     // itemizedScanResults[Ingredient('Zucker', PreferenceType.NotWanted, '')] = ScanResult.Red; //not wanted and in product
     // itemizedScanResults[Ingredient('Schokolade', PreferenceType.NotPreferred, '')] = ScanResult.Yellow; // not preferred and in product
     // itemizedScanResults[Ingredient('Magnesium', PreferenceType.NotPreferred, '')] = ScanResult.Green; //not preferred and not in product
     //itemizedScanResults[Ingredient('Wasser', PreferenceType.Preferred, '')] = ScanResult.Red; //preferred and not in product
 
-    return itemizedScanResults;
-  }
+
 }
