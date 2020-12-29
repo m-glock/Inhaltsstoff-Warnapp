@@ -1,4 +1,5 @@
 import '../Ingredient.dart';
+import '../Product.dart';
 import 'DbTable.dart';
 
 enum DbTableNames{
@@ -40,11 +41,12 @@ extension DbTablesExtension on DbTableNames {
     }
   }
 
-  //TODO: add mapping for all classes
   DbTable fromMap(Map<String, dynamic> data){
     switch(this){
       case DbTableNames.ingredient:
         return Ingredient.fromMap(data);
+      case DbTableNames.product:
+        return Product.fromMap(data);
       default:
         return null;
     }
