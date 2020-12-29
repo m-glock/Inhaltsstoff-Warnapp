@@ -128,8 +128,12 @@ class Product extends DbTable{
     throw UnimplementedError();
   }
 
-  static Product fromMap(Map<String, dynamic> data) {
-    // TODO: implement fromMap
-    throw UnimplementedError();
+  static Future<Product> fromMap(Map<String, dynamic> data) async {
+    int productId = data['id'];
+    Product product = Product(data['name'], data['imageUrl'], data['barcode'], data['scanDate'], id: productId);
+
+
+
+    return product;
   }
 }

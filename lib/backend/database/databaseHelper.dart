@@ -120,8 +120,8 @@ class DatabaseHelper {
       throw Exception('Wrong number of arguments. If you want to get more than one element, please use the readAll method.');
 
     List<Map> list = await db.query(tableType.name, where: '$whereColumn = ?', whereArgs: whereargs);
-    DbTable table = tableType.fromMap(list[0]);
-    return list.length > 0 ? table : null;
+    DbTable tableObject = await tableType.fromMap(list[0]);
+    return list.length > 0 ? tableObject : null;
   }
 
   // read all rows with specific values
@@ -137,8 +137,8 @@ class DatabaseHelper {
       list = await db.query(tableType.name, where: '$whereColumn = ?', whereArgs: whereArgs);
 
     List<DbTable> objectList = new List();
-    list.forEach((element) {
-      objectList.add(tableType.fromMap(element));
+    list.forEach((element) async {
+      objectList.add(await tableType.fromMap(element));
     });
     return objectList;
   }

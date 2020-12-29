@@ -41,12 +41,12 @@ extension DbTablesExtension on DbTableNames {
     }
   }
 
-  DbTable fromMap(Map<String, dynamic> data){
+  Future<DbTable> fromMap(Map<String, dynamic> data) async {
     switch(this){
       case DbTableNames.ingredient:
         return Ingredient.fromMap(data);
       case DbTableNames.product:
-        return Product.fromMap(data);
+        return await Product.fromMap(data);
       default:
         return null;
     }
