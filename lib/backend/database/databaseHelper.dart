@@ -114,14 +114,13 @@ class DatabaseHelper {
   }
 
   // get a row with a specific value from a table (id is the default column)
-  Future<DbTable> read(DbTableNames tableType, List<dynamic> whereargs, {String whereColumn = 'id'}) async {
+  Future<DbTable> read(DbTableNames tableType, List<dynamic> whereArgs, {String whereColumn = 'id'}) async {
     Database db = await instance.database;
-    if(whereargs.length != 1)
+    if(whereArgs.length != 1)
       throw Exception('Wrong number of arguments. If you want to get more than one element, please use the readAll method.');
 
-    List<Map> list = await db.query(tableType.name, where: '$whereColumn = ?', whereArgs: whereargs);
-    DbTable tableObject = await tableType.fromMap(list[0]);
-    return list.length > 0 ? tableObject : null;
+    List<Map> list = await db.query(tableType.name, where: '$whereColumn = ?', whereArgs: whereArgs);
+    return list.length > 0 ? await tableType.fromMap(list[0]) : null;
   }
 
   // read all rows with specific values
