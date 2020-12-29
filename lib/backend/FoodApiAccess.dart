@@ -2,13 +2,14 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 
-import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/database/databaseHelper.dart';
+import 'database/DbTableNames.dart';
+import 'database/databaseHelper.dart';
+import 'database/DbTable.dart';
 
 import 'Ingredient.dart';
 import 'Product.dart';
-import 'package:http/http.dart' as http;
 
 class FoodApiAccess{
 
@@ -50,8 +51,13 @@ class FoodApiAccess{
   * @return: an object for the scanned product with the relevant information or null if not found
   * */
   Future<Product> scanProduct(String barcode) async{
-    String requestUrl = '$_foodDbApiUrl/$_productEndpoint/$barcode.json';
+    DatabaseHelper helper = DatabaseHelper.instance;
 
+    // if Product has already been scanned before, return data from DB
+    DbTable table = await helper.read(DbTableNames.product, [barcode], whereColumn: 'barcode');
+    if(table != null) return table as Product;
+
+    String requestUrl = '$_foodDbApiUrl/$_productEndpoint/$barcode.json';
     http.Response response = await _getRequest(requestUrl);
     int status = response.statusCode;
 
@@ -67,8 +73,13 @@ class FoodApiAccess{
       return null;
     }
 
-    // create Product object
-    return Product.fromApiJson(decodedJson['product']);
+    // transform json data into a product object
+    Product product = await Product.fromApiJson(decodedJson['product']);
+
+    // save product in database
+    product.saveInDatabase();
+
+    return product;
   }
 
   /*

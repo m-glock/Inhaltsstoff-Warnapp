@@ -1,9 +1,9 @@
-import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/database/DbTable.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
-
-import 'Ingredient.dart';
+import 'database/databaseHelper.dart';
+import 'database/DbTable.dart';
+import 'database/DbTableNames.dart';
 import 'Enums/ScanResult.dart';
+import 'FoodApiAccess.dart';
+import 'Ingredient.dart';
 
 class Product extends DbTable{
 
@@ -44,8 +44,11 @@ class Product extends DbTable{
 
 
   // constructor with minimal necessary information
-  Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id})
-      : super(id);
+  Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id}) : super(id) {
+    _nutriments = List();
+    _allergens = List();
+    _ingredients = List();
+  }
 
   /*
   * Uses the json from the Food API to create a new Product object
@@ -116,6 +119,35 @@ class Product extends DbTable{
     }
   }
 
+  void saveInDatabase() async {
+    DatabaseHelper helper = DatabaseHelper.instance;
+    await helper.add(this);
+
+    // save each ingredients connection to the product in productingredient
+    // TODO: test and refactor
+    /*Database db = await helper.database;
+    _ingredients.forEach((ingredient) async {
+      Map<String, dynamic> values = Map();
+      values['productId'] = this.id;
+      values['ingredientId'] = ingredient.id;
+      db.insert('productingredient', values);
+    });
+
+    _allergens.forEach((allergen) {
+      Map<String, dynamic> values = Map();
+      values['productId'] = this.id;
+      values['ingredientId'] = allergen.id;
+      db.insert('productingredient', values);
+    });
+
+    _nutriments.forEach((nutriment) {
+      Map<String, dynamic> values = Map();
+      values['productId'] = this.id;
+      values['ingredientId'] = nutriment.id;
+      db.insert('productingredient', values);
+    });*/
+  }
+
   // DB methods
   @override
   DbTableNames getTableName() {
@@ -124,15 +156,36 @@ class Product extends DbTable{
 
   @override
   Map<String, dynamic> toMap({bool withId = true}) {
-    // TODO: implement toMap
-    throw UnimplementedError();
+    final map = new Map<String, dynamic>();
+    map['scanResultId'] = _scanResult.id;
+    map['name'] = name;
+    map['imageUrl'] = _imageUrl;
+    map['barcode'] = _barcode;
+    map['scanDate'] = _scanDate.toIso8601String();
+    map['lastUpdated'] = _lastUpdated.toIso8601String();
+    map['nutriScore'] = _nutriscore;
+
+    map['quantity'] = _quantity;
+    map['originCountry'] = _origin;
+    map['manufactoringPlaces'] = _manufacturingPlaces;
+    map['stores'] = _stores;
+
+    return map;
   }
 
   static Future<Product> fromMap(Map<String, dynamic> data) async {
     int productId = data['id'];
-    Product product = Product(data['name'], data['imageUrl'], data['barcode'], data['scanDate'], id: productId);
+    DateTime scanDate = DateTime.parse(data['scanDate']);
+    Product product = Product(data['name'], data['imageUrl'], data['barcode'], scanDate, id: productId);
 
-
+    // TODO: when ingredient connections are in the database, then check if they can be read
+    /*List<DbTable> ingredients = await DatabaseHelper.instance.readAll(DbTableNames.productIngredient, whereColumn: 'productId', whereArgs: [productId]);
+    ingredients.forEach((element) {
+      Ingredient ingredient = element as Ingredient;
+      if(ingredient.type == Type.Nutriment) product.nutriments.add(element);
+      else if(ingredient.type == Type.Allergen) product.allergens.add(element);
+      else product.ingredients.add(ingredient);
+    });*/
 
     return product;
   }
