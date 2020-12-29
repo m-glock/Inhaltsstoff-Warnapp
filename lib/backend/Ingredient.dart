@@ -67,7 +67,9 @@ class Ingredient extends DbTable {
   }
 
   static Ingredient fromMap(Map<String, dynamic> data) {
-    return new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'],
+    int prefTypeId = data['preferenceTypeId'];
+    PreferenceType prefType = PreferenceType.values.elementAt(prefTypeId - 1);
+    return new Ingredient(data['name'], prefType, data['preferenceAddDate'],
         id: data['id']);
   }
 }
