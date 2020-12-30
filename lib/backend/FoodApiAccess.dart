@@ -7,8 +7,6 @@ import 'package:http/http.dart' as http;
 import 'database/DbTableNames.dart';
 import 'database/databaseHelper.dart';
 import 'database/DbTable.dart';
-
-import 'Ingredient.dart';
 import 'Product.dart';
 
 class FoodApiAccess{
@@ -143,7 +141,9 @@ class FoodApiAccess{
         String translatedName;
         if(allTagValues.containsKey(element)){
           LinkedHashMap tagValueTranslations = allTagValues[element]['name'];
-          translatedName = tagValueTranslations.containsKey(languageCode) ? tagValueTranslations[languageCode] : tagValueTranslations['en'];
+          translatedName = tagValueTranslations.containsKey(languageCode)
+              ? tagValueTranslations[languageCode]
+              : tagValueTranslations['en'];
         } else {
           String name = element.toString();
           translatedName = name.substring(name.indexOf(':') + 1);
@@ -153,22 +153,6 @@ class FoodApiAccess{
     }
 
     return translatedTagValues;
-  }
-
-  /*
-  * translates all tag names of a list from the Food API and then gets the corresponding ingredient from the DB.
-  * Names normally start with language code such as en: or de:
-  * @param ingredientNames: List of all ingredient names to be translated
-  * @param tag: Tag that the names belong to (allergens, vitamins, ingredients etc.)
-  * @return: a List of ingredient
-  * */
-  Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<dynamic> ingredientNames, String tag) async {
-    List<Ingredient> ingredients = List();
-    List<String> translatedIngredientNames = await getTranslatedValuesForTag(tag, tagValues: ingredientNames);
-    for(String name in translatedIngredientNames){
-      ingredients.add(await DatabaseHelper.instance.read(DbTableNames.ingredient, [name], whereColumn: 'name'));
-    }
-    return ingredients;
   }
 
   /*

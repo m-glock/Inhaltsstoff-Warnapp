@@ -15,8 +15,6 @@ class Product extends DbTable{
   DateTime _lastUpdated;
   String _nutriscore;
 
-  List<Ingredient> _allergens;
-  List<Ingredient> _nutriments;
   List<Ingredient> _ingredients;
 
   String _quantity;
@@ -32,9 +30,6 @@ class Product extends DbTable{
   DateTime get scanDate => _scanDate;
   DateTime get lastUpdated => _lastUpdated;
   String get nutriscore => _nutriscore;
-
-  List<Ingredient> get allergens => _allergens;
-  List<Ingredient> get nutriments => _nutriments;
   List<Ingredient> get ingredients => _ingredients;
 
   String get quantity => _quantity;
@@ -45,8 +40,6 @@ class Product extends DbTable{
 
   // constructor with minimal necessary information
   Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id}) : super(id) {
-    _nutriments = List();
-    _allergens = List();
     _ingredients = List();
   }
 
@@ -75,17 +68,23 @@ class Product extends DbTable{
 
     // add Ingredients, Allergens, Vitamins, Additives and Traces
     FoodApiAccess foodApi = FoodApiAccess.instance;
-    List<dynamic> ingredientNames = json['ingredients_tags'];
-    newProduct._ingredients = await foodApi.getIngredientsWithTranslatedNames(ingredientNames, 'ingredients');
+    Set<String> translatedIngredientNames = Set();
 
     var allergenNames = json['allergens_tags'];
-    newProduct._allergens = await foodApi.getIngredientsWithTranslatedNames(allergenNames, 'allergens');
+    translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('allergens', tagValues: allergenNames));
 
     List<dynamic> vitaminNames = json['vitamins_tags'];
-    newProduct._nutriments.addAll(await foodApi.getIngredientsWithTranslatedNames(vitaminNames, 'vitamins'));
+    translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('vitamins', tagValues: vitaminNames));
 
-    List<dynamic> mineralNames = json['mineral_tags'];
-    newProduct._nutriments.addAll(await foodApi.getIngredientsWithTranslatedNames(mineralNames, 'minerals'));
+    List<dynamic> mineralNames = json['minerals_tags'];
+    translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('minerals', tagValues: mineralNames));
+
+    List<dynamic> ingredientNames = json['ingredients_tags'];
+    translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('ingredients', tagValues: ingredientNames));
+
+    for(String name in translatedIngredientNames) {
+      newProduct._ingredients.add(await DatabaseHelper.instance.read(DbTableNames.ingredient, [name], whereColumn: 'name'));
+    }
 
     // TODO: additives as separate field or inside of ingredients?
     //List<dynamic> additiveNames = json['additives_tags'];
@@ -119,33 +118,17 @@ class Product extends DbTable{
     }
   }
 
-  void saveInDatabase() async {
+  Future<int> saveInDatabase() async {
     DatabaseHelper helper = DatabaseHelper.instance;
-    await helper.add(this);
+    int id = await helper.add(this);
+    this.id = id;
 
     // save each ingredients connection to the product in productingredient
-    // TODO: test and refactor
     /*Database db = await helper.database;
-    _ingredients.forEach((ingredient) async {
-      Map<String, dynamic> values = Map();
-      values['productId'] = this.id;
-      values['ingredientId'] = ingredient.id;
-      db.insert('productingredient', values);
-    });
-
-    _allergens.forEach((allergen) {
-      Map<String, dynamic> values = Map();
-      values['productId'] = this.id;
-      values['ingredientId'] = allergen.id;
-      db.insert('productingredient', values);
-    });
-
-    _nutriments.forEach((nutriment) {
-      Map<String, dynamic> values = Map();
-      values['productId'] = this.id;
-      values['ingredientId'] = nutriment.id;
-      db.insert('productingredient', values);
-    });*/
+    _addIngredientsToDb(db, _ingredients);
+    _addIngredientsToDb(db, _nutriments);
+    _addIngredientsToDb(db, _allergens);*/
+    return id;
   }
 
   // DB methods
