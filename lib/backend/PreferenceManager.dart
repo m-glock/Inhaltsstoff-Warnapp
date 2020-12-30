@@ -28,10 +28,10 @@ class PreferenceManager {
   static List<Ingredient> getPreferencedIngredients({List<PreferenceType> preferenceTypes}) {
     //TODO implement
     List<Ingredient> ingredients = List();
-    ingredients.add(Ingredient('Zucker', PreferenceType.NotWanted, ''));
-    ingredients.add(Ingredient('Milch', PreferenceType.NotWanted, ''));
-    ingredients.add(Ingredient('Magnesium', PreferenceType.NotPreferred, ''));
-    ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, ''));
+    ingredients.add(Ingredient('Zucker', PreferenceType.NotWanted, '', Type.Allergen));
+    ingredients.add(Ingredient('Milch', PreferenceType.NotWanted, '', Type.Allergen));
+    ingredients.add(Ingredient('Magnesium', PreferenceType.NotPreferred, '', Type.Allergen));
+    ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, '', Type.Allergen));
     //await dbHelper.readAll(DbTableNames.ingredient);
     return ingredients;
   }
@@ -44,12 +44,12 @@ class PreferenceManager {
   static List<Ingredient> getAllAvailableIngredients({Type type}) {
     //TODO implement
     List<Ingredient> ingredients = List();
-    ingredients.add(Ingredient('Zucker', PreferenceType.NotWanted, ''));
-    ingredients.add(Ingredient('Milch', PreferenceType.NotWanted, ''));
-    ingredients.add(Ingredient('Schokolade', PreferenceType.NotPreferred, ''));
-    ingredients.add(Ingredient('Magnesium', PreferenceType.NotPreferred, ''));
-    ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, ''));
-    ingredients.add(Ingredient('Vitamin C', PreferenceType.None, ''));
+    ingredients.add(Ingredient('Zucker', PreferenceType.NotWanted, '', Type.Allergen));
+    ingredients.add(Ingredient('Milch', PreferenceType.NotWanted, '', Type.Allergen));
+    ingredients.add(Ingredient('Schokolade', PreferenceType.NotPreferred, '', Type.Allergen));
+    ingredients.add(Ingredient('Magnesium', PreferenceType.NotPreferred, '', Type.Allergen));
+    ingredients.add(Ingredient('Wasser', PreferenceType.Preferred, '', Type.Allergen));
+    ingredients.add(Ingredient('Vitamin C', PreferenceType.None, '', Type.Allergen));
     return ingredients;
   }
 
@@ -65,9 +65,9 @@ class PreferenceManager {
   static Map<Ingredient, ScanResult> getItemizedScanResults(Product product) {
     Map<Ingredient, ScanResult> itemizedScanResults = Map();
 
-    itemizedScanResults[Ingredient('Zucker', PreferenceType.NotWanted, '')] = ScanResult.Red; //not wanted and in product
-    itemizedScanResults[Ingredient('Schokolade', PreferenceType.NotPreferred, '')] = ScanResult.Yellow; // not preferred and in product
-    itemizedScanResults[Ingredient('Magnesium', PreferenceType.NotPreferred, '')] = ScanResult.Green; //not preferred and not in product
+    itemizedScanResults[Ingredient('Zucker', PreferenceType.NotWanted, '', Type.Allergen)] = ScanResult.Red; //not wanted and in product
+    itemizedScanResults[Ingredient('Schokolade', PreferenceType.NotPreferred, '', Type.Allergen)] = ScanResult.Yellow; // not preferred and in product
+    itemizedScanResults[Ingredient('Magnesium', PreferenceType.NotPreferred, '', Type.Allergen)] = ScanResult.Green; //not preferred and not in product
     //itemizedScanResults[Ingredient('Wasser', PreferenceType.Preferred, '')] = ScanResult.Red; //preferred and not in product
 
     return itemizedScanResults;
