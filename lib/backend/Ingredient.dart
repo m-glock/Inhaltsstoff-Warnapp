@@ -14,7 +14,7 @@ class Ingredient extends DbTable {
   static final columns = ["id", "name", "preferencesTypeId", "addDate"];
 
   // Constructor
-  Ingredient(this._name, this._preferencesType, this._addDate, {int id})
+  Ingredient(this._name, this._preferencesType, this._addDate, this._type, {int id})
       : super(id);
 
   // Getter and Setter
@@ -69,7 +69,11 @@ class Ingredient extends DbTable {
   static Ingredient fromMap(Map<String, dynamic> data) {
     int prefTypeId = data['preferenceTypeId'];
     PreferenceType prefType = PreferenceType.values.elementAt(prefTypeId - 1);
-    return new Ingredient(data['name'], prefType, data['preferenceAddDate'],
+
+    int typeId = data['typeId'];
+    Type type = Type.values.elementAt(typeId - 1);
+
+    return new Ingredient(data['name'], prefType, data['preferenceAddDate'], type,
         id: data['id']);
   }
 }
