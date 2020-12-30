@@ -129,16 +129,16 @@ class DatabaseHelper {
     if(whereArgs != null && whereArgs.length != 1)
       throw Exception('Wrong number of arguments.');
 
-    List<Map> list;
+    List<Map<String, dynamic>> list;
     if(whereColumn == null)
       list = await db.query(tableType.name);
     else
       list = await db.query(tableType.name, where: '$whereColumn = ?', whereArgs: whereArgs);
 
     List<DbTable> objectList = new List();
-    list.forEach((element) async {
+    for(Map<String, dynamic> element in list){
       objectList.add(await tableType.fromMap(element));
-    });
+    }
     return objectList;
   }
 
@@ -178,5 +178,10 @@ class DatabaseHelper {
     });
 
     return deletedRowIds;
+  }
+
+  Future<List<Map<String, dynamic>>> customQuery(String query) async {
+    Database db = await instance.database;
+    return await db.rawQuery(query);
   }
 }

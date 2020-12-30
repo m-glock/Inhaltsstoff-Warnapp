@@ -77,7 +77,7 @@ class FoodApiAccess{
     Product product = await Product.fromApiJson(decodedJson['product']);
 
     // save product in database
-    product.saveInDatabase();
+    await product.saveInDatabase();
 
     return product;
   }
@@ -116,7 +116,7 @@ class FoodApiAccess{
     List<String> translatedTagValues = new List();
     Map<dynamic, dynamic> allTagValues = await _getCorrespondingMap(tag);
 
-    if(tagValues == null || tagValues.isEmpty){ // translate all existing tag values
+    if(tagValues == null){ // translate all existing tag values
 
       for(final keyValuePair in allTagValues.entries){
         // only use vitamins and minerals that are parents
@@ -165,9 +165,9 @@ class FoodApiAccess{
   Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<dynamic> ingredientNames, String tag) async {
     List<Ingredient> ingredients = List();
     List<String> translatedIngredientNames = await getTranslatedValuesForTag(tag, tagValues: ingredientNames);
-    translatedIngredientNames.forEach((element) async {
-      ingredients.add(await DatabaseHelper.instance.read(DbTableNames.ingredient, [element], whereColumn: 'name'));
-    });
+    for(String name in translatedIngredientNames){
+      ingredients.add(await DatabaseHelper.instance.read(DbTableNames.ingredient, [name], whereColumn: 'name'));
+    }
     return ingredients;
   }
 
