@@ -176,14 +176,10 @@ class Product extends DbTable{
     product._manufacturingPlaces = data['manufactoringPlaces'];
     product._stores = data['stores'];
 
-    // TODO: when ingredient connections are in the database, then check if they can be read
-    /*List<DbTable> ingredients = await DatabaseHelper.instance.readAll(DbTableNames.productIngredient, whereColumn: 'productId', whereArgs: [productId]);
+    List<DbTable> ingredients = await DatabaseHelper.instance.readAll(DbTableNames.productIngredient, whereColumn: 'productId', whereArgs: [productId]);
     ingredients.forEach((element) {
-      Ingredient ingredient = element as Ingredient;
-      if(ingredient.type == Type.Nutriment) product.nutriments.add(element);
-      else if(ingredient.type == Type.Allergen) product.allergens.add(element);
-      else product.ingredients.add(ingredient);
-    });*/
+      product.ingredients.add(element as Ingredient);
+    });
 
     return product;
   }

@@ -135,10 +135,33 @@ class DatabaseHelper {
     else
       list = await db.query(tableType.name, where: '$whereColumn = ?', whereArgs: whereArgs);
 
-    List<DbTable> objectList = new List();
-    for(Map<String, dynamic> element in list){
-      objectList.add(await tableType.fromMap(element));
+
+    if(tableType == DbTableNames.productIngredient){
+      return await _getElementsFromJoinTable(list, whereColumn);
+    } else {
+      List<DbTable> objectList = new List();
+      for(Map<String, dynamic> element in list){
+        objectList.add(await tableType.fromMap(element));
+      }
+      return objectList;
     }
+  }
+
+  Future<List<DbTable>> _getElementsFromJoinTable(List<Map<String, dynamic>> list, String whereColumn) async {
+    List<DbTable> objectList = new List();
+
+    // check whether the ingredients or the products are queried from the join table
+    bool getIngredients = whereColumn == 'productId';
+    String columnToQuery = getIngredients ? 'ingredientId' : 'productId';
+    DbTableNames tableName = getIngredients ? DbTableNames.ingredient : DbTableNames.product;
+
+    // get ingredient/product object for each row in join table
+    for(Map<String, dynamic> element in list){
+      int objectId = element[columnToQuery];
+      DbTable object = await read(tableName, [objectId]);
+      objectList.add(object);
+    }
+
     return objectList;
   }
 
