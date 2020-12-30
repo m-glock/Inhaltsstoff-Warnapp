@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/frontend/customWidgets/LabelledIconButton.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -80,34 +81,6 @@ class ScanningResultPage extends StatelessWidget {
     };
   }
 
-  Widget _buildProductActionButtons(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children:
-          productActionButtons.map((ProductActionButton productActionButton) {
-        return Column(
-          children: [
-            RaisedButton(
-              onPressed: productActionButton.onPressed,
-              color: Theme.of(context).primaryColor,
-              textColor: Colors.white,
-              child: Icon(
-                productActionButton.icon,
-                size: 24,
-              ),
-              padding: EdgeInsets.all(16),
-              shape: CircleBorder(),
-            ),
-            SizedBox(height: 10.0),
-            Text(productActionButton.title,
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor, fontSize: 14)),
-          ],
-        );
-      }).toList(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     ScanResultAppearance _currentResultAppearance = _getScanResultAppearance;
@@ -165,7 +138,18 @@ class ScanningResultPage extends StatelessWidget {
               ),
             ),
           ),
-          _buildProductActionButtons(context),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: productActionButtons
+                .map((ProductActionButton productActionButton) {
+              return LabelledIconButton(
+                label: productActionButton.title,
+                icon: productActionButton.icon,
+                isPrimary: true,
+                onPressed: (){},
+              );
+            }).toList(),
+          ),
           Padding(
             padding: EdgeInsets.only(top: 20.0),
             child: ScanningProductDetails(
