@@ -4,7 +4,6 @@ import 'DbTable.dart';
 
 enum DbTableNames{
   ingredient,
-  ingredientType,
   type,
   preferenceType,
   productIngredient,
@@ -20,8 +19,6 @@ extension DbTablesExtension on DbTableNames {
     switch (this) {
       case DbTableNames.ingredient:
         return 'ingredient';
-      case DbTableNames.ingredientType:
-        return 'ingredienttype';
       case DbTableNames.type:
         return 'type';
       case DbTableNames.preferenceType:
