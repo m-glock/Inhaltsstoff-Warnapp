@@ -178,6 +178,15 @@ class Product extends DbTable{
     DateTime scanDate = DateTime.parse(data['scanDate']);
     Product product = Product(data['name'], data['imageUrl'], data['barcode'], scanDate, id: productId);
 
+    int scanResultId = data['scanResultId'];
+    product._scanResult = ScanResult.values.elementAt(scanResultId - 1);
+    product._lastUpdated = DateTime.parse(data['lastUpdated']);
+    product._nutriscore = data['nutriScore'];
+    product._quantity = data['quantity'];
+    product._origin = data['originCountry'];
+    product._manufacturingPlaces = data['manufactoringPlaces'];
+    product._stores = data['stores'];
+
     // TODO: when ingredient connections are in the database, then check if they can be read
     /*List<DbTable> ingredients = await DatabaseHelper.instance.readAll(DbTableNames.productIngredient, whereColumn: 'productId', whereArgs: [productId]);
     ingredients.forEach((element) {
