@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/frontend/customWidgets/EditableTitle.dart';
 import 'package:Inhaltsstoff_Warnapp/frontend/customWidgets/LabelledIconButton.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -72,13 +73,18 @@ class ScanningResultPage extends StatelessWidget {
   }
 
   get _getAdditionalProductDetails {
-    return {
-      'Menge': scannedProduct.quantity.toString() ?? 'keine Angabe',
-      'Herkunft': scannedProduct.origin ?? 'keine Angabe',
-      'Herstellungsorte': scannedProduct.manufacturingPlaces ?? 'keine Angabe',
-      'Geschäfte': scannedProduct.stores ?? 'keine Angabe',
-      'Nutriscore': scannedProduct.nutriscore ?? 'keine Angabe',
-    };
+    if (scannedProduct.name == null) {
+      return {};
+    } else {
+      return {
+        'Menge': scannedProduct.quantity.toString() ?? 'keine Angabe',
+        'Herkunft': scannedProduct.origin ?? 'keine Angabe',
+        'Herstellungsorte':
+            scannedProduct.manufacturingPlaces ?? 'keine Angabe',
+        'Geschäfte': scannedProduct.stores ?? 'keine Angabe',
+        'Nutriscore': scannedProduct.nutriscore ?? 'keine Angabe',
+      };
+    }
   }
 
   @override
@@ -90,11 +96,18 @@ class ScanningResultPage extends StatelessWidget {
       body: ListView(
         padding: EdgeInsets.symmetric(vertical: 20.0),
         children: <Widget>[
-          Text(
-            scannedProduct.name,
-            style: Theme.of(context).textTheme.headline1,
-            textAlign: TextAlign.center,
-          ),
+          scannedProduct.name == null
+              ? EditableTitle(
+                  originalTitle: 'Unbenanntes Produkt',
+                  onTitleChanged: (String value) {
+                    //TODO: scannedProduct.name = value;
+                  },
+                )
+              : Text(
+                  scannedProduct.name,
+                  style: Theme.of(context).textTheme.headline1,
+                  textAlign: TextAlign.center,
+                ),
           Text(
             new DateFormat('dd.MM.yyyy').format(scannedProduct.scanDate),
             style: Theme.of(context).textTheme.headline2,
@@ -146,7 +159,7 @@ class ScanningResultPage extends StatelessWidget {
                 label: productActionButton.title,
                 icon: productActionButton.icon,
                 isPrimary: true,
-                onPressed: (){},
+                onPressed: () {},
               );
             }).toList(),
           ),

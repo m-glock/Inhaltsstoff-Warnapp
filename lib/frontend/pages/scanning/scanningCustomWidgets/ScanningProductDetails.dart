@@ -67,7 +67,7 @@ class ScanningProductDetails extends StatelessWidget {
               )
               .toList(),
         ),
-        ExpansionTile(
+        if(moreProductDetails.entries.isNotEmpty) ExpansionTile(
           title: Text(
             "Weitere Produktdetails",
             style: Theme.of(context).textTheme.subtitle1,
