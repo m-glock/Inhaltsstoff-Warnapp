@@ -1,40 +1,33 @@
+import '../../backend/Enums/ScanResult.dart';
+import '../../customWidgets/ProductListItem.dart';
 import '../../customWidgets/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 
-class HistoryRoot extends StatefulWidget {
-  const HistoryRoot({ Key key }) : super(key: key);
-
-  @override
-  _HistoryRootState createState() => _HistoryRootState();
-}
-
-class _HistoryRootState extends State<HistoryRoot> {
-  TextEditingController _textController;
-
-  @override
-  void initState() {
-    super.initState();
-    _textController = TextEditingController(
-      text: "History",
-    );
-  }
+class HistoryRoot extends StatelessWidget {
+  const HistoryRoot({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar('Verlauf'),
       backgroundColor: Colors.white,
-      body: Container(
-        padding: const EdgeInsets.all(32.0),
-        alignment: Alignment.center,
-        child: TextField(controller: _textController),
+      body: ListView(
+        padding: EdgeInsets.symmetric(vertical: 10.0),
+        children: <Widget>[
+          ProductListItem(
+            image: NetworkImage('https://googleflutter.com/sample_image.jpg'),
+            name: 'Produkt 1',
+            scanDate: DateTime.now(),
+            scanResult: ScanResult.Green,
+          ),
+          ProductListItem(
+            image: null,
+            name: 'Produkt 2',
+            scanDate: DateTime.now(),
+            scanResult: ScanResult.Yellow,
+          )
+        ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
   }
 }
