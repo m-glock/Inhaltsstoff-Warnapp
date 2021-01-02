@@ -22,8 +22,8 @@ void main() async {
     //dbHelper.add(Ingredient('MilchTestIngredient', PreferenceType.NotWanted, Ingredient.getCurrentDate()));
     //add map with ingredient with preferenceType to change
     //Ingredient ingredient_milch = Ingredient("MilchTestIngredient", PreferenceType.NotPreferred, "null");
-    Ingredient ingredient_milch =
-        Ingredient("Hydroxocobalamin", PreferenceType.NotPreferred, Type.Nutriment, "null");
+    Ingredient ingredient_milch = Ingredient("Hydroxocobalamin",
+        PreferenceType.NotPreferred, Type.Nutriment, "null");
     Map<Ingredient, PreferenceType> preferenceToChange = {
       ingredient_milch: PreferenceType.Preferred
     };
@@ -40,7 +40,8 @@ void main() async {
   test('get ingredients due to the preference type NotWanted', () async {
     List<PreferenceType> preferenceTypes = List<PreferenceType>();
     preferenceTypes.add(PreferenceType.NotWanted);
-    var ingredients = PreferenceManager.getPreferencedIngredients(preferenceTypes);
+    var ingredients =
+        PreferenceManager.getPreferencedIngredients(preferenceTypes);
     assert(ingredients != null);
   });
 
@@ -58,7 +59,8 @@ void main() async {
 
   //TODO check
   test('get all available ingredients with a specific type', () async {
-    var ingredients = PreferenceManager.getAllAvailableIngredients(Type.General);
+    var ingredients =
+        PreferenceManager.getAllAvailableIngredients(Type.General);
     assert(ingredients != null);
   });
 
@@ -68,9 +70,5 @@ void main() async {
     //assert(ingredients != null);
   });
 
-
-
-
-
-
+  // TODO implement tests for PreferenceManager.getItemizedScanResults()
 }
