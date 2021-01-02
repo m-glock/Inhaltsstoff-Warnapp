@@ -10,6 +10,7 @@ class ProductListItem extends StatelessWidget {
   String name;
   DateTime scanDate;
   ScanResult scanResult;
+  void Function() onProductSelected;
 
   ProductListItem({
     Key key,
@@ -17,6 +18,7 @@ class ProductListItem extends StatelessWidget {
     this.name,
     this.scanDate,
     this.scanResult,
+    this.onProductSelected,
   }) : super(key: key);
 
   @override
@@ -48,9 +50,9 @@ class ProductListItem extends StatelessWidget {
                 result: scanResult,
                 small: true,
               ),
-              Icon(
-                Icons.keyboard_arrow_right,
-                color: Theme.of(context).primaryColor,
+              IconButton(
+                icon: Icon(Icons.keyboard_arrow_right, color: Theme.of(context).primaryColor),
+                onPressed: onProductSelected,
               ),
             ],
           ),

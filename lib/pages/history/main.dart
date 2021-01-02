@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/pages/scanning/ScanningResult.dart';
 import 'package:flutter/material.dart';
 import 'HistoryRoot.dart';
 
@@ -19,6 +20,8 @@ class _HistoryPageState extends State<HistoryPage> {
             switch(settings.name) {
               case '/':
                 return HistoryRoot();
+              case '/product':
+                return ScanningResult(settings.arguments);
             }
           },
         );
