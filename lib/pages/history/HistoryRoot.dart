@@ -16,21 +16,33 @@ class HistoryRoot extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar('Verlauf'),
       backgroundColor: Colors.white,
-      body: ListView(
-        padding: EdgeInsets.symmetric(vertical: 10.0),
-        children: _scannedProducts
-            .map((product) => ProductListItem(
-                  image: NetworkImage(product.imageUrl),
-                  name: product.name,
-                  scanDate: product.scanDate,
-                  scanResult: ScanResult.Green,
-                  //product.scanResult,
-                  onProductSelected: () {
-                    Navigator.pushNamed(context, '/product', arguments: product);
-                  },
-                ))
-            .toList(),
-        /*<Widget>[
+      body: _scannedProducts == null || _scannedProducts.isEmpty
+          ? Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: Center(
+                child: Text(
+                  'Du hast noch keine Produkte eingescannt.',
+                  style: Theme.of(context).textTheme.headline2,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
+          : ListView(
+              padding: EdgeInsets.symmetric(vertical: 10.0),
+              children: _scannedProducts
+                  .map((product) => ProductListItem(
+                        image: NetworkImage(product.imageUrl),
+                        name: product.name,
+                        scanDate: product.scanDate,
+                        scanResult: ScanResult.Green,
+                        //product.scanResult,
+                        onProductSelected: () {
+                          Navigator.pushNamed(context, '/product',
+                              arguments: product);
+                        },
+                      ))
+                  .toList(),
+              /*<Widget>[
           ProductListItem(
             image: NetworkImage('https://googleflutter.com/sample_image.jpg'),
             name: 'Produkt 1',
@@ -45,17 +57,18 @@ class HistoryRoot extends StatelessWidget {
             onProductSelected: () {},
           )
         ],*/
-      ),
+            ),
     );
   }
 
   List<Product> getScannedProductsList() {
     //TODO: get list from backend
-    return [
+    /*return [
       new Product('Produkt 1', 'https://googleflutter.com/sample_image.jpg',
           '4009077020122', DateTime.now()),
       new Product('Produkt 2', 'https://googleflutter.com/sample_image.jpg',
           '9001400005030', DateTime.now()),
-    ];
+    ];*/
+    return [];
   }
 }
