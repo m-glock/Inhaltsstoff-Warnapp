@@ -4,8 +4,8 @@ import '../../customWidgets/RadioButtonTable.dart';
 import '../../backend/Enums/PreferenceType.dart';
 import '../../backend/Ingredient.dart';
 
-class OnboardingOtherIngredientsView extends StatelessWidget {
-  OnboardingOtherIngredientsView({
+class PreferencesOtherIngredientsView extends StatelessWidget {
+  PreferencesOtherIngredientsView({
     this.otherIngredientPreferences,
     this.onChange,
   });

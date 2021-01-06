@@ -2,7 +2,7 @@ import './SettingsAgb.dart';
 import './SettingsGeneral.dart';
 import './SettingsHelp.dart';
 import './SettingsImpressum.dart';
-import './SettingsPreferences.dart';
+import 'preferences/SettingsPreferencesSummary.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage {
@@ -12,8 +12,8 @@ class SettingsPage {
   final Widget page;
 }
 
-const List<SettingsPage> allSettingsPages = <SettingsPage>[
-  SettingsPage(Icons.favorite, 'Präferenzen', SettingsPreferences()),
+List<SettingsPage> allSettingsPages = <SettingsPage>[
+  SettingsPage(Icons.favorite, 'Präferenzen', SettingsPreferencesSummary()),
   SettingsPage(Icons.app_settings_alt, 'Allgemein', SettingsGeneral()),
   SettingsPage(Icons.info, 'Impressum', SettingsImpressum()),
   SettingsPage(Icons.format_quote, 'AGB', SettingsAgb()),

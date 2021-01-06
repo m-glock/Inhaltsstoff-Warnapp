@@ -4,26 +4,26 @@ import '../../customWidgets/CheckboxList.dart';
 import '../../backend/Enums/PreferenceType.dart';
 import '../../backend/Ingredient.dart';
 
-class OnboardingNutrientsView extends StatelessWidget {
-  OnboardingNutrientsView({
-    this.nutrientPreferences,
+class PreferencesAllergensView extends StatelessWidget {
+  PreferencesAllergensView({
+    this.allergenePreferences,
     this.onChange,
   });
 
-  final Map<Ingredient, PreferenceType> nutrientPreferences;
-  final Function onChange;
+  final Map<Ingredient, PreferenceType> allergenePreferences;
+  final void Function(Ingredient, PreferenceType) onChange;
 
   @override
   Widget build(BuildContext context) {
     // TODO: render Search Bar
     return CheckboxList(
-      items: nutrientPreferences.map((ingredient, preference) => MapEntry(
+      items: allergenePreferences.map((ingredient, preference) => MapEntry(
           ingredient.name, preference == PreferenceType.None ? false : true)),
       onChange: (int index, bool hasBeenSelected) {
         Ingredient changedIngredient =
-            nutrientPreferences.keys.toList()[index];
+            allergenePreferences.keys.toList()[index];
         PreferenceType newPreference =
-            hasBeenSelected ? PreferenceType.Preferred : PreferenceType.None;
+            hasBeenSelected ? PreferenceType.NotWanted : PreferenceType.None;
         onChange(changedIngredient, newPreference);
       },
     );
