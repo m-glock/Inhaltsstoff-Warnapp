@@ -1,7 +1,7 @@
-import 'package:Inhaltsstoff_Warnapp/customWidgets/SearchBar.dart';
 import 'package:flutter/material.dart';
 
 import '../../customWidgets/CheckboxList.dart';
+import '../../customWidgets/SearchBar.dart';
 import '../../backend/Enums/PreferenceType.dart';
 import '../../backend/Ingredient.dart';
 
