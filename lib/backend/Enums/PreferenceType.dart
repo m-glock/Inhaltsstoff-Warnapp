@@ -1,4 +1,4 @@
-enum PreferenceType { NotWanted, NotPreferred, Preferred, None }
+enum PreferenceType { None, NotWanted, NotPreferred, Preferred }
 
 extension PreferenceTypeExtension on PreferenceType {
   String get name {
