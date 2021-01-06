@@ -14,8 +14,11 @@ class Ingredient extends DbTable {
   static final columns = ["id", "name", "preferencesTypeId", "addDate"];
 
   // Constructor
-  Ingredient(this._name, this._preferencesType, this._addDate, {int id})
-      : super(id);
+  Ingredient(this._name, this._preferencesType, this._addDate,
+      {type = Type.General, int id})
+      : super(id) {
+    this._type = type;
+  }
 
   // Getter and Setter
   String get name => _name;
@@ -67,7 +70,8 @@ class Ingredient extends DbTable {
   }
 
   static Ingredient fromMap(Map<String, dynamic> data) {
-    return new Ingredient(data['name'], data['preferencesTypeId'], data['addDate'],
+    return new Ingredient(
+        data['name'], data['preferencesTypeId'], data['addDate'],
         id: data['id']);
   }
 }

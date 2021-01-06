@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
 class RadioButtonTable extends StatelessWidget {
-  RadioButtonTable(
-      {this.options, this.items, this.selectedItems, this.onChange});
+  RadioButtonTable({this.options, this.items, this.onChange});
 
-  final List<String> items;
   final List<String> options;
-  final Map<String, List<String>> selectedItems;
+  final Map<String, String> items;
   final Function onChange;
 
   @override
@@ -41,34 +39,33 @@ class RadioButtonTable extends StatelessWidget {
           ),
           ...List.generate(
             items.length,
-            (listIndex) => TableRow(
-              children: [
-                TableCell(
-                  child: Text(items[listIndex],
-                      style: Theme.of(context).textTheme.bodyText1),
-                  verticalAlignment: TableCellVerticalAlignment.middle,
-                ),
-                ...List.generate(
-                  options.length,
-                  (optionIndex) => TableCell(
-                    child: Radio(
-                      value: options[optionIndex],
-                      groupValue: selectedItems[options[0]]
-                              .contains(items[listIndex])
-                          ? options[0]
-                          : selectedItems[options[1]]
-                                  .contains(items[listIndex])
-                              ? options[1]
-                              : options[2],
-                      onChanged: (value) {
-                        onChange(listIndex, value);
-                      },
-                      activeColor: Theme.of(context).primaryColor,
+            (listIndex) {
+              String key = items.keys.toList()[listIndex];
+              return TableRow(
+                children: [
+                  TableCell(
+                    child: Text(
+                      key,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                  ),
+                  ...List.generate(
+                    options.length,
+                    (optionIndex) => TableCell(
+                      child: Radio(
+                        value: options[optionIndex],
+                        groupValue: items[key],
+                        onChanged: (value) {
+                          onChange(listIndex, value);
+                        },
+                        activeColor: Theme.of(context).primaryColor,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              );
+            },
           ),
         ],
       ),
