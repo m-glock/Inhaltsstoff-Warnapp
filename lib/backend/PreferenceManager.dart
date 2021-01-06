@@ -22,19 +22,21 @@ class PreferenceManager {
 
     preferenceChanges.forEach((ingredient, preferenceType) async {
       //retrieve preferencetypeid and ingredient_id from the db
-      var resultSetIngredient = await db.rawQuery(
+      List<Map> resultSetIngredient = await db.rawQuery(
           'select i.preferencetypeid as pr_id, i.id as ing_id from ingredient i join preferencetype p where i.name = ? and i.preferencetypeid=p.id',
           [ingredient.name]);
+      // dynamic without var?
       var dbItem = resultSetIngredient.first;
-      var preferenceTypeId = dbItem['pr_id'] as int;
-      var ingrId = dbItem['ing_id'] as int;
+      int preferenceTypeId = dbItem['pr_id'];
+      int ingrId = dbItem['ing_id'];
 
       //retrieve id from the new preferenceType
-      var resultSetPreferenceType = await db.rawQuery(
+      List<Map> resultSetPreferenceType = await db.rawQuery(
           'select id as pr_id from preferencetype where name = ?',
           [preferenceType.name]);
+      // dynamic without var?
       var dbItem_1 = resultSetPreferenceType.first;
-      var preferenceTypeIdNew = dbItem_1['pr_id'] as int;
+      int preferenceTypeIdNew = dbItem_1['pr_id'];
 
       // update preferencetypeid in ingredient
       await db.rawUpdate(
@@ -73,7 +75,7 @@ class PreferenceManager {
             "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where p.name = ?",
             [element_name]);
         results.forEach((result) {
-          print(result);
+          //print(result);
           Ingredient ingredient = Ingredient.fromMap(result);
           ingredients.add(ingredient);
         });
@@ -103,7 +105,6 @@ class PreferenceManager {
         ingredients.add(ingredient);
       });
     }
-    ;
 
     if (type != null) {
       String element_name = type.name;
@@ -121,7 +122,7 @@ class PreferenceManager {
   }
 
   /*
-  * TODO: test & improve the results -> discuss in team
+  * TODO: after releasing the product class: test & improve the results -> discuss in team
   * Get all preferred ingredients and assign them a ScanResult on whether they are in the product or not.
   * Red = Ingredient is not wanted, but is contained in the product
   * Yellow = Ingredient is not preferred, but is contained in the product

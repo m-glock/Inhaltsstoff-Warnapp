@@ -40,26 +40,26 @@ void main() async {
   test('get ingredients due to the preference type NotWanted', () async {
     List<PreferenceType> preferenceTypes = List<PreferenceType>();
     preferenceTypes.add(PreferenceType.NotWanted);
-    var ingredients =
-        PreferenceManager.getPreferencedIngredients(preferenceTypes);
+    List <Ingredient> ingredients =
+        await PreferenceManager.getPreferencedIngredients(preferenceTypes);
     assert(ingredients != null);
   });
 
   //TODO check
   test('get ingredients due to the preference type None', () async {
-    var ingredients = PreferenceManager.getPreferencedIngredients();
+    List <Ingredient> ingredients = await PreferenceManager.getPreferencedIngredients();
     assert(ingredients != null);
   });
 
   //TODO check
   test('get all available ingredients without a type', () async {
-    var ingredients = PreferenceManager.getAllAvailableIngredients();
+    List <Ingredient> ingredients = await PreferenceManager.getAllAvailableIngredients();
     assert(ingredients != null);
   });
 
   //TODO check
   test('get all available ingredients with a specific type', () async {
-    var ingredients =
+    List <Ingredient> ingredients = await
         PreferenceManager.getAllAvailableIngredients(Type.General);
     assert(ingredients != null);
   });
