@@ -27,27 +27,36 @@ class _ComparisonRootState extends State<ComparisonRoot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar('Vergleich'),
-        backgroundColor: Colors.white,
-        body: _productOne == null || _productTwo == null
-            ? ComparisonSelectionPage(
-                productOne: _productOne,
-                  //product for test
-                  /*new Product(
+      appBar: CustomAppBar('Vergleich'),
+      backgroundColor: Colors.white,
+      body: /*_productOne == null || _productTwo == null
+          ? ComparisonSelectionPage(
+              productOne: //_productOne,
+              //product for test
+              new Product(
                     'Produktname',
                     'https://googleflutter.com/sample_image.jpg',
                     '4009077020122',
-                    DateTime.now()),*/
-                onSelectedProducts: (productOne, productTwo) {
-                  setState(() {
-                    _productOne = productOne;
-                    _productTwo = productTwo;
-                  });
-                },
-              )
-            : ComparisonViewPage(
-                productOne: _productOne,
-                productTwo: _productTwo,
-              ));
+                    DateTime.now()),
+              onSelectedProducts: (productOne, productTwo) {
+                setState(() {
+                  _productOne = productOne;
+                  _productTwo = productTwo;
+                });
+              },
+            )
+          : */ComparisonViewPage(
+              productOne: new Product(
+                  'Produktname',
+                  'https://googleflutter.com/sample_image.jpg',
+                  '4009077020122',
+                  DateTime.now()),//_productOne,
+              productTwo: new Product(
+                  'Produktname',
+                  'https://googleflutter.com/sample_image.jpg',
+                  '4009077020122',
+                  DateTime.now()),//_productTwo,
+            ),
+    );
   }
 }

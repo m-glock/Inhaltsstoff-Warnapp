@@ -64,6 +64,7 @@ class _ComparisonSelectionPageState extends State<ComparisonSelectionPage> {
                           productNumber: 1,
                           productName: _productOne.name,
                           scanDate: _productOne.scanDate,
+                          showInfoButton: true,
                           onInfoButtonPressed: () {},
                         )
                       : ComparisonSelectProductButtons(
@@ -93,6 +94,7 @@ class _ComparisonSelectionPageState extends State<ComparisonSelectionPage> {
                           productNumber: 2,
                           productName: _productTwo.name,
                           scanDate: _productTwo.scanDate,
+                          showInfoButton: true,
                           onInfoButtonPressed: () {},
                         )
                       : ComparisonSelectProductButtons(
