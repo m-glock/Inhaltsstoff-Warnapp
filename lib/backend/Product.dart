@@ -39,6 +39,8 @@ class Product extends DbTable{
   String get manufacturingPlaces => _manufacturingPlaces;
   String get stores => _stores;
 
+  // Setter
+  set name(String newName) => _name = newName;
 
   // constructor with minimal necessary information
   Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id}) : super(id) {
@@ -59,7 +61,7 @@ class Product extends DbTable{
     Product newProduct = Product(name, imageUrl, barcode, scanDate);
 
     // add other information
-    var dateTime = json['last_modified_t'] * 1000;
+    int dateTime = json['last_modified_t'] * 1000;
     newProduct._lastUpdated = DateTime.fromMillisecondsSinceEpoch(dateTime);
     newProduct._nutriscore = json['nutriscore_grade'];
 
@@ -72,17 +74,21 @@ class Product extends DbTable{
     FoodApiAccess foodApi = FoodApiAccess.instance;
     Set<String> translatedIngredientNames = Set();
 
-    var allergenNames = json['allergens_tags'];
-    translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('allergens', tagValues: allergenNames));
+    List<dynamic> allergenNames = json['allergens_tags'];
+    if(allergenNames != null && allergenNames.isNotEmpty)
+      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('allergens', tagValues: allergenNames));
 
     List<dynamic> vitaminNames = json['vitamins_tags'];
-    translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('vitamins', tagValues: vitaminNames));
+    if(vitaminNames != null && vitaminNames.isNotEmpty)
+      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('vitamins', tagValues: vitaminNames));
 
     List<dynamic> mineralNames = json['minerals_tags'];
-    translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('minerals', tagValues: mineralNames));
+    if(mineralNames != null && mineralNames.isNotEmpty)
+      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('minerals', tagValues: mineralNames));
 
     List<dynamic> ingredientNames = json['ingredients_tags'];
-    translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('ingredients', tagValues: ingredientNames));
+    if(ingredientNames != null && ingredientNames.isNotEmpty)
+      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('ingredients', tagValues: ingredientNames));
 
     for(String name in translatedIngredientNames) {
       newProduct._ingredients.add(await DatabaseHelper.instance.read(DbTableNames.ingredient, [name], whereColumn: 'name'));
@@ -100,14 +106,14 @@ class Product extends DbTable{
 
   /*
   * get the names of ingredients that are responsible for the overall scan result.
-  * Either return the responsible ingredients that are not wanted or those that are explicitly wanted
+  * Either return the names of responsible ingredients that are not wanted or those that are explicitly wanted
   * @param unwantedIngredients: determines whether to return the ingredients that cause a negative scan result (unwanted)
   *                             or those that are explicitly wanted by the user and contained in the product
   * @return: a list of ingredient names
   * TODO implement, right now only dummy data
   * */
-  List<String> getDecisiveIngredientNames(bool unwantedIngredients){
-    if(unwantedIngredients){
+  List<String> getDecisiveIngredientNames(bool getUnwantedIngredients){
+    if(getUnwantedIngredients){
       List<String> unwanted = List();
       unwanted.add('Schokolade');
       unwanted.add('Milch');
@@ -122,6 +128,8 @@ class Product extends DbTable{
 
   Future<int> saveInDatabase() async {
     DatabaseHelper helper = DatabaseHelper.instance;
+
+    // add product to database
     int id = await helper.add(this);
     this.id = id;
 
@@ -176,6 +184,7 @@ class Product extends DbTable{
     product._manufacturingPlaces = data['manufactoringPlaces'];
     product._stores = data['stores'];
 
+    // get all Ingredients associated with this product from the database
     List<DbTable> ingredients = await DatabaseHelper.instance.readAll(DbTableNames.productIngredient, whereColumn: 'productId', whereArgs: [productId]);
     ingredients.forEach((element) {
       product.ingredients.add(element as Ingredient);
