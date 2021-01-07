@@ -40,6 +40,8 @@ class Product extends DbTable{
   String get manufacturingPlaces => _manufacturingPlaces;
   String get stores => _stores;
 
+  // Setter
+  set name(String newName) => _name = newName;
 
   // constructor with minimal necessary information
   Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id})
@@ -72,21 +74,27 @@ class Product extends DbTable{
     List<Ingredient> ingredients = List();
     FoodApiAccess foodApi = FoodApiAccess.instance;
     List<dynamic> ingredientNames = json['ingredients_tags'];
-    ingredients = await foodApi.getIngredientsWithTranslatedNames(ingredientNames, 'ingredients');
+
+    if(ingredientNames != null && ingredientNames.isNotEmpty)
+      ingredients = await foodApi.getIngredientsWithTranslatedNames(ingredientNames, 'ingredients');
 
     var allergenNames = json['allergens_tags'];
-    ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(allergenNames, 'allergens'));
+    if(allergenNames != null && allergenNames.isNotEmpty)
+      ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(allergenNames, 'allergens'));
 
     List<dynamic> vitaminNames = json['vitamins_tags'];
-    ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(vitaminNames, 'vitamins'));
+    if(vitaminNames != null && vitaminNames.isNotEmpty)
+      ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(vitaminNames, 'vitamins'));
 
     List<dynamic> additiveNames = json['additives_tags'];
-    ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(additiveNames, 'additives'));
+    if(additiveNames != null && additiveNames.isNotEmpty)
+      ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(additiveNames, 'additives'));
 
     newProduct._ingredients = ingredients;
 
     List<dynamic> tracesNames = json['traces_tags'];
-    newProduct._traces = await foodApi.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
+    if(tracesNames != null && tracesNames.isNotEmpty)
+      newProduct._traces = await foodApi.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
 
     //TODO use itemizedScanResults in PreferenceManager to get the overall scanresult, right now only dummy data
     newProduct._scanResult = ScanResult.Yellow;
