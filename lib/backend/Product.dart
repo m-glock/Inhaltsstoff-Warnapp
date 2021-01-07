@@ -124,6 +124,19 @@ class Product extends DbTable{
     }
   }
 
+  /*
+  * get the names of ingredients that are not preferenced by the user and are contained in the product.
+  * @return: a list of ingredient names
+  * TODO implement, right now only dummy data
+  * */
+  List<String> getNotPreferredIngredientNames(){
+    List<String> dummy = List();
+    dummy.add('Käse');
+    dummy.add('Wasser');
+    dummy.add('Langer Name eines Inhaltsstoffes');
+    return dummy;
+  }
+
   // DB methods
   @override
   DbTableNames getTableName() {
