@@ -27,7 +27,7 @@ class FavouriteList extends ProductList{
   }
 
   void removeFromFavourites(Product product){
-    _favouriteProducts.removeWhere((key, value) => key.equals(product));
+    _favouriteProducts.removeWhere((key, value) => key.compareTo(product) == 0);
   }
 
   void changeCategoryOfProduct(Product product, String newCategory){

@@ -47,11 +47,6 @@ class Product extends DbTable{
   Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id})
       : super(id);
 
-  // Define that two products are equal if their names are equal
-  bool equals(Product other) {
-    return (other.name == name);
-  }
-
   /*
   * Uses the json from the Food API to create a new Product object
   * @param json: the json that the food API returns for a barcode
