@@ -18,10 +18,16 @@ class History extends ProductList{
   // Methods
   void addToHistory(Product product){
     _historyOfScannedProducts[product] = product.scanDate;
+    // TODO add in DB
   }
 
   void clearHistory(){
     _historyOfScannedProducts = SortedMap(Ordering.byValue());
+    // TODO remove from DB
   }
 
+  @override
+  List<Product> getProducts() {
+    return _historyOfScannedProducts.keys;
+  }
 }

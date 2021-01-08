@@ -9,6 +9,7 @@ class FavouriteList extends ProductList{
 
   // Getter
   static get favouriteProducts => _favouriteProducts;
+  // TODO category to DB
   static get categories => _favouriteCategories;
 
   // Constructor
@@ -22,15 +23,18 @@ class FavouriteList extends ProductList{
     if(!_favouriteCategories.contains(category)) _favouriteCategories.add(category);
     if(_favouriteProducts.containsKey(product)) return false;
 
+    //TODO add in DB
     _favouriteProducts[product] = category;
     return true;
   }
 
   void removeFromFavourites(Product product){
+    //TODO remove from DB
     _favouriteProducts.removeWhere((key, value) => key.compareTo(product) == 0);
   }
 
   void changeCategoryOfProduct(Product product, String newCategory){
+    //TODO update in DB
     _favouriteProducts[product] = newCategory;
   }
 
@@ -45,4 +49,8 @@ class FavouriteList extends ProductList{
     _favouriteCategories.remove(name);
   }
 
+  @override
+  List<Product> getProducts() {
+    return _favouriteProducts.keys;
+  }
 }

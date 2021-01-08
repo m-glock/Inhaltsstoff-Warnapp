@@ -1,16 +1,15 @@
-import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
-
+import '../Product.dart';
+import '../database/DbTableNames.dart';
 import '../database/DbTable.dart';
 
-class ProductList extends DbTable{
+abstract class ProductList extends DbTable{
 
   // constructor
   ProductList(int id) : super(id);
 
   @override
   DbTableNames getTableName() {
-    // TODO: implement getTableName
-    throw UnimplementedError();
+    return DbTableNames.list;
   }
 
   @override
@@ -23,5 +22,7 @@ class ProductList extends DbTable{
     // TODO: implement fromMap
     throw UnimplementedError();
   }
+
+  List<Product> getProducts();
 
 }
