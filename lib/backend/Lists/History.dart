@@ -1,28 +1,27 @@
 import 'ProductList.dart';
 import '../Product.dart';
+import 'package:sortedmap/sortedmap.dart';
 
 class History extends ProductList{
 
   // Fields
-  List<Product> _historyOfScannedProducts;
+  SortedMap<Product, DateTime> _historyOfScannedProducts;
 
   // Getter
   get historyOfScannedProducts => _historyOfScannedProducts;
 
   // Constructor
   History({int id}) : super(id){
-    _historyOfScannedProducts = List();
+    _historyOfScannedProducts = SortedMap(Ordering.byValue());
   }
 
   // Methods
   void addToHistory(Product product){
-    // TODO: implement addToHistory
-    throw UnimplementedError();
+    _historyOfScannedProducts[product] = product.scanDate;
   }
 
-  static void clearHistory(){
-    // TODO: implement clearHistory
-    throw UnimplementedError();
+  void clearHistory(){
+    _historyOfScannedProducts = SortedMap(Ordering.byValue());
   }
 
 }
