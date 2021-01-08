@@ -53,7 +53,16 @@ class FoodApiAccess{
 
     // if Product has already been scanned before, return data from DB
     DbTable table = await helper.read(DbTableNames.product, [barcode], whereColumn: 'barcode');
-    if(table != null) return table as Product;
+    if(table != null){
+      Product productFromDb = table as Product;
+      productFromDb.scanDate = DateTime.now();
+
+      String tableName = productFromDb.getTableName().name;
+      String newScanDate = productFromDb.scanDate.toIso8601String();
+      int productId = productFromDb.id;
+      await helper.customQuery('UPDATE $tableName SET scanDate = $newScanDate WHERE id = $productId');
+      return productFromDb;
+    }
 
     String requestUrl = '$_foodDbApiUrl/$_productEndpoint/$barcode.json';
     http.Response response = await _getRequest(requestUrl);

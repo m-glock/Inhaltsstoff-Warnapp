@@ -41,6 +41,7 @@ class Product extends DbTable{
 
   // Setter
   set name(String newName) => _name = newName;
+  set scanDate(DateTime newTime) => _scanDate = newTime;
 
   // constructor with minimal necessary information
   Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id}) : super(id) {
