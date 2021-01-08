@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+import 'package:camera/camera.dart';
 
 import 'pages/HomePage.dart';
 import 'pages/onboarding/main.dart';
 import 'theme/style.dart';
 
-void main() {
+// Global variable for storing the list of
+// cameras available
+List<CameraDescription> cameras = [];
+
+Future<void> main() async {
+    try {
+    WidgetsFlutterBinding.ensureInitialized();
+    // Retrieve the device cameras
+    cameras = await availableCameras();
+  } on CameraException catch (e) {
+    print(e);
+  }
+
   SharedPreferences.setMockInitialValues(
       {}); // set initial values here if desired
   runApp(MyApp());
