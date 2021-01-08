@@ -1,6 +1,7 @@
-import 'package:Inhaltsstoff_Warnapp/pages/scanning/ScanningCropImage.dart';
 import 'package:flutter/material.dart';
 
+import './ScanningCropImage.dart';
+import './ScanningCamera.dart';
 import './ScanningResult.dart';
 import './ScanningRoot.dart';
 
@@ -25,9 +26,12 @@ class _ScanningPageState extends State<ScanningPage> {
                 return ScanningRoot();
               case '/crop_image':
                 return ScanningCropImage();
+              case '/camera':
+                return ScanningCamera();  
               case '/result':
                 return ScanningResult(settings.arguments);
               //return ScanningResult(testProduct);
+              default: return ScanningRoot();
             }
           },
         );

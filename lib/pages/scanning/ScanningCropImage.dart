@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ScanningCropImage extends StatefulWidget {
-  const ScanningCropImage({ Key key }) : super(key: key);
+  
+  final String imgPath;
+
+  ScanningCropImage({this.imgPath});
 
   @override
   _ScanningCropImageState createState() => _ScanningCropImageState();

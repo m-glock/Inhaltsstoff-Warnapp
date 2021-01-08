@@ -114,7 +114,8 @@ class _ScanningRootState extends State<ScanningRoot> {
                         icon: Icons.image,
                         isPrimary: false,
                         onPressed: () {
-                          Navigator.pushNamed(context, '/crop_image');
+                          //Navigator.pushNamed(context, '/crop_image');
+                          Navigator.pushNamed(context, '/camera');
                         },
                       ),
                     ],
