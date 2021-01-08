@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:Inhaltsstoff_Warnapp/backend/ListManager.dart';
+
 import 'Enums/PreferenceType.dart';
 import 'Ingredient.dart';
+import 'Lists/History.dart';
 import 'Product.dart';
 import 'package:http/http.dart' as http;
 
@@ -61,8 +64,13 @@ class FoodApiAccess{
       return null;
     }
 
+    Product product = await Product.fromApiJson(decodedJson['product']);
+
+    History his = ListManager.instance.history;
+    his.addToHistory(product);
+
     // create Product object
-    return Product.fromApiJson(decodedJson['product']);
+    return product;
   }
 
   /*
