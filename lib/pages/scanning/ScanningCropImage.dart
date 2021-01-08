@@ -81,7 +81,7 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
                 color: Colors.white,
                 onPressed: null),
               RaisedButton(
-                child: Text('Zuschneiden'),
+                child: Text('Zuschneiden', style: TextStyle(color: Theme.of(context).primaryColorLight),),
                 color: Theme.of(context).primaryColor,
                 onPressed: () => _cropImage(),
               ),

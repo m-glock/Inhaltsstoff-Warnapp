@@ -31,9 +31,18 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
 
+  flutter_barcode_scanner: ^1.0.1
+
+  # package for the onboarding flow
+  introduction_screen: ^1.0.9
+
+  # package for platform-specific persistent storage of simple data
+  shared_preferences: ^0.5.12+4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  http: 0.12.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -48,6 +57,8 @@ flutter:
 
   assets:
     - assets/database/create_tables_sql.txt
+    - assets/database/insert_into_tables_sql.txt
+    - assets/images/
     - pubspec.yaml
     - assets/images/
 
