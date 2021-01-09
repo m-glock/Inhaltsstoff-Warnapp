@@ -184,10 +184,17 @@ class DatabaseHelper {
     return updatedRowIds;
   }
 
-  // delete one row with a specific id
-  Future<int> delete(DbTable object) async {
+  // delete one row
+  Future<int> delete(DbTable object, {DbTableNames from, String whereColumn, List<dynamic> whereArgs}) async {
     Database db = await instance.database;
-    return await db.delete(object.getTableName().name, where: 'id = ?', whereArgs: [object.id]);
+
+    if(from != null && whereColumn != null && (whereArgs?.isNotEmpty ?? true)){
+      String tableName = from.name;
+      return await db.delete(tableName, where: whereColumn, whereArgs: whereArgs);
+    } else{
+      String tableName = from == null ? object.getTableName().name : from.name;
+      return await db.delete(tableName, where: 'id = ?', whereArgs: [object.id]);
+    }
   }
 
   // delete multiple rows

@@ -1,3 +1,6 @@
+import '../database/DbTableNames.dart';
+import '../database/databaseHelper.dart';
+
 import 'ProductList.dart';
 import '../Product.dart';
 
@@ -28,7 +31,7 @@ class FavouriteList extends ProductList{
   }
 
   void removeProduct(Product product){
-    //TODO remove from DB
+    DatabaseHelper.instance.delete(product, from: DbTableNames.productList, whereColumn: 'listId', whereArgs: [id]);
     _favouriteProducts.removeWhere((element) => element.compareTo(product) == 0);
   }
 
