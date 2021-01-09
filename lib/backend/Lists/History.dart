@@ -16,9 +16,15 @@ class History extends ProductList{
   }
 
   // Methods
-  void addToHistory(Product product){
+  void addProduct(Product product){
     _historyOfScannedProducts[product] = product.scanDate;
     // TODO add in DB
+  }
+
+  void addAllProducts(List<Product> products){
+    products.forEach((product) {
+      _historyOfScannedProducts[product] = product.scanDate;
+    });
   }
 
   void clearHistory(){

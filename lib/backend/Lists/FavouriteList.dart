@@ -15,7 +15,7 @@ class FavouriteList extends ProductList{
   }
 
   // Methods
-  bool addToFavourites(Product product){
+  bool addProduct(Product product){
     if(_favouriteProducts.contains(product)) return false;
 
     //TODO add in DB
@@ -23,7 +23,11 @@ class FavouriteList extends ProductList{
     return true;
   }
 
-  void removeFromFavourites(Product product){
+  void addAllProducts(List<Product> products){
+    _favouriteProducts.addAll(products);
+  }
+
+  void removeProduct(Product product){
     //TODO remove from DB
     _favouriteProducts.removeWhere((element) => element.compareTo(product) == 0);
   }
