@@ -93,8 +93,7 @@ class PreferenceManager {
   * @param type: if only the ingredients of a specific type are relevant (i.e. vitamins, allergens)
   * @return: all Ingredients that are available in the database
   * */
-  static Future<List<Ingredient>> getAllAvailableIngredients(
-      [Type type]) async {
+  static Future<List<Ingredient>> getAllAvailableIngredients([Type type]) async {
     final dbHelper = DatabaseHelper.instance;
     final db = await dbHelper.database;
     List<Ingredient> ingredients = new List();
@@ -103,7 +102,7 @@ class PreferenceManager {
       List<Map> results = await db.rawQuery(
           "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id");
       results.forEach((result) {
-        print(result);
+        //print(result);
         Ingredient ingredient = Ingredient.fromMap(result);
         ingredients.add(ingredient);
       });
@@ -112,16 +111,19 @@ class PreferenceManager {
     if (type != null) {
       String element_name = type.name;
       List<Map> results = await db.rawQuery(
-          "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where t.name = ?",
+          "select i.name as ingredientName, p.id as preferenceId, t.name typeName, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where t.name = ?",
           [element_name]);
       results.forEach((result) {
-        print(result);
+        //print(result);
         Ingredient ingredient = Ingredient.fromMap(result);
         ingredients.add(ingredient);
+        //print(ingredients);
       });
+
     }
 
     return ingredients;
+
   }
 
   /*

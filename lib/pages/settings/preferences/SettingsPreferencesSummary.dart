@@ -21,24 +21,29 @@ class SettingsPreferencesSummary extends StatefulWidget {
 
 class _SettingsPreferencesSummaryState
     extends State<SettingsPreferencesSummary> {
-  Map<Ingredient, PreferenceType> _allergenePreferences = Map.fromIterable(
-      PreferenceManager.getAllAvailableIngredients(type: Type.Allergen)
-          .where((ingredient) => ingredient.type == Type.Allergen),
-      key: (ingredient) => ingredient,
-      value: (ingredient) => ingredient.preferenceType);
 
-  Map<Ingredient, PreferenceType> _nutrientPreferences = Map.fromIterable(
-      PreferenceManager.getAllAvailableIngredients(type: Type.Nutriment)
-          .where((ingredient) => ingredient.type == Type.Nutriment),
-      key: (ingredient) => ingredient,
-      value: (ingredient) => ingredient.preferenceType);
+  Map<Ingredient, PreferenceType> _allergenePreferences;
+  Map<Ingredient, PreferenceType> _nutrientPreferences;
+  Map<Ingredient, PreferenceType> _otherIngredientPreferences;
 
-  Map<Ingredient, PreferenceType> _otherIngredientPreferences =
-      Map.fromIterable(
-          PreferenceManager.getAllAvailableIngredients(type: Type.General)
-              .where((ingredient) => ingredient.type == Type.General),
-          key: (ingredient) => ingredient,
-          value: (ingredient) => ingredient.preferenceType);
+  Map<Ingredient, PreferenceType> getIngredients(Type type) {
+    Map<Ingredient, PreferenceType> ingredients = new Map();
+    PreferenceManager.getAllAvailableIngredients(type)
+        .then((value) => ingredients = Map.fromIterable(value
+        .where((ingredient) => ingredient.type == type),
+        key: (ingredient) => ingredient,
+        value: (ingredient) => ingredient.preferenceType)
+    );
+    return ingredients;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _allergenePreferences = getIngredients(Type.Allergen);
+    _nutrientPreferences = getIngredients(Type.Nutriment);
+    _otherIngredientPreferences = getIngredients(Type.General);
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -22,24 +22,26 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   final _introKey = GlobalKey<IntroductionScreenState>();
 
-  Map<Ingredient, PreferenceType> _allergenePreferences = Map.fromIterable(
-      PreferenceManager.getAllAvailableIngredients(type: Type.Allergen)
-          .where((ingredient) => ingredient.type == Type.Allergen),
-      key: (ingredient) => ingredient,
-      value: (ingredient) => ingredient.preferenceType);
+  Map<Ingredient, PreferenceType> _allergenePreferences;
+  Map<Ingredient, PreferenceType> _nutrientPreferences;
+  Map<Ingredient, PreferenceType> _otherIngredientPreferences;
 
-  Map<Ingredient, PreferenceType> _nutrientPreferences = Map.fromIterable(
-      PreferenceManager.getAllAvailableIngredients(type: Type.Nutriment)
-          .where((ingredient) => ingredient.type == Type.Nutriment),
-      key: (ingredient) => ingredient,
-      value: (ingredient) => ingredient.preferenceType);
 
-  Map<Ingredient, PreferenceType> _otherIngredientPreferences =
-      Map.fromIterable(
-          PreferenceManager.getAllAvailableIngredients(type: Type.General)
-              .where((ingredient) => ingredient.type == Type.General),
-          key: (ingredient) => ingredient,
-          value: (ingredient) => ingredient.preferenceType);
+
+  Future<Map<Ingredient, PreferenceType>> getIngredients(Type type) async {
+    Map<Ingredient, PreferenceType> ingredients = new Map();
+    var getAllAvailIg = await PreferenceManager.getAllAvailableIngredients(type);
+    print(getAllAvailIg);
+    print("start");
+    /*ingredients = Map.fromIterable(getAllAvailIg
+        .where((ingredient) => ingredient.type == type),
+        key: (ingredient) => ingredient,
+        value: (ingredient) => ingredient.preferenceType);*/
+    print(getAllAvailIg.where((ingredient) => ingredient.type == Type.General));
+    print("stop");
+
+    return ingredients;
+  }
 
   void _onFinishOnboarding(context) {
     // save _preferences
@@ -65,6 +67,24 @@ class _OnboardingPageState extends State<OnboardingPage> {
             ? 2
             : 3;
     _introKey.currentState.animateScroll(pageIndex);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // _allergenePreferences = await getIngredients(Type.Allergen);
+    // _nutrientPreferences = await getIngredients(Type.Nutriment);
+    // _otherIngredientPreferences = await getIngredients(Type.General);
+    setAllergenes();
+  }
+
+  void setAllergenes() async {
+    var test = await getIngredients(Type.Allergen);
+    print(test);
+    print("hier ist unser print");
+    setState(() {
+      _allergenePreferences=test;
+    });
   }
 
   @override
@@ -120,7 +140,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             title: "Allergien",
             subTitle: "Hast du irgendwelche Allergien?",
           ),
-          bodyWidget: PreferencesAllergensView(
+          bodyWidget: _allergenePreferences != null ? PreferencesAllergensView(
             allergenePreferences: _allergenePreferences,
             onChange:
                 (Ingredient changedIngredient, PreferenceType newPreference) {
@@ -128,7 +148,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 _allergenePreferences[changedIngredient] = newPreference;
               });
             },
-          ),
+          ):CircularProgressIndicator(),
           decoration: mainPageDecoration,
         ),
         PageViewModel(

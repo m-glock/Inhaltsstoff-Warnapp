@@ -20,11 +20,25 @@ class SettingsAllergenePreferences extends StatefulWidget {
 
 class _SettingsAllergenePreferencesState
     extends State<SettingsAllergenePreferences> {
-  Map<Ingredient, PreferenceType> _allergenePreferences = Map.fromIterable(
-      PreferenceManager.getAllAvailableIngredients(type: Type.Allergen)
-          .where((ingredient) => ingredient.type == Type.Allergen),
-      key: (ingredient) => ingredient,
-      value: (ingredient) => ingredient.preferenceType);
+
+  Map<Ingredient, PreferenceType> _allergenePreferences;
+
+  Map<Ingredient, PreferenceType> getIngredients(Type type) {
+    Map<Ingredient, PreferenceType> ingredients = new Map();
+    PreferenceManager.getAllAvailableIngredients(type)
+        .then((value) => ingredients = Map.fromIterable(value
+        .where((ingredient) => ingredient.type == type),
+        key: (ingredient) => ingredient,
+        value: (ingredient) => ingredient.preferenceType)
+    );
+    return ingredients;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _allergenePreferences = getIngredients(Type.Allergen);
+  }
 
   @override
   Widget build(BuildContext context) {
