@@ -1,22 +1,23 @@
 import 'dart:io';
-import 'package:flutter/services.dart';
 import 'package:image_crop/image_crop.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+
+import './ScanningTextrecognition.dart';
 
 class ScanningCropImage extends StatefulWidget {
-  
   final String imgPath;
 
   ScanningCropImage({this.imgPath});
 
   @override
-  _ScanningCropImageState createState() => _ScanningCropImageState();
+  _ScanningCropImageState createState() => new _ScanningCropImageState(imgPath);
 }
 
 class _ScanningCropImageState extends State<ScanningCropImage> {
+  _ScanningCropImageState(this.path);
+
+  final String path;
   final cropKey = GlobalKey<CropState>();
-  String _imageName = 'test.jpg';
   File _sample;
   File _lastCropped;
 
@@ -51,19 +52,15 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
   }
 
   Future<void> _setSample() async {
-    var file = await _getImageFileFromAssets(_imageName);
+    var file = await _getImageFile(path);
 
     setState(() {
       _sample = file;
     });
   }
 
-  Future<File> _getImageFileFromAssets(String imageName) async {
-    final byteData = await rootBundle.load('assets/images/$imageName');
-
-    final file = File('${(await getTemporaryDirectory()).path}/$imageName');
-    await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-
+  Future<File> _getImageFile(String path) async {
+    final file = File('$path');
     return file;
   }
 
@@ -80,11 +77,17 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               RaisedButton(
-                child: Text('Zurücksetzen', style: TextStyle(color: Theme.of(context).primaryColor),),
-                color: Colors.white,
-                onPressed: null),
+                  child: Text(
+                    'Zurücksetzen',
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  ),
+                  color: Colors.white,
+                  onPressed: null),
               RaisedButton(
-                child: Text('Zuschneiden', style: TextStyle(color: Theme.of(context).primaryColorLight),),
+                child: Text(
+                  'Zuschneiden',
+                  style: TextStyle(color: Theme.of(context).primaryColorLight),
+                ),
                 color: Theme.of(context).primaryColor,
                 onPressed: () => _cropImage(),
               ),
@@ -121,5 +124,14 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
     _lastCropped = file;
 
     debugPrint('$file');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            ScanningTextrecognition(
+          file
+        ),
+      ),
+    );
   }
 }

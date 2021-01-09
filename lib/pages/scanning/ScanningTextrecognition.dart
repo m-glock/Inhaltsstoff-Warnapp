@@ -9,37 +9,38 @@ import 'dart:async';
 import './scanningCustomWidgets/ScanningTextDetectionPainter.dart';
 
 class ScanningTextrecognition extends StatefulWidget {
-  final String imagePath;
-  ScanningTextrecognition(this.imagePath);
+  final File file;
+  ScanningTextrecognition(this.file);
 
   @override
-  _ScanningTextrecognitionState createState() => new _ScanningTextrecognitionState(imagePath);
+  _ScanningTextrecognitionState createState() =>
+      new _ScanningTextrecognitionState(file);
 }
 
 class _ScanningTextrecognitionState extends State<ScanningTextrecognition> {
   _ScanningTextrecognitionState(this.path);
 
-  final String path;
+  final File path;
 
   Size _imageSize;
   String recognizedText = "Lade ...";
   List<TextBlock> _elements = [];
 
   void _initializeVision() async {
-    final File imageFile = File(path);
+    final File imageFile = path;
 
     if (imageFile != null) {
       await _getImageSize(imageFile);
     }
 
     final FirebaseVisionImage visionImage =
-    FirebaseVisionImage.fromFile(imageFile);
+        FirebaseVisionImage.fromFile(imageFile);
 
     final TextRecognizer textRecognizer =
-    FirebaseVision.instance.textRecognizer();
+        FirebaseVision.instance.textRecognizer();
 
     final VisionText visionText =
-    await textRecognizer.processImage(visionImage);
+        await textRecognizer.processImage(visionImage);
 
     String text = "";
     for (TextBlock block in visionText.blocks) {
@@ -93,66 +94,70 @@ class _ScanningTextrecognitionState extends State<ScanningTextrecognition> {
       ),
       body: _imageSize != null
           ? Stack(
-        children: <Widget>[
-          Center(
-            child: Container(
-              width: double.maxFinite,
-              color: Colors.black,
-              child: CustomPaint(
-                foregroundPainter:
-                ScanningTextDetectorPainter(_imageSize, _elements),
-                child: AspectRatio(
-                  aspectRatio: _imageSize.aspectRatio,
-                  child: Image.file(
-                    File(path),
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Container(
+                      width: double.maxFinite,
+                      color: Colors.black,
+                      child: CustomPaint(
+                        foregroundPainter:
+                            ScanningTextDetectorPainter(_imageSize, _elements),
+                        child: AspectRatio(
+                          aspectRatio: _imageSize.aspectRatio,
+                          child: Image.file(
+                            path,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Card(
-              elevation: 8,
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0),
-                      child: Text(
-                        "Zutaten",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Card(
+                    elevation: 8,
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20.0),
+                            child: Text(
+                              "Zutaten",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 210,
+                            child: SingleChildScrollView(
+                              child: Text(
+                                recognizedText,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Container(
-                      height: 160,
-                      child: SingleChildScrollView(
-                        child: Text(
-                          recognizedText,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
+              ],
+            )
+          : Container(
+              color: Colors.black,
+              child: Center(
+                child: CircularProgressIndicator(),
               ),
             ),
-          ),
-        ],
-      )
-          : Container(
-        color: Colors.black,
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      ),
     );
   }
 }
