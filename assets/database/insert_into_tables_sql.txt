@@ -10,3 +10,6 @@ INSERT INTO preferencetype (name) VALUES ('Preferred');
 INSERT INTO type (name) VALUES ('Allergen');
 INSERT INTO type (name) VALUES ('Nutriment');
 INSERT INTO type (name) VALUES ('General');
+
+INSERT INTO lists (name) VALUES ('History');
+INSERT INTO lists (name) VALUES ('Favourites');
