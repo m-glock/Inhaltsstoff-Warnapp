@@ -1,9 +1,11 @@
-import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/database/DbTable.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
+import 'package:sqflite/sqflite.dart';
 
-import 'Ingredient.dart';
+import 'database/databaseHelper.dart';
+import 'database/DbTable.dart';
+import 'database/DbTableNames.dart';
 import 'Enums/ScanResult.dart';
+import 'FoodApiAccess.dart';
+import 'Ingredient.dart';
 
 class Product extends DbTable{
 
@@ -16,7 +18,6 @@ class Product extends DbTable{
   String _nutriscore;
 
   List<Ingredient> _ingredients;
-  List<Ingredient> _traces;
 
   String _quantity;
   String _origin;
@@ -31,9 +32,7 @@ class Product extends DbTable{
   DateTime get scanDate => _scanDate;
   DateTime get lastUpdated => _lastUpdated;
   String get nutriscore => _nutriscore;
-
   List<Ingredient> get ingredients => _ingredients;
-  List<Ingredient> get traces => _traces;
 
   String get quantity => _quantity;
   String get origin => _origin;
@@ -42,10 +41,12 @@ class Product extends DbTable{
 
   // Setter
   set name(String newName) => _name = newName;
+  set scanDate(DateTime newTime) => _scanDate = newTime;
 
   // constructor with minimal necessary information
-  Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id})
-      : super(id);
+  Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id}) : super(id) {
+    _ingredients = List();
+  }
 
   /*
   * Uses the json from the Food API to create a new Product object
@@ -61,7 +62,7 @@ class Product extends DbTable{
     Product newProduct = Product(name, imageUrl, barcode, scanDate);
 
     // add other information
-    var dateTime = json['last_modified_t'] * 1000;
+    int dateTime = json['last_modified_t'] * 1000;
     newProduct._lastUpdated = DateTime.fromMillisecondsSinceEpoch(dateTime);
     newProduct._nutriscore = json['nutriscore_grade'];
 
@@ -71,30 +72,32 @@ class Product extends DbTable{
     newProduct._stores = json['stores'];
 
     // add Ingredients, Allergens, Vitamins, Additives and Traces
-    List<Ingredient> ingredients = List();
     FoodApiAccess foodApi = FoodApiAccess.instance;
-    List<dynamic> ingredientNames = json['ingredients_tags'];
+    Set<String> translatedIngredientNames = Set();
 
-    if(ingredientNames != null && ingredientNames.isNotEmpty)
-      ingredients = await foodApi.getIngredientsWithTranslatedNames(ingredientNames, 'ingredients');
-
-    var allergenNames = json['allergens_tags'];
+    List<dynamic> allergenNames = json['allergens_tags'];
     if(allergenNames != null && allergenNames.isNotEmpty)
-      ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(allergenNames, 'allergens'));
+      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('allergens', tagValues: allergenNames));
 
     List<dynamic> vitaminNames = json['vitamins_tags'];
     if(vitaminNames != null && vitaminNames.isNotEmpty)
-      ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(vitaminNames, 'vitamins'));
+      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('vitamins', tagValues: vitaminNames));
 
-    List<dynamic> additiveNames = json['additives_tags'];
-    if(additiveNames != null && additiveNames.isNotEmpty)
-      ingredients.addAll(await foodApi.getIngredientsWithTranslatedNames(additiveNames, 'additives'));
+    List<dynamic> mineralNames = json['minerals_tags'];
+    if(mineralNames != null && mineralNames.isNotEmpty)
+      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('minerals', tagValues: mineralNames));
 
-    newProduct._ingredients = ingredients;
+    List<dynamic> ingredientNames = json['ingredients_tags'];
+    if(ingredientNames != null && ingredientNames.isNotEmpty)
+      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('ingredients', tagValues: ingredientNames));
 
-    List<dynamic> tracesNames = json['traces_tags'];
-    if(tracesNames != null && tracesNames.isNotEmpty)
-      newProduct._traces = await foodApi.getIngredientsWithTranslatedNames(tracesNames, 'ingredients');
+    for(String name in translatedIngredientNames) {
+      newProduct._ingredients.add(await DatabaseHelper.instance.read(DbTableNames.ingredient, [name], whereColumn: 'name'));
+    }
+
+    // TODO: additives as separate field or inside of ingredients?
+    //List<dynamic> additiveNames = json['additives_tags'];
+    //newProduct.addAll(await foodApi.getIngredientsWithTranslatedNames(additiveNames, 'additives'));
 
     //TODO use itemizedScanResults in PreferenceManager to get the overall scanresult, right now only dummy data
     newProduct._scanResult = ScanResult.Yellow;
@@ -104,14 +107,14 @@ class Product extends DbTable{
 
   /*
   * get the names of ingredients that are responsible for the overall scan result.
-  * Either return the responsible ingredients that are not wanted or those that are explicitly wanted
+  * Either return the names of responsible ingredients that are not wanted or those that are explicitly wanted
   * @param unwantedIngredients: determines whether to return the ingredients that cause a negative scan result (unwanted)
   *                             or those that are explicitly wanted by the user and contained in the product
   * @return: a list of ingredient names
   * TODO implement, right now only dummy data
   * */
-  List<String> getDecisiveIngredientNames(bool unwantedIngredients){
-    if(unwantedIngredients){
+  List<String> getDecisiveIngredientNames(bool getUnwantedIngredients){
+    if(getUnwantedIngredients){
       List<String> unwanted = List();
       unwanted.add('Schokolade');
       unwanted.add('Milch');
@@ -124,17 +127,23 @@ class Product extends DbTable{
     }
   }
 
-  /*
-  * get the names of ingredients that are not preferenced by the user and are contained in the product.
-  * @return: a list of ingredient names
-  * TODO implement, right now only dummy data
-  * */
-  List<String> getNotPreferredIngredientNames(){
-    List<String> dummy = List();
-    dummy.add('Käse');
-    dummy.add('Wasser');
-    dummy.add('Langer Name eines Inhaltsstoffes');
-    return dummy;
+  Future<int> saveInDatabase() async {
+    DatabaseHelper helper = DatabaseHelper.instance;
+
+    // add product to database
+    int id = await helper.add(this);
+    this.id = id;
+
+    // save each ingredients connection to the product in productingredient
+    Database db = await helper.database;
+    for(Ingredient ingredient in _ingredients) {
+      Map<String, dynamic> values = Map();
+      values['productId'] = this.id;
+      values['ingredientId'] = ingredient.id;
+      db.insert(DbTableNames.productIngredient.name, values);
+    }
+
+    return id;
   }
 
   // DB methods
@@ -145,13 +154,44 @@ class Product extends DbTable{
 
   @override
   Map<String, dynamic> toMap({bool withId = true}) {
-    // TODO: implement toMap
-    throw UnimplementedError();
+    final map = new Map<String, dynamic>();
+    map['scanResultId'] = _scanResult.id;
+    map['name'] = name;
+    map['imageUrl'] = _imageUrl;
+    map['barcode'] = _barcode;
+    map['scanDate'] = _scanDate.toIso8601String();
+    map['lastUpdated'] = _lastUpdated.toIso8601String();
+    map['nutriScore'] = _nutriscore;
+
+    map['quantity'] = _quantity;
+    map['originCountry'] = _origin;
+    map['manufactoringPlaces'] = _manufacturingPlaces;
+    map['stores'] = _stores;
+
+    return map;
   }
 
-  static Product fromMap(Map<String, dynamic> data) {
-    // TODO: implement fromMap
-    throw UnimplementedError();
+  static Future<Product> fromMap(Map<String, dynamic> data) async {
+    int productId = data['id'];
+    DateTime scanDate = DateTime.parse(data['scanDate']);
+    Product product = Product(data['name'], data['imageUrl'], data['barcode'], scanDate, id: productId);
+
+    int scanResultId = data['scanResultId'];
+    product._scanResult = ScanResult.values.elementAt(scanResultId - 1);
+    product._lastUpdated = DateTime.parse(data['lastUpdated']);
+    product._nutriscore = data['nutriScore'];
+    product._quantity = data['quantity'];
+    product._origin = data['originCountry'];
+    product._manufacturingPlaces = data['manufactoringPlaces'];
+    product._stores = data['stores'];
+
+    // get all Ingredients associated with this product from the database
+    List<DbTable> ingredients = await DatabaseHelper.instance.readAll(DbTableNames.productIngredient, whereColumn: 'productId', whereArgs: [productId]);
+    ingredients.forEach((element) {
+      product.ingredients.add(element as Ingredient);
+    });
+
+    return product;
   }
 
 }

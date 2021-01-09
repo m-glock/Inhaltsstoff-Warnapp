@@ -2,14 +2,12 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
-import 'package:Inhaltsstoff_Warnapp/backend/ListManager.dart';
-
-import 'Enums/PreferenceType.dart';
-import 'Ingredient.dart';
-import 'Lists/History.dart';
-import 'Product.dart';
 import 'package:http/http.dart' as http;
+
+import 'database/DbTableNames.dart';
+import 'database/databaseHelper.dart';
+import 'database/DbTable.dart';
+import 'Product.dart';
 
 class FoodApiAccess{
 
@@ -18,6 +16,7 @@ class FoodApiAccess{
   final String _productEndpoint = 'api/v0/product';
   Map _allergens;
   Map _vitamins;
+  Map _minerals;
   Map _ingredients;
 
   // make this a singleton class
@@ -27,6 +26,7 @@ class FoodApiAccess{
   Future<Map> _getCorrespondingMap(String tag) async {
     if(_allergens == null) _allergens = await _getAllValuesForTag('allergens');
     if(_vitamins == null) _vitamins = await _getAllValuesForTag('vitamins');
+    if(_minerals == null) _minerals = await _getAllValuesForTag('minerals');
     if(_ingredients == null) _ingredients = await _getAllValuesForTag('ingredients');
 
     switch(tag){
@@ -34,6 +34,8 @@ class FoodApiAccess{
         return _vitamins;
       case 'allergens':
         return _allergens;
+      case 'minerals':
+        return _minerals;
       case 'ingredients':
         return _ingredients;
       default:
@@ -47,8 +49,22 @@ class FoodApiAccess{
   * @return: an object for the scanned product with the relevant information or null if not found
   * */
   Future<Product> scanProduct(String barcode) async{
-    String requestUrl = '$_foodDbApiUrl/$_productEndpoint/$barcode.json';
+    DatabaseHelper helper = DatabaseHelper.instance;
 
+    // if Product has already been scanned before, return data from DB
+    DbTable table = await helper.read(DbTableNames.product, [barcode], whereColumn: 'barcode');
+    if(table != null){
+      Product productFromDb = table as Product;
+      productFromDb.scanDate = DateTime.now();
+
+      String tableName = productFromDb.getTableName().name;
+      String newScanDate = productFromDb.scanDate.toIso8601String();
+      int productId = productFromDb.id;
+      await helper.customQuery('UPDATE $tableName SET scanDate = $newScanDate WHERE id = $productId');
+      return productFromDb;
+    }
+
+    String requestUrl = '$_foodDbApiUrl/$_productEndpoint/$barcode.json';
     http.Response response = await _getRequest(requestUrl);
     int status = response.statusCode;
 
@@ -64,12 +80,12 @@ class FoodApiAccess{
       return null;
     }
 
+    // transform json data into a product object
     Product product = await Product.fromApiJson(decodedJson['product']);
 
-    History his = ListManager.instance.history;
-    his.addToHistory(product);
+    // save product in database
+    await product.saveInDatabase();
 
-    // create Product object
     return product;
   }
 
@@ -107,10 +123,11 @@ class FoodApiAccess{
     List<String> translatedTagValues = new List();
     Map<dynamic, dynamic> allTagValues = await _getCorrespondingMap(tag);
 
-    if(tagValues == null || tagValues.isEmpty){ // translate all existing tag values
+    if(tagValues == null){ // translate all existing tag values
 
       for(final keyValuePair in allTagValues.entries){
-        if(tag == 'vitamins' && keyValuePair.value['children'] == null)
+        // only use vitamins and minerals that are parents
+        if((tag == 'vitamins' || tag == 'minerals') && keyValuePair.value['children'] == null)
           continue;
 
         String tagValue = keyValuePair.value['name'][languageCode];
@@ -133,35 +150,18 @@ class FoodApiAccess{
         String translatedName;
         if(allTagValues.containsKey(element)){
           LinkedHashMap tagValueTranslations = allTagValues[element]['name'];
-          translatedName = tagValueTranslations.containsKey(languageCode) ? tagValueTranslations[languageCode] : tagValueTranslations['en'];
+          translatedName = tagValueTranslations.containsKey(languageCode)
+              ? tagValueTranslations[languageCode]
+              : tagValueTranslations['en'];
         } else {
           String name = element.toString();
           translatedName = name.substring(name.indexOf(':') + 1);
         }
-
         translatedTagValues.add(translatedName);
-
       });
     }
 
     return translatedTagValues;
-  }
-
-  /*
-  * TODO: get existing Ingredient from DB instead of creating a new Ingredient object every time
-  * translates all tag names of a list from the Food API and then gets the corresponding ingredient from the DB.
-  * Names normally start with language code such as en: or de:
-  * @param ingredientNames: List of all ingredient names to be translated
-  * @param tag: Tag that the names belong to (allergens, vitamins, ingredients etc.)
-  * @return: a List of ingredient
-  * */
-  Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<dynamic> ingredientNames, String tag) async {
-    List<Ingredient> ingredients = List();
-    List<String> translatedIngredientNames = await getTranslatedValuesForTag(tag, tagValues: ingredientNames);
-    translatedIngredientNames.forEach(
-            (element) => ingredients.add(Ingredient(element, PreferenceType.None, ''))
-    );
-    return ingredients;
   }
 
   /*
@@ -173,7 +173,7 @@ class FoodApiAccess{
     return http.get(
         url,
         headers: <String, String>{
-          'User-Agent': 'Unknown - Android - Version 1.0', //TODO: add name of App
+          'User-Agent': 'Essbar - Android - Version 1.0',
         },
     );
   }
