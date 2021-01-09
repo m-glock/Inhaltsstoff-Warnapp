@@ -10,7 +10,7 @@ class FavouriteList extends ProductList{
   get favouriteProducts => _favouriteProducts;
 
   // Constructor
-  FavouriteList(String name, {int id}) : super(id, name){
+  FavouriteList(String name, {int id, ProductList parent}) : super(id, name, parentList: parent){
     _favouriteProducts = List();
   }
 

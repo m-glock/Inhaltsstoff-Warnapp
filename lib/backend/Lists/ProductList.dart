@@ -1,3 +1,6 @@
+import 'package:Inhaltsstoff_Warnapp/backend/Lists/FavouriteList.dart';
+import 'package:Inhaltsstoff_Warnapp/backend/Lists/History.dart';
+
 import '../Product.dart';
 import '../database/DbTableNames.dart';
 import '../database/DbTable.dart';
@@ -25,13 +28,20 @@ abstract class ProductList extends DbTable{
 
   @override
   Map<String, dynamic> toMap({bool withId = true}) {
-    // TODO: implement toMap
-    throw UnimplementedError();
+    final map = new Map<String, dynamic>();
+
+    map['id'] = id;
+    map['name'] = name;
+    map['parentId'] = _parentList.id;
+
+    return map;
   }
 
   static DbTable fromMap(Map<String, dynamic> data) {
-    // TODO: implement fromMap
-    throw UnimplementedError();
+    ProductList parentList;
+
+    if(data['name'] == 'History') return History(id: data['id']);
+    else return FavouriteList(data['name'], id: data['id'], parent: parentList);
   }
 
   List<Product> getProducts();
