@@ -92,11 +92,15 @@ class DatabaseHelper {
   }
 
   // insert one row into a table
-  Future<int> add(DbTable object) async {
+  Future<int> add(DbTable object, {DbTableNames to, Map<String, dynamic> values}) async {
     Database db = await instance.database;
-    Map<String, dynamic> row = object.toMap(withId: false);
-
-    return await db.insert(object.getTableName().name, row);
+    
+    if(to != null && values != null){
+      return await db.insert(to.name, values);
+    } else {
+      Map<String, dynamic> row = object.toMap(withId: false);
+      return await db.insert(object.getTableName().name, row);
+    }
   }
 
   // insert multiple rows into one or more tables
@@ -190,6 +194,7 @@ class DatabaseHelper {
 
     if(from != null && whereColumn != null && (whereArgs?.isNotEmpty ?? true)){
       String tableName = from.name;
+      // TODO delete only one element
       return await db.delete(tableName, where: whereColumn, whereArgs: whereArgs);
     } else{
       String tableName = from == null ? object.getTableName().name : from.name;
@@ -198,6 +203,7 @@ class DatabaseHelper {
   }
 
   // delete multiple rows
+  // TODO: update for join table
   Future<List<int>> deleteAll(List<DbTable> objects) async {
     Database db = await instance.database;
     List<int> deletedRowIds = new List();

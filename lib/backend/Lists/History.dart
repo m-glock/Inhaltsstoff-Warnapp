@@ -1,3 +1,6 @@
+import '../database/DbTableNames.dart';
+import '../database/databaseHelper.dart';
+
 import 'ProductList.dart';
 import '../Product.dart';
 import 'package:sortedmap/sortedmap.dart';
@@ -18,12 +21,15 @@ class History extends ProductList{
   // Methods
   void addProduct(Product product){
     _historyOfScannedProducts[product] = product.scanDate;
-    // TODO add in DB
+    Map<String, dynamic> row = Map();
+    row['productId'] = product.id;
+    row['listId'] = id;
+    DatabaseHelper.instance.add(product, to: DbTableNames.productList, values: row);
   }
 
   void addAllProducts(List<Product> products){
     products.forEach((product) {
-      _historyOfScannedProducts[product] = product.scanDate;
+      addProduct(product);
     });
   }
 

@@ -20,14 +20,20 @@ class FavouriteList extends ProductList{
   // Methods
   bool addProduct(Product product){
     if(_favouriteProducts.contains(product)) return false;
-
-    //TODO add in DB
     _favouriteProducts.add(product);
+
+    Map<String, dynamic> row = Map();
+    row['productId'] = product.id;
+    row['listId'] = id;
+    DatabaseHelper.instance.add(product, to: DbTableNames.productList, values: row);
+
     return true;
   }
 
   void addAllProducts(List<Product> products){
-    _favouriteProducts.addAll(products);
+    products.forEach((product) {
+      addProduct(product);
+    });
   }
 
   void removeProduct(Product product){
