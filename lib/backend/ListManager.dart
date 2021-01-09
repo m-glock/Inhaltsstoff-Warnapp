@@ -1,5 +1,5 @@
-import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/database/databaseHelper.dart';
+import 'database/DbTableNames.dart';
+import 'database/databaseHelper.dart';
 
 import 'Lists/FavouriteList.dart';
 import 'Lists/History.dart';

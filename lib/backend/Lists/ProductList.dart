@@ -1,5 +1,5 @@
-import 'package:Inhaltsstoff_Warnapp/backend/Lists/FavouriteList.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/Lists/History.dart';
+import 'FavouriteList.dart';
+import 'History.dart';
 
 import '../Product.dart';
 import '../database/DbTableNames.dart';

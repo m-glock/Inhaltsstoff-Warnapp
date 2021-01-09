@@ -35,7 +35,8 @@ class History extends ProductList{
 
   void clearHistory(){
     _historyOfScannedProducts = SortedMap(Ordering.byValue());
-    // TODO remove from DB
+    String tableName = DbTableNames.productList.name;
+    DatabaseHelper.instance.customQuery('DELETE FROM $tableName WHERE listId = $id');
   }
 
   @override

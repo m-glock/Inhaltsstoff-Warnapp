@@ -37,7 +37,9 @@ class FavouriteList extends ProductList{
   }
 
   void removeProduct(Product product){
-    DatabaseHelper.instance.delete(product, from: DbTableNames.productList, whereColumn: 'listId', whereArgs: [id]);
+    String tableName = DbTableNames.productList.name;
+    int productId = product.id;
+    DatabaseHelper.instance.customQuery('DELETE FROM $tableName WHERE productId = $productId AND listId = $id');
     _favouriteProducts.removeWhere((element) => element.compareTo(product) == 0);
   }
 

@@ -189,21 +189,12 @@ class DatabaseHelper {
   }
 
   // delete one row
-  Future<int> delete(DbTable object, {DbTableNames from, String whereColumn, List<dynamic> whereArgs}) async {
+  Future<int> delete(DbTable object) async {
     Database db = await instance.database;
-
-    if(from != null && whereColumn != null && (whereArgs?.isNotEmpty ?? true)){
-      String tableName = from.name;
-      // TODO delete only one element
-      return await db.delete(tableName, where: whereColumn, whereArgs: whereArgs);
-    } else{
-      String tableName = from == null ? object.getTableName().name : from.name;
-      return await db.delete(tableName, where: 'id = ?', whereArgs: [object.id]);
-    }
+    return await db.delete(object.getTableName().name, where: 'id = ?', whereArgs: [object.id]);
   }
 
   // delete multiple rows
-  // TODO: update for join table
   Future<List<int>> deleteAll(List<DbTable> objects) async {
     Database db = await instance.database;
     List<int> deletedRowIds = new List();
