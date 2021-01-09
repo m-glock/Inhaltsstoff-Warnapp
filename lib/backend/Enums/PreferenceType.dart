@@ -4,13 +4,13 @@ extension PreferenceTypeExtension on PreferenceType {
   String get name {
     switch (this) {
       case PreferenceType.NotWanted:
-        return 'notwanted';
+        return 'Not Wanted';
       case PreferenceType.NotPreferred:
-        return 'notpreferred';
+        return 'Not Preferred';
       case PreferenceType.Preferred:
-        return 'preferred';
+        return 'Preferred';
       case PreferenceType.None:
-        return 'none';
+        return 'None';
       default:
         return null;
     }
