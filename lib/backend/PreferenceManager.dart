@@ -42,6 +42,9 @@ class PreferenceManager {
       await db.rawUpdate(
           'UPDATE Ingredient SET preferencetypeid = ?, preferenceAddDate = ? WHERE id = ?',
           [preferenceTypeIdNew, Ingredient.getCurrentDate(), ingrId]);
+
+      //setter for the ingredient
+      ingredient.changePreference(preferenceType);
     });
   }
 

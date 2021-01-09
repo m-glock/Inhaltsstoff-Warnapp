@@ -14,7 +14,7 @@ class ScanningProductDetails extends StatelessWidget {
   }) : super(key: key);
 
   // TODO adapt future type for map preferencesResults
-  final Future<Map<Ingredient, ScanResult>> preferencesResults;
+  final Map<Ingredient, ScanResult> preferencesResults;
   final List<String> otherIngredients;
   final Map<String, String> moreProductDetails;
 
@@ -32,7 +32,7 @@ class ScanningProductDetails extends StatelessWidget {
           padding: EdgeInsets.all(16.0),
           color: Theme.of(context).accentColor,
         ),
-        /*ExpansionTile(
+        ExpansionTile(
           title: Text(
             "Präferenzen",
             style: Theme.of(context).textTheme.subtitle1,
@@ -51,7 +51,7 @@ class ScanningProductDetails extends StatelessWidget {
                 ),
               )
               .toList(),
-        ),*/
+        ),
         ExpansionTile(
           title: Text(
             "Andere Inhaltsstoffe",

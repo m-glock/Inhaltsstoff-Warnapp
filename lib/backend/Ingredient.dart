@@ -38,6 +38,13 @@ class Ingredient extends DbTable {
     //print(formatted); // something like 2013-04-20
   }
 
+  /*
+   * changes the preference type of this ingredient
+   * @param preferenceType: the new preference for this ingredient
+   * */
+  void changePreference(PreferenceType preferenceType)  {
+    this._preferencesType = preferenceType;
+  }
 
   // DB methods
   @override
