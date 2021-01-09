@@ -4,53 +4,32 @@ import '../Product.dart';
 class FavouriteList extends ProductList{
 
   // Fields
-  static Map<Product, String> _favouriteProducts;
-  static List<String> _favouriteCategories;
+  List<Product> _favouriteProducts;
 
   // Getter
-  static get favouriteProducts => _favouriteProducts;
-  // TODO category to DB
-  static get categories => _favouriteCategories;
+  get favouriteProducts => _favouriteProducts;
 
   // Constructor
-  FavouriteList({int id}) : super(id){
-    _favouriteProducts = Map();
-    _favouriteCategories = List();
+  FavouriteList(String name, {int id}) : super(id, name){
+    _favouriteProducts = List();
   }
 
   // Methods
-  bool addToFavourites(Product product, {String category = 'None'}){
-    if(!_favouriteCategories.contains(category)) _favouriteCategories.add(category);
-    if(_favouriteProducts.containsKey(product)) return false;
+  bool addToFavourites(Product product){
+    if(_favouriteProducts.contains(product)) return false;
 
     //TODO add in DB
-    _favouriteProducts[product] = category;
+    _favouriteProducts.add(product);
     return true;
   }
 
   void removeFromFavourites(Product product){
     //TODO remove from DB
-    _favouriteProducts.removeWhere((key, value) => key.compareTo(product) == 0);
-  }
-
-  void changeCategoryOfProduct(Product product, String newCategory){
-    //TODO update in DB
-    _favouriteProducts[product] = newCategory;
-  }
-
-  bool addCategory(String name){
-    if(_favouriteCategories.contains(name)) return false;
-
-    _favouriteCategories.add(name);
-    return true;
-  }
-
-  void removeCategory(String name) {
-    _favouriteCategories.remove(name);
+    _favouriteProducts.removeWhere((element) => element.compareTo(product) == 0);
   }
 
   @override
   List<Product> getProducts() {
-    return _favouriteProducts.keys;
+    return _favouriteProducts;
   }
 }

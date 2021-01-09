@@ -13,8 +13,9 @@ class ListManager{
 
   // make this a singleton class
   ListManager._privateConstructor(){
+    // TODO get from DB
     _history = History();
-    _favouriteList = FavouriteList();
+    _favouriteList = FavouriteList('Main');
   }
   static final ListManager instance = ListManager._privateConstructor();
 }

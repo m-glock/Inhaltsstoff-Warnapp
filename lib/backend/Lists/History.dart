@@ -11,7 +11,7 @@ class History extends ProductList{
   get historyOfScannedProducts => _historyOfScannedProducts;
 
   // Constructor
-  History({int id}) : super(id){
+  History({int id}) : super(id, 'History'){
     _historyOfScannedProducts = SortedMap(Ordering.byValue());
   }
 
