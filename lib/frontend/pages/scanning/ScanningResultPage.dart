@@ -168,7 +168,7 @@ class ScanningResultPage extends StatelessWidget {
             child: ScanningProductDetails(
               preferencesResults:
                   PreferenceManager.getItemizedScanResults(scannedProduct),
-              otherIngredients: [],
+              otherIngredients: scannedProduct.getNotPreferredIngredientNames(),
               moreProductDetails: _getAdditionalProductDetails,
             ),
           )
