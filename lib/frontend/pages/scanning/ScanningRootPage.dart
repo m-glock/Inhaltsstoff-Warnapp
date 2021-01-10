@@ -30,9 +30,6 @@ class _ScanningRootPageState extends State<ScanningRootPage> {
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           _getHexPrimaryColor(), "Abbrechen", true, ScanMode.BARCODE);
-      setState(() {
-        _isLoading = true;
-      });
       print(barcodeScanRes);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
@@ -47,6 +44,9 @@ class _ScanningRootPageState extends State<ScanningRootPage> {
   }
 
   Future<void> fetchProduct(String barcode) async {
+    setState(() {
+      _isLoading = true;
+    });
     //var product = await FoodApiAccess.scanProduct('4009077020122');
     Product product = await FoodApiAccess.instance.scanProduct("9001400005030");
     setState(() {
