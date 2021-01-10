@@ -132,7 +132,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             title: "Allergien",
             subTitle: "Hast du irgendwelche Allergien?",
           ),
-          bodyWidget: _allergenePreferences != null ? PreferencesAllergensView(
+          bodyWidget: PreferencesAllergensView(
             allergenePreferences: _allergenePreferences,
             onChange:
                 (Ingredient changedIngredient, PreferenceType newPreference) {
@@ -140,7 +140,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 _allergenePreferences[changedIngredient] = newPreference;
               });
             },
-          ):CircularProgressIndicator(),
+          ),
           decoration: mainPageDecoration,
         ),
         PageViewModel(
