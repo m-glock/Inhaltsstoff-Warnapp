@@ -20,34 +20,35 @@ class PreferenceManager {
     final dbHelper = DatabaseHelper.instance;
     final db = await dbHelper.database;
 
-    preferenceChanges.forEach((ingredient, preferenceType) async {
-      //retrieve preferencetypeid and ingredient_id from the db
-      List<Map> resultSetIngredient = await db.rawQuery(
-          'select i.preferencetypeid as pr_id, i.id as ing_id from ingredient i join preferencetype p where i.name = ? and i.preferencetypeid=p.id',
-          [ingredient.name]);
-      // dynamic without var?
-      var dbItem = resultSetIngredient.first;
-      int preferenceTypeId = dbItem['pr_id'];
-      int ingrId = dbItem['ing_id'];
+    if (preferenceChanges?.isNotEmpty ?? true) {
+      preferenceChanges.forEach((ingredient, preferenceType) async {
+        //retrieve preferencetypeid and ingredient_id from the db
+        List<Map> resultSetIngredient = await db.rawQuery(
+            'select i.preferencetypeid as pr_id, i.id as ing_id from ingredient i join preferencetype p where i.name = ? and i.preferencetypeid=p.id',
+            [ingredient.name]);
+        // dynamic without var?
+        var dbItem = resultSetIngredient.first;
+        int preferenceTypeId = dbItem['pr_id'];
+        int ingrId = dbItem['ing_id'];
 
-      //retrieve id from the new preferenceType
-      List<Map> resultSetPreferenceType = await db.rawQuery(
-          'select id as pr_id from preferencetype where name = ?',
-          [preferenceType.name]);
-      // dynamic without var?
-      var dbItem_1 = resultSetPreferenceType.first;
-      int preferenceTypeIdNew = dbItem_1['pr_id'];
+        //retrieve id from the new preferenceType
+        List<Map> resultSetPreferenceType = await db.rawQuery(
+            'select id as pr_id from preferencetype where name = ?',
+            [preferenceType.name]);
+        // dynamic without var?
+        var dbItem_1 = resultSetPreferenceType.first;
+        int preferenceTypeIdNew = dbItem_1['pr_id'];
 
-      // update preferencetypeid in ingredient
-      await db.rawUpdate(
-          'UPDATE Ingredient SET preferencetypeid = ?, preferenceAddDate = ? WHERE id = ?',
-          [preferenceTypeIdNew, Ingredient.getCurrentDate(), ingrId]);
+        // update preferencetypeid in ingredient
+        await db.rawUpdate(
+            'UPDATE Ingredient SET preferencetypeid = ?, preferenceAddDate = ? WHERE id = ?',
+            [preferenceTypeIdNew, Ingredient.getCurrentDate(), ingrId]);
 
-      //setter for the ingredient
-      ingredient.changePreference(preferenceType);
-    });
+        //setter for the ingredient
+        ingredient.changePreference(preferenceType);
+      });
+    }
   }
-
   /*
   * get all Ingredients that are saved in the DB that have a preferenceType other than NONE
   * @param preferenceTypes: if only ingredients with a specific preference type are requested
@@ -149,7 +150,7 @@ class PreferenceManager {
 
     // red
     List<Map> results_red = await db.rawQuery(
-        "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id join productingredient pi on i.id=pi.ingredientId join product pr on pr.id=pi.productId where pr.name = ? and p.name = ?",
+        "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id join productingredient pi on i.id=pi.ingredientId join product pr on pr.id=pi.productId where pr.name = ? and p.name = ?",
         [productname, notwanted]);
     if (results_red != null) {
       results_red.forEach((result) {
@@ -162,7 +163,7 @@ class PreferenceManager {
 
     // yellow
     List<Map> results_yellow = await db.rawQuery(
-        "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id join productingredient pi on i.id=pi.ingredientId join product pr on pr.id=pi.productId where pr.name = ? and p.name = ?",
+        "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id join productingredient pi on i.id=pi.ingredientId join product pr on pr.id=pi.productId where pr.name = ? and p.name = ?",
         [productname, notpreferred]);
     if (results_yellow != null) {
       results_yellow.forEach((result) {
@@ -175,7 +176,7 @@ class PreferenceManager {
 
     // green
     List<Map> results_green = await db.rawQuery(
-        "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id join productingredient pi on i.id=pi.ingredientId join product pr on pr.id=pi.productId where pr.name = ? and (p.name = ? or p.name = ?)",
+        "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id join productingredient pi on i.id=pi.ingredientId join product pr on pr.id=pi.productId where pr.name = ? and (p.name = ? or p.name = ?)",
         [productname, preferred, none]);
     if (results_green != null) {
       results_green.forEach((result) {
