@@ -29,7 +29,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Future<Map<Ingredient, PreferenceType>> getIngredients(Type type) async {
     Map<Ingredient, PreferenceType> ingredients = new Map();
     var getAllAvailIg = await PreferenceManager.getAllAvailableIngredients(type);
-    print(getAllAvailIg);
     ingredients = Map.fromIterable(getAllAvailIg
         .where((ingredient) => ingredient.type == type),
         key: (ingredient) => ingredient,

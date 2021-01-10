@@ -22,33 +22,16 @@ class SettingsPreferencesSummary extends StatefulWidget {
 class _SettingsPreferencesSummaryState
     extends State<SettingsPreferencesSummary> {
 
-  /*Map<Ingredient, PreferenceType> _allergenePreferences;
-  Map<Ingredient, PreferenceType> _nutrientPreferences;
-  Map<Ingredient, PreferenceType> _otherIngredientPreferences;
-
-  Map<Ingredient, PreferenceType> getIngredients(Type type) {
-    Map<Ingredient, PreferenceType> ingredients = new Map();
-    PreferenceManager.getAllAvailableIngredients(type)
-        .then((value) => ingredients = Map.fromIterable(value
-        .where((ingredient) => ingredient.type == type),
-        key: (ingredient) => ingredient,
-        value: (ingredient) => ingredient.preferenceType)
-    );
-    return ingredients;
-  }*/
-
-  Map<Ingredient, PreferenceType> _allergenePreferences;
-  Map<Ingredient, PreferenceType> _nutrientPreferences;
-  Map<Ingredient, PreferenceType> _otherIngredientPreferences;
+  Map<Ingredient, PreferenceType> _allergenePreferences = Map();
+  Map<Ingredient, PreferenceType> _nutrientPreferences = Map();
+  Map<Ingredient, PreferenceType> _otherIngredientPreferences = Map();
 
   Future<Map<Ingredient, PreferenceType>> getIngredients(Type type) async {
-    Map<Ingredient, PreferenceType> ingredients = new Map();
-    var getAllAvailIg = await PreferenceManager.getAllAvailableIngredients(type);
-    ingredients = Map.fromIterable(getAllAvailIg
+    List<Ingredient> getAllAvailIg = await PreferenceManager.getAllAvailableIngredients(type);
+    return Map.fromIterable(getAllAvailIg
         .where((ingredient) => ingredient.type == type),
         key: (ingredient) => ingredient,
         value: (ingredient) => ingredient.preferenceType);
-    return ingredients;
   }
 
   @override
