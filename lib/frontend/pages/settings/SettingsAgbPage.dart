@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SettingsAgb extends StatelessWidget {
-  const SettingsAgb({Key key,}) : super(key: key);
+class SettingsAgbPage extends StatelessWidget {
+  const SettingsAgbPage({Key key,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

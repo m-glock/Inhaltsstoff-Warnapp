@@ -1,8 +1,8 @@
-import 'SettingsAgb.dart';
-import 'SettingsGeneral.dart';
-import 'SettingsHelp.dart';
-import 'SettingsImpressum.dart';
-import 'SettingsPreferences.dart';
+import './SettingsAgbPage.dart';
+import './SettingsGeneralPage.dart';
+import './SettingsHelpPage.dart';
+import './SettingsImpressumPage.dart';
+import './preferences/SettingsPreferencesSummaryPage.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage {
@@ -12,16 +12,16 @@ class SettingsPage {
   final Widget page;
 }
 
-const List<SettingsPage> allSettingsPages = <SettingsPage>[
-  SettingsPage(Icons.favorite, 'Präferenzen', SettingsPreferences()),
-  SettingsPage(Icons.app_settings_alt, 'Allgemein', SettingsGeneral()),
-  SettingsPage(Icons.info, 'Impressum', SettingsImpressum()),
-  SettingsPage(Icons.format_quote, 'AGB', SettingsAgb()),
-  SettingsPage(Icons.help, 'Hilfe', SettingsHelp()),
+List<SettingsPage> allSettingsPages = <SettingsPage>[
+  SettingsPage(Icons.favorite, 'Präferenzen', SettingsPreferencesSummaryPage()),
+  SettingsPage(Icons.app_settings_alt, 'Allgemein', SettingsGeneralPage()),
+  SettingsPage(Icons.info, 'Impressum', SettingsImpressumPage()),
+  SettingsPage(Icons.format_quote, 'AGB', SettingsAgbPage()),
+  SettingsPage(Icons.help, 'Hilfe', SettingsHelpPage()),
 ];
 
-class SettingsRoot extends StatelessWidget {
-  const SettingsRoot({Key key}) : super(key: key);
+class SettingsRootPage extends StatelessWidget {
+  const SettingsRootPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
