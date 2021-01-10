@@ -15,20 +15,6 @@ extension PreferenceTypeExtension on PreferenceType {
         return null;
     }
   }
-  int get id {
-    switch (this) {
-      case PreferenceType.None:
-        return 1;
-      case PreferenceType.NotWanted:
-        return 2;
-      case PreferenceType.NotPreferred:
-        return 3;
-      case PreferenceType.Preferred:
-        return 4;
-      default:
-        return null;
-    }
-  }
 
   /*
   * return the id that the enum has in the DB
