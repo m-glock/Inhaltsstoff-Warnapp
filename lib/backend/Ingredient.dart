@@ -52,20 +52,29 @@ class Ingredient extends DbTable {
     return DbTableNames.ingredient;
   }
 
+
   //TODO: handle foreign keys, -> actually ToDo?
   @override
   Map<String, dynamic> toMap({bool withId: true}) {
     final map = new Map<String, dynamic>();
     map['name'] = _name;
-    map['preferenceType'] = _preferencesType;
-    map['type'] = _type;
+    map['preferenceType'] = _preferencesType.id;
+    map['type'] = _type.id;
     map['preferenceAddDate'] = _preferenceAddDate;
     if (withId) map['id'] = super.id;
     return map;
   }
 
+
+
   static Ingredient fromMap(Map<String, dynamic> data) {
-    return new Ingredient(data['name'], data['preferenceTypeId'], data['typeId'], data['preferenceAddDate'],
+    int prefTypeId = data['preferenceTypeId'];
+    PreferenceType prefType = PreferenceType.values.elementAt(prefTypeId - 1);
+
+    int typeId = data['typeId'];
+    Type type = Type.values.elementAt(typeId - 1);
+
+    return new Ingredient(data['name'], prefType, type, data['preferenceAddDate'],
         id: data['id']);
   }
 }

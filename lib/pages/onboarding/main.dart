@@ -26,20 +26,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Map<Ingredient, PreferenceType> _nutrientPreferences;
   Map<Ingredient, PreferenceType> _otherIngredientPreferences;
 
-
-
   Future<Map<Ingredient, PreferenceType>> getIngredients(Type type) async {
     Map<Ingredient, PreferenceType> ingredients = new Map();
     var getAllAvailIg = await PreferenceManager.getAllAvailableIngredients(type);
     print(getAllAvailIg);
-    print("start");
-    /*ingredients = Map.fromIterable(getAllAvailIg
+    ingredients = Map.fromIterable(getAllAvailIg
         .where((ingredient) => ingredient.type == type),
         key: (ingredient) => ingredient,
-        value: (ingredient) => ingredient.preferenceType);*/
-    print(getAllAvailIg.where((ingredient) => ingredient.type == Type.General));
-    print("stop");
-
+        value: (ingredient) => ingredient.preferenceType);
     return ingredients;
   }
 
@@ -72,18 +66,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   void initState() {
     super.initState();
-    // _allergenePreferences = await getIngredients(Type.Allergen);
-    // _nutrientPreferences = await getIngredients(Type.Nutriment);
-    // _otherIngredientPreferences = await getIngredients(Type.General);
-    setAllergenes();
+    setIngredients();
   }
 
-  void setAllergenes() async {
-    var test = await getIngredients(Type.Allergen);
-    print(test);
-    print("hier ist unser print");
+  void setIngredients() async {
+    Map<Ingredient, PreferenceType> allergenePreferences = await getIngredients(Type.Allergen);
+    Map<Ingredient, PreferenceType> nutrientPreferences = await getIngredients(Type.Nutriment);
+    Map<Ingredient, PreferenceType> otherIngredientPreferences = await getIngredients(Type.General);
     setState(() {
-      _allergenePreferences=test;
+      _allergenePreferences = allergenePreferences;
+      _nutrientPreferences = nutrientPreferences;
+      _otherIngredientPreferences = otherIngredientPreferences;
     });
   }
 

@@ -21,7 +21,7 @@ class SettingsAllergenePreferences extends StatefulWidget {
 class _SettingsAllergenePreferencesState
     extends State<SettingsAllergenePreferences> {
 
-  Map<Ingredient, PreferenceType> _allergenePreferences;
+/*  Map<Ingredient, PreferenceType> _allergenePreferences;
 
   Map<Ingredient, PreferenceType> getIngredients(Type type) {
     Map<Ingredient, PreferenceType> ingredients = new Map();
@@ -32,12 +32,31 @@ class _SettingsAllergenePreferencesState
         value: (ingredient) => ingredient.preferenceType)
     );
     return ingredients;
+  }*/
+  Map<Ingredient, PreferenceType> _allergenePreferences;
+
+  Future<Map<Ingredient, PreferenceType>> getIngredients(Type type) async {
+    Map<Ingredient, PreferenceType> ingredients = new Map();
+    var getAllAvailIg = await PreferenceManager.getAllAvailableIngredients(type);
+    print(getAllAvailIg);
+    ingredients = Map.fromIterable(getAllAvailIg
+        .where((ingredient) => ingredient.type == type),
+        key: (ingredient) => ingredient,
+        value: (ingredient) => ingredient.preferenceType);
+    return ingredients;
   }
 
   @override
   void initState() {
     super.initState();
-    _allergenePreferences = getIngredients(Type.Allergen);
+    setIngredients();
+  }
+
+  void setIngredients() async {
+    Map<Ingredient, PreferenceType> allergenePreferences = await getIngredients(Type.Allergen);
+    setState(() {
+      _allergenePreferences = allergenePreferences;
+    });
   }
 
   @override

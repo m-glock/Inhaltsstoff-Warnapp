@@ -61,7 +61,7 @@ class PreferenceManager {
 
     if (preferenceTypes?.isEmpty ?? true) {
       List<Map> results = await db.rawQuery(
-          "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where p.name is not 'None'");
+          "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where p.name is not 'None'");
       results.forEach((result) {
         //print(result);
         Ingredient ingredient = Ingredient.fromMap(result);
@@ -75,7 +75,7 @@ class PreferenceManager {
         //print(element_name);
 
         List<Map> results = await db.rawQuery(
-            "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where p.name = ?",
+            "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where p.name = ?",
             [element_name]);
         results.forEach((result) {
           //print(result);
@@ -100,7 +100,7 @@ class PreferenceManager {
 
     if (type == null) {
       List<Map> results = await db.rawQuery(
-          "select i.name as ingredientName, p.name as preferenceName, i.preferenceAddDate, t.name TypeName, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id");
+          "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id limit 10");
       results.forEach((result) {
         //print(result);
         Ingredient ingredient = Ingredient.fromMap(result);
@@ -111,7 +111,7 @@ class PreferenceManager {
     if (type != null) {
       String element_name = type.name;
       List<Map> results = await db.rawQuery(
-          "select i.name as ingredientName, p.id as preferenceId, t.name typeName, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where t.name = ?",
+          "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where t.name = ? limit 10",
           [element_name]);
       results.forEach((result) {
         //print(result);
