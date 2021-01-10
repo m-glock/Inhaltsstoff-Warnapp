@@ -4,26 +4,24 @@ import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 import 'package:intl/intl.dart';
 
-import 'database/databaseHelper.dart';
-
 class Ingredient extends DbTable {
+
   // Fields
   String _name;
-  PreferenceType _preferencesType;
+  PreferenceType preferenceType;
   String _preferenceAddDate;
   Type _type;
 
   static final columns = ["name", "preferenceTypeId", "preferenceAddDate", "typeId", "id"];
 
   // Constructor
-  Ingredient(this._name, this._preferencesType, this._type, this._preferenceAddDate,
+  Ingredient(this._name, this.preferenceType, this._type, this._preferenceAddDate,
       {int id}) : super(id);
 
   // Getter and Setter
   String get name => _name;
   Type get type => _type;
-  String get addDate => _preferenceAddDate;
-  PreferenceType get preferenceType => _preferencesType;
+  String get preferenceAddDate => _preferenceAddDate;
 
   // Methods
   /*
@@ -38,34 +36,22 @@ class Ingredient extends DbTable {
     //print(formatted); // something like 2013-04-20
   }
 
-  /*
-   * changes the preference type of this ingredient
-   * @param preferenceType: the new preference for this ingredient
-   * */
-  void changePreference(PreferenceType preferenceType)  {
-    this._preferencesType = preferenceType;
-  }
-
   // DB methods
   @override
   DbTableNames getTableName() {
     return DbTableNames.ingredient;
   }
 
-
-  //TODO: handle foreign keys, -> actually ToDo?
   @override
   Map<String, dynamic> toMap({bool withId: true}) {
     final map = new Map<String, dynamic>();
     map['name'] = _name;
-    map['preferenceType'] = _preferencesType.id;
+    map['preferenceType'] = preferenceType.id;
     map['type'] = _type.id;
     map['preferenceAddDate'] = _preferenceAddDate;
     if (withId) map['id'] = super.id;
     return map;
   }
-
-
 
   static Ingredient fromMap(Map<String, dynamic> data) {
     int prefTypeId = data['preferenceTypeId'];

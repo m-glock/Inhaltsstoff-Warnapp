@@ -6,7 +6,6 @@ import 'Enums/PreferenceType.dart';
 import 'Enums/Type.dart';
 
 import 'Product.dart';
-import 'database/DbTableNames.dart';
 import 'database/databaseHelper.dart';
 
 class PreferenceManager {
@@ -26,17 +25,16 @@ class PreferenceManager {
         List<Map> resultSetIngredient = await db.rawQuery(
             'select i.preferencetypeid as pr_id, i.id as ing_id from ingredient i join preferencetype p where i.name = ? and i.preferencetypeid=p.id',
             [ingredient.name]);
-        // dynamic without var?
-        var dbItem = resultSetIngredient.first;
-        int preferenceTypeId = dbItem['pr_id'];
+
+        Map<dynamic, dynamic> dbItem = resultSetIngredient.first;
         int ingrId = dbItem['ing_id'];
 
         //retrieve id from the new preferenceType
         List<Map> resultSetPreferenceType = await db.rawQuery(
             'select id as pr_id from preferencetype where name = ?',
             [preferenceType.name]);
-        // dynamic without var?
-        var dbItem_1 = resultSetPreferenceType.first;
+
+        Map<dynamic, dynamic> dbItem_1 = resultSetPreferenceType.first;
         int preferenceTypeIdNew = dbItem_1['pr_id'];
 
         // update preferencetypeid in ingredient
@@ -45,7 +43,7 @@ class PreferenceManager {
             [preferenceTypeIdNew, Ingredient.getCurrentDate(), ingrId]);
 
         //setter for the ingredient
-        ingredient.changePreference(preferenceType);
+        ingredient.preferenceType  = preferenceType;
       });
     }
   }
@@ -64,7 +62,6 @@ class PreferenceManager {
       List<Map> results = await db.rawQuery(
           "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where p.name is not 'None'");
       results.forEach((result) {
-        //print(result);
         Ingredient ingredient = Ingredient.fromMap(result);
         ingredients.add(ingredient);
       });
@@ -72,14 +69,12 @@ class PreferenceManager {
 
     if (preferenceTypes?.isNotEmpty ?? true) {
       preferenceTypes.forEach((element) async {
-        String element_name = element.name;
-        //print(element_name);
+        String elementName = element.name;
 
         List<Map> results = await db.rawQuery(
             "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where p.name = ?",
-            [element_name]);
+            [elementName]);
         results.forEach((result) {
-          //print(result);
           Ingredient ingredient = Ingredient.fromMap(result);
           ingredients.add(ingredient);
         });
@@ -103,22 +98,19 @@ class PreferenceManager {
       List<Map> results = await db.rawQuery(
           "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id limit 100");
       results.forEach((result) {
-        //print(result);
         Ingredient ingredient = Ingredient.fromMap(result);
         ingredients.add(ingredient);
       });
     }
 
     if (type != null) {
-      String element_name = type.name;
+      String elementName = type.name;
       List<Map> results = await db.rawQuery(
           "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where t.name = ? limit 100",
-          [element_name]);
+          [elementName]);
       results.forEach((result) {
-        //print(result);
         Ingredient ingredient = Ingredient.fromMap(result);
         ingredients.add(ingredient);
-        //print(ingredients);
       });
 
     }
@@ -148,12 +140,11 @@ class PreferenceManager {
     String none = 'None';
 
     // red
-    List<Map> results_red = await db.rawQuery(
+    List<Map> resultsRed = await db.rawQuery(
         "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id join productingredient pi on i.id=pi.ingredientId join product pr on pr.id=pi.productId where pr.name = ? and p.name = ?",
         [productname, notwanted]);
-    if (results_red != null) {
-      results_red.forEach((result) {
-        //print(result);
+    if (resultsRed != null) {
+      resultsRed.forEach((result) {
         Ingredient ingredient = Ingredient.fromMap(result);
         ScanResult scanresult = ScanResult.Red;
         itemizedScanResults.putIfAbsent(ingredient, () => scanresult);
@@ -161,12 +152,11 @@ class PreferenceManager {
     }
 
     // yellow
-    List<Map> results_yellow = await db.rawQuery(
+    List<Map> resultsYellow = await db.rawQuery(
         "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id join productingredient pi on i.id=pi.ingredientId join product pr on pr.id=pi.productId where pr.name = ? and p.name = ?",
         [productname, notpreferred]);
-    if (results_yellow != null) {
-      results_yellow.forEach((result) {
-        //print(result);
+    if (resultsYellow != null) {
+      resultsYellow.forEach((result) {
         Ingredient ingredient = Ingredient.fromMap(result);
         ScanResult scanresult = ScanResult.Yellow;
         itemizedScanResults.putIfAbsent(ingredient, () => scanresult);
@@ -174,12 +164,11 @@ class PreferenceManager {
     }
 
     // green
-    List<Map> results_green = await db.rawQuery(
+    List<Map> resultsGreen = await db.rawQuery(
         "select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id join productingredient pi on i.id=pi.ingredientId join product pr on pr.id=pi.productId where pr.name = ? and (p.name = ? or p.name = ?)",
         [productname, preferred, none]);
-    if (results_green != null) {
-      results_green.forEach((result) {
-        //print(result);
+    if (resultsGreen != null) {
+      resultsGreen.forEach((result) {
         Ingredient ingredient = Ingredient.fromMap(result);
         ScanResult scanresult = ScanResult.Green;
         itemizedScanResults.putIfAbsent(ingredient, () => scanresult);
@@ -188,10 +177,5 @@ class PreferenceManager {
 
     return itemizedScanResults;
   }
-
-// itemizedScanResults[Ingredient('Zucker', PreferenceType.NotWanted, '')] = ScanResult.Red; //not wanted and in product
-// itemizedScanResults[Ingredient('Schokolade', PreferenceType.NotPreferred, '')] = ScanResult.Yellow; // not preferred and in product
-// itemizedScanResults[Ingredient('Magnesium', PreferenceType.NotPreferred, '')] = ScanResult.Green; //not preferred and not in product
-// itemizedScanResults[Ingredient('Wasser', PreferenceType.Preferred, '')] = ScanResult.Red; //preferred and not in product
 
 }
