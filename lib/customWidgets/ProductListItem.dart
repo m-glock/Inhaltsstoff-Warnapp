@@ -50,12 +50,13 @@ class ProductListItem extends StatelessWidget {
                 result: scanResult,
                 small: true,
               ),
-              IconButton(
-                icon: Icon(Icons.keyboard_arrow_right, color: Theme.of(context).primaryColor),
-                onPressed: onProductSelected,
+              Icon(
+                Icons.keyboard_arrow_right,
+                color: Theme.of(context).primaryColor,
               ),
             ],
           ),
+          onTap: onProductSelected,
         ),
       ),
       decoration: BoxDecoration(

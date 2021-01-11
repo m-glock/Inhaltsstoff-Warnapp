@@ -5,8 +5,8 @@ import '../../customWidgets/CustomAppBar.dart';
 
 import 'package:flutter/material.dart';
 
-class HistoryRoot extends StatelessWidget {
-  HistoryRoot({Key key}) : super(key: key);
+class HistoryRootPage extends StatelessWidget {
+  HistoryRootPage({Key key}) : super(key: key);
 
   List<Product> _scannedProducts;
 
@@ -42,33 +42,18 @@ class HistoryRoot extends StatelessWidget {
                         },
                       ))
                   .toList(),
-              /*<Widget>[
-          ProductListItem(
-            image: NetworkImage('https://googleflutter.com/sample_image.jpg'),
-            name: 'Produkt 1',
-            scanDate: DateTime.now(),
-            scanResult: ScanResult.Green,
-          ),
-          ProductListItem(
-            image: null,
-            name: 'Produkt 2',
-            scanDate: DateTime.now(),
-            scanResult: ScanResult.Yellow,
-            onProductSelected: () {},
-          )
-        ],*/
             ),
     );
   }
 
   List<Product> getScannedProductsList() {
     //TODO: get list from backend
-    /*return [
+    return [
       new Product('Produkt 1', 'https://googleflutter.com/sample_image.jpg',
           '4009077020122', DateTime.now()),
       new Product('Produkt 2', 'https://googleflutter.com/sample_image.jpg',
           '9001400005030', DateTime.now()),
-    ];*/
-    return [];
+    ];
+    //return [];
   }
 }

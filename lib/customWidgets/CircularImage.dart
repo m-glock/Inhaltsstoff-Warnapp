@@ -12,7 +12,7 @@ class CircularImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return /*image == null
+    return image == null
         ? CircleAvatar(
             backgroundColor: Theme.of(context).disabledColor,
             child: Icon(
@@ -23,25 +23,6 @@ class CircularImage extends StatelessWidget {
         : CircleAvatar(
             backgroundColor: Theme.of(context).disabledColor,
             backgroundImage: image,
-          );*/
-
-    Container(
-      width: diameter,
-      height: diameter,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Theme.of(context).disabledColor,
-      ),
-      child: Icon(
-        Icons.image,
-        color: Colors.white,
-      ),
-      foregroundDecoration: image != null
-          ? BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(image: image, fit: BoxFit.fill),
-            )
-          : null,
-    );
+          );
   }
 }
