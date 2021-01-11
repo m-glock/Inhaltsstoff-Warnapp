@@ -21,10 +21,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
         IconButton(
           icon: Icon(Icons.settings),
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => SettingsRoot()));
+            Navigator.of(context, rootNavigator: true).pushNamed('/settings');
           },
         ),
       ],
