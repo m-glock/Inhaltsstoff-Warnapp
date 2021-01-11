@@ -57,10 +57,7 @@ class FoodApiAccess{
       Product productFromDb = table as Product;
       productFromDb.scanDate = DateTime.now();
 
-      String tableName = productFromDb.getTableName().name;
-      String newScanDate = productFromDb.scanDate.toIso8601String();
-      int productId = productFromDb.id;
-      await helper.customQuery('UPDATE $tableName SET scanDate = $newScanDate WHERE id = $productId');
+      await helper.update(productFromDb);
       return productFromDb;
     }
 
