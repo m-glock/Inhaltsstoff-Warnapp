@@ -2,39 +2,29 @@ import 'Enums/PreferenceType.dart';
 import 'Enums/Type.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
-import 'package:intl/intl.dart';
 
 class Ingredient extends DbTable {
 
   // Fields
   String _name;
   PreferenceType preferenceType;
-  String _preferenceAddDate;
+  DateTime _preferenceAddDate;
   Type _type;
 
   static final columns = ["name", "preferenceTypeId", "preferenceAddDate", "typeId", "id"];
+
+  // Getter and Setter
+  String get name => _name;
+  Type get type => _type;
+  DateTime get preferenceAddDate => _preferenceAddDate;
+
+  set preferenceAddDate(DateTime newDate) => _preferenceAddDate = newDate;
 
   // Constructor
   Ingredient(this._name, this.preferenceType, this._type, this._preferenceAddDate,
       {int id}) : super(id);
 
-  // Getter and Setter
-  String get name => _name;
-  Type get type => _type;
-  String get preferenceAddDate => _preferenceAddDate;
-
   // Methods
-  /*
-  * get current date in a string format
-  * from https://stackoverflow.com/questions/16126579/how-do-i-format-a-date-with-dart
-  * @return: current date as a string in format yyyy-MM-dd-Hm
-  * */
-  static String getCurrentDate() {
-    final DateTime now = DateTime.now();
-    final DateFormat formatter = DateFormat('yyyy-MM-dd-Hm');
-    return formatter.format(now);
-    //print(formatted); // something like 2013-04-20
-  }
 
   // DB methods
   @override
@@ -46,9 +36,10 @@ class Ingredient extends DbTable {
   Map<String, dynamic> toMap({bool withId: true}) {
     final map = new Map<String, dynamic>();
     map['name'] = _name;
-    map['preferenceType'] = preferenceType.id;
-    map['type'] = _type.id;
-    map['preferenceAddDate'] = _preferenceAddDate;
+    map['preferenceTypeId'] = preferenceType.id;
+    map['typeId'] = _type.id;
+    String test = _preferenceAddDate?.toIso8601String();
+    map['preferenceAddDate'] = test;
     if (withId) map['id'] = super.id;
     return map;
   }
@@ -60,7 +51,8 @@ class Ingredient extends DbTable {
     int typeId = data['typeId'];
     Type type = Type.values.elementAt(typeId - 1);
 
-    return new Ingredient(data['name'], prefType, type, data['preferenceAddDate'],
+    DateTime preferenceAddDate = data['preferenceAddDate'] != null ? DateTime.parse(data['preferenceAddDate']) : null;
+    return new Ingredient(data['name'], prefType, type, preferenceAddDate,
         id: data['id']);
   }
 }

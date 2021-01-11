@@ -23,7 +23,7 @@ void main() async {
     //add map with ingredient with preferenceType to change
     //Ingredient ingredient_milch = Ingredient("MilchTestIngredient", PreferenceType.NotPreferred, "null");
     Ingredient ingredient_milch = Ingredient("Hydroxocobalamin",
-        PreferenceType.NotPreferred, Type.Nutriment, "null");
+        PreferenceType.NotPreferred, Type.Nutriment, DateTime.parse(''));
     Map<Ingredient, PreferenceType> preferenceToChange = {
       ingredient_milch: PreferenceType.Preferred
     };

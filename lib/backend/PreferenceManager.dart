@@ -9,6 +9,7 @@ import 'Product.dart';
 import 'database/databaseHelper.dart';
 
 class PreferenceManager {
+
   /*
   * When the user changes the preference of one or multiple Ingredients, this method is called and
   * saves the information in the database
@@ -17,36 +18,17 @@ class PreferenceManager {
   static void changePreference(
       Map<Ingredient, PreferenceType> preferenceChanges) async {
     final dbHelper = DatabaseHelper.instance;
-    final db = await dbHelper.database;
 
     if (preferenceChanges?.isNotEmpty ?? true) {
       preferenceChanges.forEach((ingredient, preferenceType) async {
-        //retrieve preferencetypeid and ingredient_id from the db
-        List<Map> resultSetIngredient = await db.rawQuery(
-            'select i.preferencetypeid as pr_id, i.id as ing_id from ingredient i join preferencetype p where i.name = ? and i.preferencetypeid=p.id',
-            [ingredient.name]);
-
-        Map<dynamic, dynamic> dbItem = resultSetIngredient.first;
-        int ingrId = dbItem['ing_id'];
-
-        //retrieve id from the new preferenceType
-        List<Map> resultSetPreferenceType = await db.rawQuery(
-            'select id as pr_id from preferencetype where name = ?',
-            [preferenceType.name]);
-
-        Map<dynamic, dynamic> dbItem_1 = resultSetPreferenceType.first;
-        int preferenceTypeIdNew = dbItem_1['pr_id'];
-
-        // update preferencetypeid in ingredient
-        await db.rawUpdate(
-            'UPDATE Ingredient SET preferencetypeid = ?, preferenceAddDate = ? WHERE id = ?',
-            [preferenceTypeIdNew, Ingredient.getCurrentDate(), ingrId]);
-
-        //setter for the ingredient
         ingredient.preferenceType  = preferenceType;
+        //TODO only if preferencetype has changed
+        if(preferenceType != PreferenceType.None) ingredient.preferenceAddDate = DateTime.now();
+        await dbHelper.update(ingredient);
       });
     }
   }
+
   /*
   * get all Ingredients that are saved in the DB that have a preferenceType other than NONE
   * @param preferenceTypes: if only ingredients with a specific preference type are requested
