@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
 import 'package:http/http.dart' as http;
 
 import 'database/DbTableNames.dart';
@@ -56,6 +57,7 @@ class FoodApiAccess{
     if(table != null){
       Product productFromDb = table as Product;
       productFromDb.scanDate = DateTime.now();
+      await PreferenceManager.getItemizedScanResults(productFromDb);
 
       await helper.update(productFromDb);
       return productFromDb;
