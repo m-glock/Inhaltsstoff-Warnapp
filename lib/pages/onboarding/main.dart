@@ -1,11 +1,16 @@
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
 
-import './OnboardingSummary.dart';
 import './OnboardingTitleWidget.dart';
+import '../preferences/PreferencesAllergensView.dart';
+import '../preferences/PreferencesNutrientsView.dart';
+import '../preferences/PreferencesOtherIngredientsView.dart';
+import '../preferences/PreferencesSummary.dart';
 import '../HomePage.dart';
-import '../../customWidgets/RadioButtonTable.dart';
-import '../../customWidgets/CheckboxList.dart';
+import '../../backend/PreferenceManager.dart';
+import '../../backend/Ingredient.dart';
+import '../../backend/Enums/Type.dart';
+import '../../backend/Enums/PreferenceType.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key key}) : super(key: key);
@@ -15,30 +20,28 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
-  final introKey = GlobalKey<IntroductionScreenState>();
+  final _introKey = GlobalKey<IntroductionScreenState>();
 
-  Map<String, List<String>> preferences = {
-    "allergens": [],
-    "nutrients": [],
-    "unwantedIngredientsFew": [],
-    "unwantedIngredientsNothing": [],
-  };
-  List<String> allergenOptions = [
-    "Nüsse",
-    "Lactose",
-    "Gluten",
-    "Histamin",
-    "Soja"
-  ];
-  List<String> nutrientOptions = ["B12", "Eisen", "Vitamin D", "Magnesium"];
-  List<String> ingredientOptions = [
-    "Palmöl",
-    "Zucker",
-    "Tierische Produkte",
-    "Verdickungsmittel"
-  ];
+  Map<Ingredient, PreferenceType> _allergenePreferences;
+  Map<Ingredient, PreferenceType> _nutrientPreferences;
+  Map<Ingredient, PreferenceType> _otherIngredientPreferences;
 
-  void _onIntroEnd(context) {
+  Future<Map<Ingredient, PreferenceType>> getIngredients(Type type) async {
+    Map<Ingredient, PreferenceType> ingredients = new Map();
+    var getAllAvailIg = await PreferenceManager.getAllAvailableIngredients(type);
+    ingredients = Map.fromIterable(getAllAvailIg
+        .where((ingredient) => ingredient.type == type),
+        key: (ingredient) => ingredient,
+        value: (ingredient) => ingredient.preferenceType);
+    return ingredients;
+  }
+
+  void _onFinishOnboarding(context) {
+    // save _preferences
+    PreferenceManager.changePreference(_allergenePreferences);
+    PreferenceManager.changePreference(_nutrientPreferences);
+    PreferenceManager.changePreference(_otherIngredientPreferences);
+
     Navigator.of(context).pushReplacement(
         new MaterialPageRoute(builder: (context) => new HomePage()));
   }
@@ -56,7 +59,24 @@ class _OnboardingPageState extends State<OnboardingPage> {
         : pageName == "nutrients"
             ? 2
             : 3;
-    introKey.currentState.animateScroll(pageIndex);
+    _introKey.currentState.animateScroll(pageIndex);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setIngredients();
+  }
+
+  void setIngredients() async {
+    Map<Ingredient, PreferenceType> allergenePreferences = await getIngredients(Type.Allergen);
+    Map<Ingredient, PreferenceType> nutrientPreferences = await getIngredients(Type.Nutriment);
+    Map<Ingredient, PreferenceType> otherIngredientPreferences = await getIngredients(Type.General);
+    setState(() {
+      _allergenePreferences = allergenePreferences;
+      _nutrientPreferences = nutrientPreferences;
+      _otherIngredientPreferences = otherIngredientPreferences;
+    });
   }
 
   @override
@@ -83,7 +103,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       titlePadding: EdgeInsets.zero,
     );
     return IntroductionScreen(
-      key: introKey,
+      key: _introKey,
       pages: [
         PageViewModel(
           title: "Willkommen",
@@ -112,15 +132,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
             title: "Allergien",
             subTitle: "Hast du irgendwelche Allergien?",
           ),
-          bodyWidget: CheckboxList(
-            options: allergenOptions,
-            selectedItems: preferences["allergens"],
-            onChange: (int index, bool hasBeenSelected) {
-              String changedItem = allergenOptions[index];
+          bodyWidget: PreferencesAllergensView(
+            allergenePreferences: _allergenePreferences,
+            onChange:
+                (Ingredient changedIngredient, PreferenceType newPreference) {
               setState(() {
-                hasBeenSelected
-                    ? preferences["allergens"].add(changedItem)
-                    : preferences["allergens"].remove(changedItem);
+                _allergenePreferences[changedIngredient] = newPreference;
               });
             },
           ),
@@ -132,15 +149,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle:
                 "Gibt es Nährstoffe, die du bewusst vermehrt aufnehmen möchtest?",
           ),
-          bodyWidget: CheckboxList(
-            options: nutrientOptions,
-            selectedItems: preferences["nutrients"],
-            onChange: (int index, bool hasBeenSelected) {
-              String changedItem = nutrientOptions[index];
+          bodyWidget: PreferencesNutrientsView(
+            nutrientPreferences: _nutrientPreferences,
+            onChange:
+                (Ingredient changedIngredient, PreferenceType newPreference) {
               setState(() {
-                hasBeenSelected
-                    ? preferences["nutrients"].add(changedItem)
-                    : preferences["nutrients"].remove(changedItem);
+                _nutrientPreferences[changedIngredient] = newPreference;
               });
             },
           ),
@@ -152,39 +166,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
             subTitle:
                 "Welche Inhaltsstoffe möchtest du möglichst wenig oder gar nicht konsumieren?",
           ),
-          bodyWidget: RadioButtonTable(
-            items: ingredientOptions,
-            options: ["nichts", "egal", "wenig"],
-            selectedItems: {
-              "wenig": preferences["unwantedIngredientsFew"],
-              "nichts": preferences["unwantedIngredientsNothing"],
-              "egal": ingredientOptions
-                  .where((element) =>
-                      !preferences["unwantedIngredientsFew"]
-                          .contains(element) &&
-                      !preferences["unwantedIngredientsNothing"]
-                          .contains(element))
-                  .toList(),
-            },
-            onChange: (int index, String newPreferenceValue) {
-              String changedItem = ingredientOptions[index];
+          bodyWidget: PreferencesOtherIngredientsView(
+            otherIngredientPreferences: _otherIngredientPreferences,
+            onChange:
+                (Ingredient changedIngredient, PreferenceType newPreference) {
               setState(() {
-                switch (newPreferenceValue) {
-                  case "wenig":
-                    preferences["unwantedIngredientsNothing"]
-                        .remove(changedItem);
-                    preferences["unwantedIngredientsFew"].add(changedItem);
-                    break;
-                  case "nichts":
-                    preferences["unwantedIngredientsFew"].remove(changedItem);
-                    preferences["unwantedIngredientsNothing"].add(changedItem);
-                    break;
-                  case "egal":
-                    preferences["unwantedIngredientsFew"].remove(changedItem);
-                    preferences["unwantedIngredientsNothing"]
-                        .remove(changedItem);
-                    break;
-                }
+                _otherIngredientPreferences[changedIngredient] = newPreference;
               });
             },
           ),
@@ -195,8 +182,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
             title: "Zusammenfassung",
             subTitle: "Kontrolliere deine Auswahl und bearbeite sie wenn nötig",
           ),
-          bodyWidget: OnboardingSummary(
-            preferences: preferences,
+          bodyWidget: PreferencesSummary(
+            allergenePreferences: _allergenePreferences,
+            nutrientPreferences: _nutrientPreferences,
+            otherIngredientPreferences: _otherIngredientPreferences,
             onEditPreference: _animateToPage,
           ),
           decoration: summaryPageDecoration,
@@ -224,7 +213,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           decoration: imagePageDecoration,
         ),
       ],
-      onDone: () => _onIntroEnd(context),
+      onDone: () => _onFinishOnboarding(context),
       showSkipButton: true,
       dotsFlex: 0,
       skip: Text('Skip', style: TextStyle(fontWeight: FontWeight.w600)),

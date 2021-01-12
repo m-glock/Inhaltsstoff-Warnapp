@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/backend/Ingredient.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -170,7 +171,7 @@ class ScanningResult extends StatelessWidget {
             padding: EdgeInsets.only(top: 20.0),
             child: ScanningProductDetails(
               preferencesResults:
-                  PreferenceManager.getItemizedScanResults(scannedProduct),
+                  getItemizedScanResults(scannedProduct),
               otherIngredients: [],
               moreProductDetails: _getAdditionalProductDetails,
             ),
@@ -178,5 +179,10 @@ class ScanningResult extends StatelessWidget {
         ],
       ),
     );
+  }
+  Map<Ingredient, ScanResult> getItemizedScanResults(Product scannedProduct){
+    Map<Ingredient, ScanResult> itemizedScanResults;
+    PreferenceManager.getItemizedScanResults(scannedProduct).then((value) => itemizedScanResults = value);
+    return itemizedScanResults;
   }
 }
