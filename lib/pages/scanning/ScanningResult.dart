@@ -54,7 +54,7 @@ class ScanningResult extends StatelessWidget {
             'Achtung!',
             'Enthält ' +
                 scannedProduct
-                    .getDecisiveIngredientNames(true)
+                    .getDecisiveIngredientNames()
                     .reduce((value, element) => value + ', ' + element));
       case ScanResult.Red:
         return ScanResultAppearance(
@@ -64,7 +64,7 @@ class ScanningResult extends StatelessWidget {
             'Schlechte Wahl!',
             'Enthält ' +
                 scannedProduct
-                    .getDecisiveIngredientNames(true)
+                    .getDecisiveIngredientNames()
                     .reduce((value, element) => value + ', ' + element));
       default:
         throw ('illegal State: result is not of type ScanResult');
@@ -162,7 +162,7 @@ class ScanningResult extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 20.0),
             child: ScanningProductNutrimentsInfo(
               nutriments: scannedProduct.getDecisiveIngredientNames(
-                false,
+                  getUnwantedIngredients: false
               ),
             ),
           ),

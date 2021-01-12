@@ -58,6 +58,7 @@ class FoodApiAccess{
       Product productFromDb = table as Product;
       productFromDb.scanDate = DateTime.now();
       await PreferenceManager.getItemizedScanResults(productFromDb);
+      productFromDb.preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(productFromDb);
 
       await helper.update(productFromDb);
       return productFromDb;

@@ -1,4 +1,3 @@
-import 'package:Inhaltsstoff_Warnapp/backend/Enums/PreferenceType.dart';
 import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -20,6 +19,8 @@ class Product extends DbTable{
   String _nutriscore;
 
   List<Ingredient> _ingredients;
+  Map<Ingredient, ScanResult> itemizedScanResults;
+  List<Ingredient> preferredIngredients;
 
   String _quantity;
   String _origin;
@@ -98,57 +99,41 @@ class Product extends DbTable{
       newProduct._ingredients.add(await DatabaseHelper.instance.read(DbTableNames.ingredient, [name], whereColumn: 'name'));
     }
 
-    PreferenceManager.getItemizedScanResults(newProduct);
+    await PreferenceManager.getItemizedScanResults(newProduct);
+    newProduct.preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(newProduct);
 
     return newProduct;
   }
 
   /*
-  TODO: move to preferenceManager
   * get the names of ingredients that are responsible for the overall scan result.
   * Either return the names of responsible ingredients that are not wanted or those that are explicitly wanted
   * @param unwantedIngredients: determines whether to return the ingredients that cause a negative scan result (unwanted)
   *                             or those that are explicitly wanted by the user and contained in the product
   * @return: a list of ingredient names
   * */
-  List<String> getDecisiveIngredientNames(bool getUnwantedIngredients){
+  List<String> getDecisiveIngredientNames({bool getUnwantedIngredients = true}) {
+
     if(getUnwantedIngredients){
-      Map<Ingredient, ScanResult> itemizedScanResult;
-      PreferenceManager.getItemizedScanResults(this).then((value) => itemizedScanResult = value);
-      itemizedScanResult.removeWhere((key, value) => value == ScanResult.Green);
-      return itemizedScanResult.keys.toList().map((ingredient) => ingredient.name);
-    } else {
-      List<String> preferredIngredientNames = List();
-      List<PreferenceType> options = [PreferenceType.Preferred];
-      List<Ingredient> preferredIngredients;
-      PreferenceManager.getPreferencedIngredients(options).then((value) => preferredIngredients = value);
-
-      preferredIngredients.forEach((ingredient) {
-        if(_ingredients.contains(ingredient))
-          preferredIngredientNames.add(ingredient.name);
+      List<String> ingredientsNames = List();
+      itemizedScanResults.entries.forEach((entry) {
+        if(entry.value != ScanResult.Green) ingredientsNames.add(entry.key.name);
       });
-
-      return preferredIngredientNames;
+      return ingredientsNames;
+    } else {
+      return preferredIngredients.map((e) => e.name).toList();
     }
+
   }
 
   /*
   * get the names of ingredients that are not preferenced by the user and are contained in the product.
   * @return: a list of ingredient names
-  * TODO: move to preferenceManager
   * */
   List<String> getNotPreferredIngredientNames(){
-    List<String> notPreferredIngredientNames = List();
-    List<PreferenceType> options = [PreferenceType.Preferred, PreferenceType.NotWanted, PreferenceType.NotPreferred];
-    List<Ingredient> preferredIngredients;
-    PreferenceManager.getPreferencedIngredients(options).then((value) => preferredIngredients = value);
-
-    preferredIngredients.forEach((ingredient) {
-      if(_ingredients.contains(ingredient))
-        notPreferredIngredientNames.add(ingredient.name);
-    });
-
-    return notPreferredIngredientNames;
+    return _ingredients.toSet()
+        .difference(itemizedScanResults.keys.toSet())
+        .map((e) => e.name).toList();
   }
 
   Future<int> saveInDatabase() async {

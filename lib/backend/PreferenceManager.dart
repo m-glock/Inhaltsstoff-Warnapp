@@ -128,7 +128,14 @@ class PreferenceManager {
     });
 
     product.scanResult = overallResult;
+    product.itemizedScanResults = itemizedScanResults;
 
     return itemizedScanResults;
+  }
+
+  static Future<List<Ingredient>> getPreferredIngredientsIn(Product product) async {
+    List<Ingredient> ingredients = product.ingredients;
+    return (await PreferenceManager.getPreferencedIngredients([PreferenceType.Preferred]))
+        .where((prefIngredient) => ingredients.contains(prefIngredient)).toList();
   }
 }
