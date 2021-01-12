@@ -56,8 +56,7 @@ class PreferenceManager {
     String ids = preferenceTypeIds.reduce((value, element) => value + ', ' + element);
     List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE preferenceTypeId IN ($ids)');
     results.forEach((result) {
-      Ingredient ingredient = Ingredient.fromMap(result);
-      ingredients.add(ingredient);
+      ingredients.add(Ingredient.fromMap(result));
     });
 
     return ingredients;
@@ -70,28 +69,27 @@ class PreferenceManager {
   * */
   static Future<List<Ingredient>> getAllAvailableIngredients([Type type]) async {
     final dbHelper = DatabaseHelper.instance;
-    final db = await dbHelper.database;
-    List<Ingredient> ingredients = new List();
+    List<String> typeIds = List();
+    List<Ingredient> ingredients = List();
 
-    if (type == null) {
-      List<Map> results = await db.rawQuery(
-          'select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id limit 100');
-      results.forEach((result) {
-        Ingredient ingredient = Ingredient.fromMap(result);
-        ingredients.add(ingredient);
-      });
+    if(type == null){
+      typeIds = [
+        Type.Allergen.id.toString(),
+        Type.Nutriment.id.toString(),
+        Type.General.id.toString()
+      ];
+    } else {
+      typeIds = [
+        type.id.toString()
+      ];
     }
 
-    if (type != null) {
-      String elementName = type.name;
-      List<Map> results = await db.rawQuery(
-          'select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where t.name = \'$elementName\' limit 100');
-      results.forEach((result) {
-        Ingredient ingredient = Ingredient.fromMap(result);
-        ingredients.add(ingredient);
-      });
-
-    }
+    String tableName = DbTableNames.ingredient.name;
+    String ids = typeIds.reduce((value, element) => value + ', ' + element);
+    List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE typeId IN ($ids) LIMIT 100');
+    results.forEach((result) {
+      ingredients.add(Ingredient.fromMap(result));
+    });
 
     return ingredients;
   }
