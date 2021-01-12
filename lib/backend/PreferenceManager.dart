@@ -1,5 +1,7 @@
 import 'dart:core';
 
+import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
+
 import 'Enums/ScanResult.dart';
 import 'Ingredient.dart';
 import 'Enums/PreferenceType.dart';
@@ -37,30 +39,26 @@ class PreferenceManager {
   static Future<List<Ingredient>> getPreferencedIngredients(
       [List<PreferenceType> preferenceTypes]) async {
     final dbHelper = DatabaseHelper.instance;
-    final db = await dbHelper.database;
-    List<Ingredient> ingredients = new List();
+    List<String> preferenceTypeIds = List();
+    List<Ingredient> ingredients = List();
 
-    if (preferenceTypes?.isEmpty ?? true) {
-      List<Map> results = await db.rawQuery(
-          'select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where p.name is not \'None\'');
-      results.forEach((result) {
-        Ingredient ingredient = Ingredient.fromMap(result);
-        ingredients.add(ingredient);
-      });
+    if(preferenceTypes?.isEmpty ?? true){
+      preferenceTypeIds = [
+        PreferenceType.NotPreferred.id.toString(),
+        PreferenceType.NotWanted.id.toString(),
+        PreferenceType.Preferred.id.toString()
+      ];
+    } else {
+      preferenceTypeIds = preferenceTypes.map((e) => e.id.toString()).toList();
     }
 
-    if (preferenceTypes?.isNotEmpty ?? true) {
-      preferenceTypes.forEach((element) async {
-        String elementName = element.name;
-
-        List<Map> results = await db.rawQuery(
-            'select i.name as name, p.id as preferenceTypeId, t.id typeId, i.preferenceAddDate, i.id from ingredient i join preferencetype p on i.preferenceTypeId=p.id join type t on i.typeId=t.id where p.name = \'$elementName\'');
-        results.forEach((result) {
-          Ingredient ingredient = Ingredient.fromMap(result);
-          ingredients.add(ingredient);
-        });
-      });
-    }
+    String tableName = DbTableNames.ingredient.name;
+    String ids = preferenceTypeIds.reduce((value, element) => value + ', ' + element);
+    List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE preferenceTypeId IN ($ids)');
+    results.forEach((result) {
+      Ingredient ingredient = Ingredient.fromMap(result);
+      ingredients.add(ingredient);
+    });
 
     return ingredients;
   }
