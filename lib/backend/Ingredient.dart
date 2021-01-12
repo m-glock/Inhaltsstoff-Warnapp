@@ -55,4 +55,14 @@ class Ingredient extends DbTable {
     return new Ingredient(data['name'], prefType, type, preferenceAddDate,
         id: data['id']);
   }
+
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+            other is Ingredient &&
+            runtimeType == other.runtimeType &&
+            id == other.id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }
