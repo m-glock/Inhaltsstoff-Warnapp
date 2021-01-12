@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'Enums/PreferenceType.dart';
+import 'Enums/Type.dart';
 import 'Ingredient.dart';
 import 'Product.dart';
 import 'package:http/http.dart' as http;
@@ -147,11 +148,12 @@ class FoodApiAccess{
   * @param tag: Tag that the names belong to (allergens, vitamins, ingredients etc.)
   * @return: a List of ingredient
   * */
+  //TODO handle with Type
   Future<List<Ingredient>> getIngredientsWithTranslatedNames(List<dynamic> ingredientNames, String tag) async {
     List<Ingredient> ingredients = List();
     List<String> translatedIngredientNames = await getTranslatedValuesForTag(tag, tagValues: ingredientNames);
     translatedIngredientNames.forEach(
-            (element) => ingredients.add(Ingredient(element, PreferenceType.None, ''))
+            (element) => ingredients.add(Ingredient(element, PreferenceType.None, Type.General, Ingredient.getCurrentDate() ))
     );
     return ingredients;
   }
