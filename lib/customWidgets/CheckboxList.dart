@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CheckboxList extends StatelessWidget {
-  CheckboxList({this.options, this.selectedItems, this.onChange});
+  CheckboxList({this.items, this.onChange});
 
-  final List<String> options;
-  final List<String> selectedItems;
+  final Map<String, bool> items;
   final Function onChange;
 
   @override
@@ -12,15 +11,21 @@ class CheckboxList extends StatelessWidget {
     return Container(
       child: Column(
         children: List.generate(
-          options.length,
-          (index) => CheckboxListTile(
-            title: Text(options[index]),
-            value: selectedItems.contains(options[index]),
-            onChanged: (bool value) {
-              onChange(index, value);
-            },
-            activeColor: Theme.of(context).primaryColor,
-          ),
+          items.length,
+          (index) {
+            String key = items.keys.toList()[index];
+            return CheckboxListTile(
+              title: Text(
+                key,
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              value: items[key],
+              onChanged: (bool value) {
+                onChange(index, value);
+              },
+              activeColor: Theme.of(context).primaryColor,
+            );
+          },
         ),
       ),
     );
