@@ -39,25 +39,29 @@ class PreferenceManager {
   static Future<List<Ingredient>> getPreferencedIngredients(
       [List<PreferenceType> preferenceTypes]) async {
     final dbHelper = DatabaseHelper.instance;
-    List<String> preferenceTypeIds = List();
     List<Ingredient> ingredients = List();
+    String tableName = DbTableNames.ingredient.name;
 
-    if(preferenceTypes?.isEmpty ?? true){
-      preferenceTypeIds = [
+    if (preferenceTypes?.isEmpty ?? true) {
+      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE preferenceTypeId IS NOT \'None\'');
+      results.forEach((result) {
+        ingredients.add(Ingredient.fromMap(result));
+      });
+    }
+
+    if (preferenceTypes?.isNotEmpty ?? true) {
+      List<String> preferenceTypeIds = [
         PreferenceType.NotPreferred.id.toString(),
         PreferenceType.NotWanted.id.toString(),
         PreferenceType.Preferred.id.toString()
       ];
-    } else {
-      preferenceTypeIds = preferenceTypes.map((e) => e.id.toString()).toList();
-    }
+      String ids = preferenceTypeIds.reduce((value, element) => value + ', ' + element);
 
-    String tableName = DbTableNames.ingredient.name;
-    String ids = preferenceTypeIds.reduce((value, element) => value + ', ' + element);
-    List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE preferenceTypeId IN ($ids)');
-    results.forEach((result) {
-      ingredients.add(Ingredient.fromMap(result));
-    });
+      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE preferenceTypeId IN ($ids)');
+      results.forEach((result) {
+        ingredients.add(Ingredient.fromMap(result));
+      });
+    }
 
     return ingredients;
   }
@@ -69,27 +73,25 @@ class PreferenceManager {
   * */
   static Future<List<Ingredient>> getAllAvailableIngredients([Type type]) async {
     final dbHelper = DatabaseHelper.instance;
-    List<String> typeIds = List();
     List<Ingredient> ingredients = List();
+    String tableName = DbTableNames.ingredient.name;
 
-    if(type == null){
-      typeIds = [
-        Type.Allergen.id.toString(),
-        Type.Nutriment.id.toString(),
-        Type.General.id.toString()
-      ];
-    } else {
-      typeIds = [
-        type.id.toString()
-      ];
+    if (type == null) {
+      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName');
+      results.forEach((result) {
+        ingredients.add(Ingredient.fromMap(result));
+      });
     }
 
-    String tableName = DbTableNames.ingredient.name;
-    String ids = typeIds.reduce((value, element) => value + ', ' + element);
-    List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE typeId IN ($ids) LIMIT 100');
-    results.forEach((result) {
-      ingredients.add(Ingredient.fromMap(result));
-    });
+    if (type != null) {
+      String typeId = type.id.toString();
+
+      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE typeId = $typeId LIMIT 100');
+      results.forEach((result) {
+        ingredients.add(Ingredient.fromMap(result));
+      });
+
+    }
 
     return ingredients;
   }
