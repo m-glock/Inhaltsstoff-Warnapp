@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../pages/settings/SettingsRootPage.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
@@ -21,10 +20,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
         IconButton(
           icon: Icon(Icons.settings),
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => SettingsRootPage()));
+            Navigator.of(context, rootNavigator: true).pushNamed('/settings');
           },
         ),
       ],

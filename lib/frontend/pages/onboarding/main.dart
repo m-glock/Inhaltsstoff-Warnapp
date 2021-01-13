@@ -6,7 +6,6 @@ import '../../customWidgets/preferences/PreferencesAllergensView.dart';
 import '../../customWidgets/preferences/PreferencesNutrientsView.dart';
 import '../../customWidgets/preferences/PreferencesOtherIngredientsView.dart';
 import '../../customWidgets/preferences/PreferencesSummary.dart';
-import '../HomePage.dart';
 import '../../../backend/PreferenceManager.dart';
 import '../../../backend/Ingredient.dart';
 import '../../../backend/Enums/Type.dart';
@@ -43,8 +42,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     PreferenceManager.changePreference(_nutrientPreferences);
     PreferenceManager.changePreference(_otherIngredientPreferences);
 
-    Navigator.of(context).pushReplacement(
-        new MaterialPageRoute(builder: (context) => new HomePage()));
+    Navigator.of(context).pushReplacementNamed('/');
   }
 
   Widget _buildImage(String assetName) {
