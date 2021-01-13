@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../customWidgets/CustomAppBar.dart';
 
-class AnalysisRootPage extends StatefulWidget {
+class AnalysisRootPage extends StatelessWidget {
   const AnalysisRootPage({Key key}) : super(key: key);
 
-  @override
-  _AnalysisRootPageState createState() => _AnalysisRootPageState();
-}
-
-class _AnalysisRootPageState extends State<AnalysisRootPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,11 +19,19 @@ class _AnalysisRootPageState extends State<AnalysisRootPage> {
               'assets/images/undraw_in_progress.png',
             ),
             Text(
-              'Coming soon!',
+              'Coming soon',
               style: Theme
                   .of(context)
                   .textTheme
                   .headline1,
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Hier kannst du bald deine Einkäufe analysieren.',
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText1,
               textAlign: TextAlign.center,
             ),
           ],
