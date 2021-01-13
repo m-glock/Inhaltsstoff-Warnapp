@@ -26,9 +26,9 @@ class ProductListItem extends StatelessWidget {
     return Container(
       child: Card(
         //color: Theme.of(context).accentColor,
-        shape: Border.all(
-          width: 1.0,
-          color: Colors.indigo[200], //Theme.of(context).accentColor,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(width: 1.0, color: Colors.indigo[200]),
+          borderRadius: BorderRadius.circular(4.0),
         ),
         child: ListTile(
           leading: CircularImage(
@@ -63,8 +63,8 @@ class ProductListItem extends StatelessWidget {
         boxShadow: <BoxShadow>[
           new BoxShadow(
             color: Theme.of(context).accentColor,
-            blurRadius: 1.0,
-            offset: new Offset(0.0, 2.0),
+            blurRadius: 4.0,
+            offset: new Offset(0.0, 1.0),
           ),
         ],
       ),
