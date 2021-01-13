@@ -11,7 +11,13 @@ class SearchBar extends StatefulWidget {
 }
 
 class _SearchBarState extends State<SearchBar> {
-  final _searchController = TextEditingController();
+  TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
 
   void _filterSearchResults(String query) {
     List<String> filteredList = [];
