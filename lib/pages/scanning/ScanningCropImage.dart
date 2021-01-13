@@ -35,7 +35,7 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
         title: Text('Zuschneiden auf Inhaltsstoffe'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: Container(
         child: _sample == null
             ? Center(child: CircularProgressIndicator())
