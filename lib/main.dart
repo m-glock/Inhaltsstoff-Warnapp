@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import './pages/HomePage.dart';
-import './pages/onboarding/main.dart';
-import './pages/settings/SettingsRoot.dart';
-import './pages/WelcomePage.dart';
-import './theme/style.dart';
+import './frontend/pages/HomePage.dart';
+import './frontend/pages/onboarding/main.dart';
+import './frontend/pages/settings/SettingsRootPage.dart';
+import './frontend/pages/WelcomePage.dart';
+import './frontend/theme/style.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => HomePage(),
         '/onboarding': (context) => OnboardingPage(),
-        '/settings': (context) => SettingsRoot(),
+        '/settings': (context) => SettingsRootPage(),
         '/welcome': (context) => WelcomePage(),
       },
       initialRoute: '/welcome',

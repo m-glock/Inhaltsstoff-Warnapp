@@ -4,11 +4,24 @@ extension ScanResultExtension on ScanResult {
   String get name {
     switch (this) {
       case ScanResult.Red:
-        return 'red';
+        return 'Red';
       case ScanResult.Yellow:
-        return 'yellow';
+        return 'Yellow';
       case ScanResult.Green:
-        return 'green';
+        return 'Green';
+      default:
+        return null;
+    }
+  }
+
+  int get id {
+    switch (this) {
+      case ScanResult.Red:
+        return 1;
+      case ScanResult.Yellow:
+        return 2;
+      case ScanResult.Green:
+        return 3;
       default:
         return null;
     }
