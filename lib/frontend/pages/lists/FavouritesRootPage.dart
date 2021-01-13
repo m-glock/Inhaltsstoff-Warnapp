@@ -1,4 +1,4 @@
-import 'package:Inhaltsstoff_Warnapp/frontend/customWidgets/CustomAppBar.dart';
+import '../../customWidgets/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 
 class FavouritesRootPage extends StatefulWidget {
