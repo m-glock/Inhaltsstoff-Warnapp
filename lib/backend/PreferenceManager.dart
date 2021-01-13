@@ -50,11 +50,7 @@ class PreferenceManager {
     }
 
     if (preferenceTypes?.isNotEmpty ?? true) {
-      List<String> preferenceTypeIds = [
-        PreferenceType.NotPreferred.id.toString(),
-        PreferenceType.NotWanted.id.toString(),
-        PreferenceType.Preferred.id.toString()
-      ];
+      List<String> preferenceTypeIds = preferenceTypes.map((preferenceType) => preferenceType.id.toString()).toList();
       String ids = preferenceTypeIds.reduce((value, element) => value + ', ' + element);
 
       List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE preferenceTypeId IN ($ids)');
@@ -135,7 +131,8 @@ class PreferenceManager {
 
   static Future<List<Ingredient>> getPreferredIngredientsIn(Product product) async {
     List<Ingredient> ingredients = product.ingredients;
-    return (await PreferenceManager.getPreferencedIngredients([PreferenceType.Preferred]))
-        .where((prefIngredient) => ingredients.contains(prefIngredient)).toList();
+    return (await getPreferencedIngredients([PreferenceType.Preferred]))
+        .where((prefIngredient) => ingredients.contains(prefIngredient))
+        .toList();
   }
 }
