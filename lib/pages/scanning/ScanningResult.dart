@@ -170,7 +170,7 @@ class ScanningResult extends StatelessWidget {
             child: ScanningProductDetails(
               preferencesResults:
                 scannedProduct.itemizedScanResults,
-              otherIngredients: [],
+              otherIngredients: scannedProduct.getNotPreferredIngredientNames(),
               moreProductDetails: _getAdditionalProductDetails,
             ),
           )
