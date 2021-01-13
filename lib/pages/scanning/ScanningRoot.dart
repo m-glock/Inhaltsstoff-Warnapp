@@ -10,7 +10,9 @@ import '../../customWidgets/LabelledIconButton.dart';
 import './ScanningBarcodeDialog.dart';
 
 class ScanningRoot extends StatefulWidget {
-  const ScanningRoot({Key key}) : super(key: key);
+  ScanningRoot({Key key, this.onFetchedProduct}) : super(key: key);
+
+  Function(Product) onFetchedProduct;
 
   @override
   _ScanningRootState createState() => _ScanningRootState();
@@ -30,9 +32,6 @@ class _ScanningRootState extends State<ScanningRoot> {
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           _getHexPrimaryColor(), "Abbrechen", true, ScanMode.BARCODE);
-      setState(() {
-        _isLoading = true;
-      });
       print(barcodeScanRes);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
@@ -47,12 +46,17 @@ class _ScanningRootState extends State<ScanningRoot> {
   }
 
   Future<void> fetchProduct(String barcode) async {
+    setState(() {
+      _isLoading = true;
+    });
     //var product = await FoodApiAccess.scanProduct('4009077020122');
     Product product = await FoodApiAccess.instance.scanProduct("9001400005030");
     setState(() {
       _isLoading = false;
     });
-    Navigator.pushNamed(context, '/result', arguments: product);
+    widget.onFetchedProduct != null
+        ? widget.onFetchedProduct(product)
+        : Navigator.pushNamed(context, '/result', arguments: product);
   }
 
   @override

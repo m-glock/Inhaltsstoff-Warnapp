@@ -19,6 +19,7 @@ class _ComparisonPageState extends State<ComparisonPage> {
             switch(settings.name) {
               case '/':
                 return ComparisonRoot();
+              case '/comparison_view':
             }
           },
         );

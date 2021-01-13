@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/pages/scanning/ScanningRoot.dart';
 import 'package:flutter/material.dart';
 
 import '../../../backend/Product.dart';
@@ -20,13 +21,25 @@ class ComparisonSelectProductButtons extends StatelessWidget {
           child: Text(
             'Scannen',
             style: Theme.of(context).textTheme.button.merge(
-              new TextStyle(
-                color: Theme.of(context).primaryColorLight,
-              ),
-            ),
+                  new TextStyle(
+                    color: Theme.of(context).primaryColorLight,
+                  ),
+                ),
             textAlign: TextAlign.center,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => ScanningRoot(
+                  onFetchedProduct: (product) {
+                    Navigator.pop(context);
+                    onProductSelected(product);
+                  },
+                ),
+              ),
+            );
+          },
         ),
         Padding(
           padding: EdgeInsets.symmetric(
@@ -43,10 +56,10 @@ class ComparisonSelectProductButtons extends StatelessWidget {
           child: Text(
             'Auswählen aus Favoritenliste',
             style: Theme.of(context).textTheme.button.merge(
-              new TextStyle(
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
+                  new TextStyle(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
             textAlign: TextAlign.center,
           ),
           onPressed: () {},

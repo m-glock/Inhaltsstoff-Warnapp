@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/pages/scanning/ScanningResult.dart';
 import 'package:flutter/material.dart';
 
 import '../../backend/Product.dart';
@@ -65,7 +66,15 @@ class _ComparisonSelectionPageState extends State<ComparisonSelectionPage> {
                           productName: _productOne.name,
                           scanDate: _productOne.scanDate,
                           showInfoButton: true,
-                          onInfoButtonPressed: () {},
+                          onInfoButtonPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    ScanningResult(_productOne),
+                              ),
+                            );
+                          },
                         )
                       : ComparisonSelectProductButtons(
                           onProductSelected: (product) {
@@ -95,7 +104,15 @@ class _ComparisonSelectionPageState extends State<ComparisonSelectionPage> {
                           productName: _productTwo.name,
                           scanDate: _productTwo.scanDate,
                           showInfoButton: true,
-                          onInfoButtonPressed: () {},
+                          onInfoButtonPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    ScanningResult(_productOne),
+                              ),
+                            );
+                          },
                         )
                       : ComparisonSelectProductButtons(
                           onProductSelected: (product) {
