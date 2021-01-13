@@ -7,13 +7,10 @@ import 'DbTableNames.dart';
 abstract class DbTable{
 
   // Fields
-  int _id;
+  int id;
 
   // Constructor
-  DbTable(int id) : _id = id;
-
-  // Getter
-  int get id => _id;
+  DbTable(int id) : id = id;
 
   // Methods
   DbTableNames getTableName();

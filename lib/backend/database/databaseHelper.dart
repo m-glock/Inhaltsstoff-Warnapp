@@ -40,59 +40,53 @@ class DatabaseHelper {
         onCreate: _onCreate);
   }
 
+  // set flag to use foreign keys
   static Future _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
   }
 
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
+    // load sql to create tables and insert enum content
+    await _executeQueriesFromFile(db, 'create_tables_sql');
+    await _executeQueriesFromFile(db, 'insert_into_tables_sql');
 
-    // load sql to create tables
-    String fileTextCreate = await rootBundle.loadString('assets/database/create_tables_sql.txt');
-    List<String> queriesCreate = fileTextCreate.split(';');
-    queriesCreate.forEach((element) async {
+    // get lists of ingredients from food api and save them into the DB
+    await _insertIngredientsFromFoodApi(db, 'allergens', 1);
+    await _insertIngredientsFromFoodApi(db, 'vitamins', 2);
+    await _insertIngredientsFromFoodApi(db, 'minerals', 2);
+    await _insertIngredientsFromFoodApi(db, 'ingredients', 3);
+  }
+
+  // execute sql queries that are saved in a text file in the assets folder
+  Future<void> _executeQueriesFromFile(Database db, String filename) async {
+    String fileText = await rootBundle.loadString('assets/database/$filename.txt');
+    List<String> queries = fileText.split(';');
+    queries.forEach((element) async {
       String query = element.replaceAll('\n', '').replaceAll('\r', '');
       if(element.isNotEmpty)
         await db.execute(query);
     });
+  }
 
-    // load sql to insert the content into the DB that is static and does not changes during usage of the app
-    String fileTextInsert = await rootBundle.loadString('assets/database/insert_into_tables_sql.txt');
-    List<String> queriesInsert = fileTextInsert.split(';');
-    queriesInsert.forEach((element) async {
-      String query = element.replaceAll('\n', '').replaceAll('\r', '');
-      if(element.isNotEmpty)
-        await db.execute(query);
-    });
-
-    FoodApiAccess foodApi = FoodApiAccess.instance;
-
-    // get allergens and vitamins from foodapi and save them into the DB
-    List<String> allergens = await foodApi.getTranslatedValuesForTag('allergens');
-    allergens.forEach((element) async {
-      if(element.isNotEmpty)
-        await db.execute(
-            'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (1, \'$element\', null, 1)');
-    });
-
-    List<String> vitamins = await foodApi.getTranslatedValuesForTag('vitamins');
-    vitamins.forEach((element) async {
-      if(element.isNotEmpty)
-        await db.execute(
-            'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (2, \'$element\', null, 2)');
-    });
-
-    // special nutriments that are contained in ingredient list, but need to be handled separately
-    List<String> nutriments = ['Calcium', 'Natrium', 'Kalium', 'Phosphor', 'Magnesium', 'Eisen', 'Jod', 'Fluorid', 'Zink', 'Selen'];
-    List<String> ingredients = await foodApi.getTranslatedValuesForTag('ingredients');
-
+  // insert ingredients that are saved in the food api under a certain tag
+  // (such as vitamins) into the DB
+  Future<void> _insertIngredientsFromFoodApi(Database db, String tag, int typeId) async {
+    List<String> ingredients = await FoodApiAccess.instance.getTranslatedValuesForTag(tag);
     ingredients.forEach((element) async {
       if(element.isNotEmpty){
-        element = element.replaceAll('\'', '\'\'');
-        // ingredient is a nutriment, it will be inserted with the type id 2 for nutriment, otherwise with 3 for general
-        int typeId = nutriments.contains(element) ? 2 : 3;
-        await db.execute(
-            'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (1, \'$element\', null, $typeId)');
+        try{
+          element = element.replaceAll('\'', '\'\'');
+          await db.execute(
+              'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (1, \'$element\', null, $typeId)');
+        } catch(exception) {
+          // some ingredients have already been added as allergens or vitamins
+          // ingredients should not have duplicates in the DB, so we make sure
+          // not to insert ingredients that are already in the DB
+          DatabaseException ex = exception as DatabaseException;
+          if(!ex.isUniqueConstraintError())
+            print('Database Error when inserting the ingredients into the database.');
+        }
       }
     });
   }
@@ -119,21 +113,56 @@ class DatabaseHelper {
     return newRowIds;
   }
 
-  // get a row with a specific id from a table
-  //TODO check, if works? for example "await dbHelper.read(1, DbTableNames.ingredient);"
-  Future<DbTable> read(int id, DbTableNames table) async {
+  // get a row with a specific value from a table (id is the default column)
+  Future<DbTable> read(DbTableNames tableType, List<dynamic> whereArgs, {String whereColumn = 'id'}) async {
     Database db = await instance.database;
-    List<Map> list = await db.query(table.name, where: 'id = ?', whereArgs: [id]);
-    int length = list.length;
-    return length > 0 ? table.fromMap(list[0]) : null;
+    if(whereArgs.length != 1)
+      throw Exception('Wrong number of arguments. If you want to get more than one element, please use the readAll method.');
+
+    List<Map> list = await db.query(tableType.name, where: '$whereColumn = ?', whereArgs: whereArgs);
+    return list.length > 0 ? await tableType.fromMap(list[0]) : null;
   }
 
   // read all rows with specific values
-  // TODO: in progress
-  Future<List <Map>> readAll(DbTableNames tableType) async {
+  Future<List<DbTable>> readAll(DbTableNames tableType, {String whereColumn, List<dynamic> whereArgs}) async {
     Database db = await instance.database;
-    List<Map> list = await db.query(tableType.name);
-    return list;
+    if(whereArgs != null && whereArgs.length != 1)
+      throw Exception('Wrong number of arguments.');
+
+    List<Map<String, dynamic>> list;
+    if(whereColumn == null)
+      list = await db.query(tableType.name);
+    else
+      list = await db.query(tableType.name, where: '$whereColumn = ?', whereArgs: whereArgs);
+
+
+    if(tableType == DbTableNames.productIngredient){
+      return await _getElementsFromJoinTable(list, whereColumn);
+    } else {
+      List<DbTable> objectList = new List();
+      for(Map<String, dynamic> element in list){
+        objectList.add(await tableType.fromMap(element));
+      }
+      return objectList;
+    }
+  }
+
+  Future<List<DbTable>> _getElementsFromJoinTable(List<Map<String, dynamic>> list, String whereColumn) async {
+    List<DbTable> objectList = new List();
+
+    // check whether the ingredients or the products are queried from the join table
+    bool getIngredients = whereColumn == 'productId';
+    String columnToQuery = getIngredients ? 'ingredientId' : 'productId';
+    DbTableNames tableName = getIngredients ? DbTableNames.ingredient : DbTableNames.product;
+
+    // get ingredient/product object for each row in join table
+    for(Map<String, dynamic> element in list){
+      int objectId = element[columnToQuery];
+      DbTable object = await read(tableName, [objectId]);
+      objectList.add(object);
+    }
+
+    return objectList;
   }
 
   // update a specific row in a table
@@ -172,5 +201,10 @@ class DatabaseHelper {
     });
 
     return deletedRowIds;
+  }
+
+  Future<List<Map<String, dynamic>>> customQuery(String query) async {
+    Database db = await instance.database;
+    return await db.rawQuery(query);
   }
 }

@@ -1,9 +1,7 @@
-import 'package:Inhaltsstoff_Warnapp/backend/Ingredient.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../backend/Enums/ScanResult.dart';
-import '../../backend/PreferenceManager.dart';
 import '../../backend/Product.dart';
 import '../../customWidgets/CustomAppBar.dart';
 import '../../customWidgets/ResultCircle.dart';
@@ -54,7 +52,7 @@ class ScanningResult extends StatelessWidget {
             'Achtung!',
             'Enthält ' +
                 scannedProduct
-                    .getDecisiveIngredientNames(true)
+                    .getDecisiveIngredientNames()
                     .reduce((value, element) => value + ', ' + element));
       case ScanResult.Red:
         return ScanResultAppearance(
@@ -64,7 +62,7 @@ class ScanningResult extends StatelessWidget {
             'Schlechte Wahl!',
             'Enthält ' +
                 scannedProduct
-                    .getDecisiveIngredientNames(true)
+                    .getDecisiveIngredientNames()
                     .reduce((value, element) => value + ', ' + element));
       default:
         throw ('illegal State: result is not of type ScanResult');
@@ -162,7 +160,7 @@ class ScanningResult extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 20.0),
             child: ScanningProductNutrimentsInfo(
               nutriments: scannedProduct.getDecisiveIngredientNames(
-                false,
+                  getUnwantedIngredients: false
               ),
             ),
           ),
@@ -171,18 +169,13 @@ class ScanningResult extends StatelessWidget {
             padding: EdgeInsets.only(top: 20.0),
             child: ScanningProductDetails(
               preferencesResults:
-                  getItemizedScanResults(scannedProduct),
-              otherIngredients: [],
+                scannedProduct.itemizedScanResults,
+              otherIngredients: scannedProduct.getNotPreferredIngredientNames(),
               moreProductDetails: _getAdditionalProductDetails,
             ),
           )
         ],
       ),
     );
-  }
-  Map<Ingredient, ScanResult> getItemizedScanResults(Product scannedProduct){
-    Map<Ingredient, ScanResult> itemizedScanResults;
-    PreferenceManager.getItemizedScanResults(scannedProduct).then((value) => itemizedScanResults = value);
-    return itemizedScanResults;
   }
 }
