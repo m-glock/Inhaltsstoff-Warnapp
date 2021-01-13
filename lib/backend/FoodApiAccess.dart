@@ -2,8 +2,10 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:Inhaltsstoff_Warnapp/backend/ListManager.dart';
 import 'package:http/http.dart' as http;
 
+import 'Lists/History.dart';
 import 'database/DbTableNames.dart';
 import 'database/databaseHelper.dart';
 import 'database/DbTable.dart';
@@ -57,6 +59,8 @@ class FoodApiAccess{
       Product productFromDb = table as Product;
       productFromDb.scanDate = DateTime.now();
 
+      (ListManager.instance.history as History).addProduct(productFromDb);
+
       String tableName = productFromDb.getTableName().name;
       String newScanDate = productFromDb.scanDate.toIso8601String();
       int productId = productFromDb.id;
@@ -82,6 +86,7 @@ class FoodApiAccess{
 
     // transform json data into a product object
     Product product = await Product.fromApiJson(decodedJson['product']);
+    (ListManager.instance.history as History).addProduct(product);
 
     // save product in database
     await product.saveInDatabase();
