@@ -1,8 +1,9 @@
-import 'package:Inhaltsstoff_Warnapp/pages/settings/SettingsRoot.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/HomePage.dart';
 import 'pages/onboarding/main.dart';
+import 'pages/settings/SettingsRoot.dart';
+import 'pages/WelcomePage.dart';
 import 'theme/style.dart';
 
 void main() {
@@ -20,10 +21,11 @@ class MyApp extends StatelessWidget {
       theme: appTheme(),
       routes: {
         '/': (context) => HomePage(),
-        // When navigating to the "/second" route, build the SecondScreen widget.
+        '/onboarding': (context) => OnboardingPage(),
         '/settings': (context) => SettingsRoot(),
+        '/welcome': (context) => WelcomePage(),
       },
-      initialRoute: '/',
+      initialRoute: '/welcome',
     );
   }
 }

@@ -47,8 +47,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     PreferenceManager.changePreference(_nutrientPreferences);
     PreferenceManager.changePreference(_otherIngredientPreferences);
 
-    Navigator.of(context).pushReplacement(
-        new MaterialPageRoute(builder: (context) => new HomePage()));
+    Navigator.of(context).pushReplacementNamed('/');
   }
 
   Widget _buildImage(String assetName) {
