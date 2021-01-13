@@ -13,6 +13,7 @@ class ScanningProductDetails extends StatelessWidget {
     this.moreProductDetails,
   }) : super(key: key);
 
+  // TODO adapt future type for map preferencesResults
   final Map<Ingredient, ScanResult> preferencesResults;
   final List<String> otherIngredients;
   final Map<String, String> moreProductDetails;

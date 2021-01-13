@@ -120,6 +120,7 @@ class DatabaseHelper {
   }
 
   // get a row with a specific id from a table
+  //TODO check, if works? for example "await dbHelper.read(1, DbTableNames.ingredient);"
   Future<DbTable> read(int id, DbTableNames table) async {
     Database db = await instance.database;
     List<Map> list = await db.query(table.name, where: 'id = ?', whereArgs: [id]);
