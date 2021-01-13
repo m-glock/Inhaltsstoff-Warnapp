@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'HistoryRootPage.dart';
+
+import './HistoryRootPage.dart';
+import '../scanning/ScanningResultPage.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({ Key key }) : super(key: key);
@@ -19,6 +21,8 @@ class _HistoryPageState extends State<HistoryPage> {
             switch(settings.name) {
               case '/':
                 return HistoryRootPage();
+              case '/product':
+                return ScanningResultPage(settings.arguments);
             }
           },
         );

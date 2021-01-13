@@ -10,7 +10,7 @@
 // import 'backend/Ingredient.dart';
 // import 'backend/Enums/Type.dart';
 // import 'backend/database/DbTableNames.dart';
-// import 'backend/database/databaseHelper.dart';
+// import 'backend/database/DatabaseHelper.dart';
 // import 'pages/HomePage.dart';
 // import 'pages/onboarding/main.dart';
 // import 'theme/style.dart';

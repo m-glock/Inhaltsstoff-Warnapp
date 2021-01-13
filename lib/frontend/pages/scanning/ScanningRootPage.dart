@@ -48,7 +48,7 @@ class _ScanningRootPageState extends State<ScanningRootPage> {
       _isLoading = true;
     });
     //var product = await FoodApiAccess.scanProduct('4009077020122');
-    Product product = await FoodApiAccess.instance.scanProduct("9001400005030");
+    Product product = await FoodApiAccess.instance.scanProduct(barcode);
     setState(() {
       _isLoading = false;
     });

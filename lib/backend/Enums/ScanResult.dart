@@ -13,4 +13,17 @@ extension ScanResultExtension on ScanResult {
         return null;
     }
   }
+
+  int get id {
+    switch (this) {
+      case ScanResult.Red:
+        return 1;
+      case ScanResult.Yellow:
+        return 2;
+      case ScanResult.Green:
+        return 3;
+      default:
+        return null;
+    }
+  }
 }

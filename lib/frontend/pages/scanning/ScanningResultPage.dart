@@ -10,8 +10,8 @@ import '../../customWidgets/ResultCircle.dart';
 import '../../customWidgets/EditableTitle.dart';
 import '../../customWidgets/LabelledIconButton.dart';
 import './scanningCustomWidgets/ScanningInfoLine.dart';
-import './scanningCustomWidgets/ScanningProductDetails.dart';
 import './scanningCustomWidgets/ScanningProductNutrimentsInfo.dart';
+import './scanningCustomWidgets/ScanningProductDetails.dart';
 
 class ProductActionButton {
   ProductActionButton(this.title, this.icon, this.onPressed);
@@ -68,7 +68,7 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
               ? EditableTitle(
                   originalTitle: 'Unbenanntes Produkt',
                   onTitleChanged: (String value) {
-                    //TODO: scannedProduct.name = value;
+                    widget.scannedProduct.name = value;
                   },
                 )
               : Text(
@@ -115,7 +115,7 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
             padding: EdgeInsets.only(bottom: 20.0),
             child: ScanningProductNutrimentsInfo(
               nutriments: widget.scannedProduct.getDecisiveIngredientNames(
-                false,
+                getUnwantedIngredients: false,
               ),
             ),
           ),
@@ -150,8 +150,13 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
   get _getScanResultAppearance {
     switch (widget.scannedProduct.scanResult) {
       case ScanResult.Green:
-        return ScanResultAppearance(Icons.done, Colors.green, Colors.green[100],
-            'Gute Wahl!', 'Enthält keine ungewollten Inhaltsstoffe.');
+        return ScanResultAppearance(
+          Icons.done,
+          Colors.green[800],
+          Colors.green[100],
+          'Gute Wahl!',
+          'Enthält keine ungewollten Inhaltsstoffe.',
+        );
       case ScanResult.Yellow:
         return ScanResultAppearance(
             Icons.warning,
@@ -160,7 +165,9 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
             'Achtung!',
             'Enthält ' +
                 widget.scannedProduct
-                    .getDecisiveIngredientNames(true)
+                    .getDecisiveIngredientNames(
+                      getUnwantedIngredients: true,
+                    )
                     .reduce((value, element) => value + ', ' + element));
       case ScanResult.Red:
         return ScanResultAppearance(
@@ -170,7 +177,9 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
             'Schlechte Wahl!',
             'Enthält ' +
                 widget.scannedProduct
-                    .getDecisiveIngredientNames(true)
+                    .getDecisiveIngredientNames(
+                      getUnwantedIngredients: true,
+                    )
                     .reduce((value, element) => value + ', ' + element));
       default:
         throw ('illegal State: result is not of type ScanResult');
