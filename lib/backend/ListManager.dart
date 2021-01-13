@@ -1,3 +1,5 @@
+import 'Product.dart';
+import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 import 'database/databaseHelper.dart';
 
@@ -15,17 +17,21 @@ class ListManager{
   get favouriteList => _favouriteList;
 
   // make this a singleton class
-  ListManager._privateConstructor() {
+  ListManager._privateConstructor();
+  static final ListManager instance = ListManager._privateConstructor();
+
+  Future<void> init() async {
     DatabaseHelper helper = DatabaseHelper.instance;
 
-    // get history object from DB and all products saved there
-    helper.read(DbTableNames.list, ['History'], whereColumn: 'name').then((value) => _history = value as History);
-    helper.readAll(DbTableNames.productList, whereColumn: 'listId', whereArgs: [_history.id]).then((value) => _history.addAllProducts(value));
+    _history = await helper.read(DbTableNames.list, ['History'], whereColumn: 'name');
+    List<DbTable> historyResults = await helper.readAll(DbTableNames.productList, whereColumn: 'listId', whereArgs: [_history.id]);
+    List<Product> historyProducts = historyResults.map((e) => e = e as Product).toList();
+    _history.addAllProducts(historyProducts);
 
-    // get favourites object from DB and all products saved there
-    helper.read(DbTableNames.list, ['Favourites'], whereColumn: 'name').then((value) => _favouriteList = value as FavouriteList);
-    helper.readAll(DbTableNames.productList, whereColumn: 'listId', whereArgs: [_favouriteList.id]).then((value) => _favouriteList.addAllProducts(value));
+    _favouriteList = await helper.read(DbTableNames.list, ['Favourites'], whereColumn: 'name');
+    List<DbTable> favouriteResults = await helper.readAll(DbTableNames.productList, whereColumn: 'listId', whereArgs: [_favouriteList.id]);
+    List<Product> favouriteProducts = favouriteResults.map((e) => e = e as Product).toList();
+    _favouriteList.addAllProducts(favouriteProducts);
   }
 
-  static final ListManager instance = ListManager._privateConstructor();
 }

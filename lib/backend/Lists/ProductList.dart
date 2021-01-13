@@ -9,16 +9,12 @@ abstract class ProductList extends DbTable{
 
   // Fields
   String _name;
-  ProductList _parentList;
 
   // Getter
   get name => _name;
-  get parentList => _parentList;
 
   // Constructor
-  ProductList(int id, this._name, {ProductList parentList}) : super(id){
-    _parentList = parentList;
-  }
+  ProductList(int id, this._name) : super(id);
 
   // Methods
   @override
@@ -32,16 +28,13 @@ abstract class ProductList extends DbTable{
 
     map['id'] = id;
     map['name'] = name;
-    map['parentId'] = _parentList.id;
 
     return map;
   }
 
   static DbTable fromMap(Map<String, dynamic> data) {
-    ProductList parentList;
-
     if(data['name'] == 'History') return History(id: data['id']);
-    else return FavouriteList(data['name'], id: data['id'], parent: parentList);
+    else return FavouriteList(data['name'], id: data['id']);
   }
 
   List<Product> getProducts();

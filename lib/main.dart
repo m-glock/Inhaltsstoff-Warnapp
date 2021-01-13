@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/backend/ListManager.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
@@ -39,8 +40,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   void initState() {
     super.initState();
-    new Timer(new Duration(milliseconds: 2000), () {
-      checkFirstSeen();
+    new Timer(new Duration(milliseconds: 2000), () async {
+      await ListManager.instance.init();
+      await checkFirstSeen();
     });
   }
 
