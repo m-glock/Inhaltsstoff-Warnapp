@@ -1,9 +1,7 @@
-import 'package:Inhaltsstoff_Warnapp/backend/Ingredient.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../backend/Enums/ScanResult.dart';
-import '../../backend/PreferenceManager.dart';
 import '../../backend/Product.dart';
 import '../../customWidgets/CustomAppBar.dart';
 import '../../customWidgets/ResultCircle.dart';
@@ -171,7 +169,7 @@ class ScanningResult extends StatelessWidget {
             padding: EdgeInsets.only(top: 20.0),
             child: ScanningProductDetails(
               preferencesResults:
-                  getItemizedScanResults(scannedProduct),
+                scannedProduct.itemizedScanResults,
               otherIngredients: [],
               moreProductDetails: _getAdditionalProductDetails,
             ),
@@ -179,10 +177,5 @@ class ScanningResult extends StatelessWidget {
         ],
       ),
     );
-  }
-  Map<Ingredient, ScanResult> getItemizedScanResults(Product scannedProduct){
-    Map<Ingredient, ScanResult> itemizedScanResults;
-    PreferenceManager.getItemizedScanResults(scannedProduct).then((value) => itemizedScanResults = value);
-    return itemizedScanResults;
   }
 }
