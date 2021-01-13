@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'pages/HomePage.dart';
-import 'pages/onboarding/main.dart';
-import 'pages/settings/SettingsRoot.dart';
-import 'pages/WelcomePage.dart';
-import 'theme/style.dart';
+import './pages/HomePage.dart';
+import './pages/onboarding/main.dart';
+import './pages/settings/SettingsRoot.dart';
+import './pages/WelcomePage.dart';
+import './theme/style.dart';
 
 void main() {
   runApp(MyApp());
