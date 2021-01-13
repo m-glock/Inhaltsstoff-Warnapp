@@ -24,8 +24,6 @@ class _ScanningPageState extends State<ScanningPage> {
             switch (settings.name) {
               case '/':
                 return ScanningRoot();
-              // case '/crop_image':
-              //   return ScanningCropImage();
               case '/camera':
                 return ScanningCamera();  
               case '/result':

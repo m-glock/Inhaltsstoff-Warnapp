@@ -3,6 +3,7 @@ import 'package:image_crop/image_crop.dart';
 import 'package:flutter/material.dart';
 
 import './ScanningTextrecognition.dart';
+import '../../customWidgets/LabelledIconButton.dart';
 
 class ScanningCropImage extends StatefulWidget {
   final String imgPath;
@@ -36,10 +37,9 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
       ),
       backgroundColor: Colors.white,
       body: Container(
-        padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
         child: _sample == null
             ? Center(child: CircularProgressIndicator())
-            : _buildCroppingImageView(), //Image.asset('assets/images/test.jpg'),
+            : _buildCroppingImageView(),
       ),
     );
   }
@@ -70,28 +70,21 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
         Expanded(
           child: Crop.file(_sample, key: cropKey),
         ),
-        Container(
-          padding: const EdgeInsets.only(top: 20.0),
-          alignment: AlignmentDirectional.center,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              RaisedButton(
-                  child: Text(
-                    'Zurücksetzen',
-                    style: TextStyle(color: Theme.of(context).primaryColor),
-                  ),
-                  color: Colors.white,
-                  onPressed: null),
-              RaisedButton(
-                child: Text(
-                  'Zuschneiden',
-                  style: TextStyle(color: Theme.of(context).primaryColorLight),
-                ),
-                color: Theme.of(context).primaryColor,
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: Container(
+              alignment: Alignment.center,
+              child: LabelledIconButton(
+                label: '',
+                icon: Icons.cut,
+                isPrimary: true,
                 onPressed: () => _cropImage(),
+                iconSize: 52,
               ),
-            ],
+            ),
           ),
         )
       ],
@@ -110,7 +103,7 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
     // this will sample image in higher resolution to make cropped image larger
     final sample = await ImageCrop.sampleImage(
       file: _sample,
-      preferredSize: (2000 / scale).round(),
+      preferredSize: (3000 / scale).round(),
     );
 
     final file = await ImageCrop.cropImage(
@@ -127,10 +120,7 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            ScanningTextrecognition(
-          file
-        ),
+        builder: (context) => ScanningTextrecognition(file),
       ),
     );
   }
