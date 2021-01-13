@@ -1,5 +1,6 @@
+import 'package:Inhaltsstoff_Warnapp/pages/scanning/ScanningResult.dart';
 import 'package:flutter/material.dart';
-import 'HistoryRoot.dart';
+import 'HistoryRootPage.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({ Key key }) : super(key: key);
@@ -18,7 +19,9 @@ class _HistoryPageState extends State<HistoryPage> {
           builder: (BuildContext context) {
             switch(settings.name) {
               case '/':
-                return HistoryRoot();
+                return HistoryRootPage();
+              case '/product':
+                return ScanningResult(settings.arguments);
             }
           },
         );

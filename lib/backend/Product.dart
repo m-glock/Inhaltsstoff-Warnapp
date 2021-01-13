@@ -1,7 +1,7 @@
 import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'database/databaseHelper.dart';
+import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 import 'Enums/ScanResult.dart';
@@ -145,11 +145,13 @@ class Product extends DbTable{
 
     // save each ingredients connection to the product in productingredient
     Database db = await helper.database;
-    for(Ingredient ingredient in _ingredients) {
-      Map<String, dynamic> values = Map();
-      values['productId'] = this.id;
-      values['ingredientId'] = ingredient.id;
-      db.insert(DbTableNames.productIngredient.name, values);
+    if(_ingredients.isNotEmpty) {
+      for (Ingredient ingredient in _ingredients) {
+        Map<String, dynamic> values = Map();
+        values['productId'] = this.id;
+        values['ingredientId'] = ingredient.id;
+        db.insert(DbTableNames.productIngredient.name, values);
+      }
     }
 
     return id;

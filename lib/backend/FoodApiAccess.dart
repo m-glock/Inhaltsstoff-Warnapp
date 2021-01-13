@@ -6,7 +6,7 @@ import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
 import 'package:http/http.dart' as http;
 
 import 'database/DbTableNames.dart';
-import 'database/databaseHelper.dart';
+import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'Product.dart';
 

@@ -8,7 +8,7 @@ import 'Enums/PreferenceType.dart';
 import 'Enums/Type.dart';
 
 import 'Product.dart';
-import 'database/databaseHelper.dart';
+import 'database/DatabaseHelper.dart';
 
 class PreferenceManager {
 

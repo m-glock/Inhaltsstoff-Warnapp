@@ -42,8 +42,12 @@ class ScanningResult extends StatelessWidget {
   get _getScanResultAppearance {
     switch (scannedProduct.scanResult) {
       case ScanResult.Green:
-        return ScanResultAppearance(Icons.done, Colors.green, Colors.green[100],
-            'Gute Wahl!', 'Enthält keine ungewollten Inhaltsstoffe.');
+        return ScanResultAppearance(
+            Icons.done,
+            Colors.green[800],
+            Colors.green[100],
+            'Gute Wahl!',
+            'Enthält keine ungewollten Inhaltsstoffe.');
       case ScanResult.Yellow:
         return ScanResultAppearance(
             Icons.warning,
@@ -160,16 +164,14 @@ class ScanningResult extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 20.0),
             child: ScanningProductNutrimentsInfo(
               nutriments: scannedProduct.getDecisiveIngredientNames(
-                  getUnwantedIngredients: false
-              ),
+                  getUnwantedIngredients: false),
             ),
           ),
           _buildProductActionButtons(context),
           Padding(
             padding: EdgeInsets.only(top: 20.0),
             child: ScanningProductDetails(
-              preferencesResults:
-                scannedProduct.itemizedScanResults,
+              preferencesResults: scannedProduct.itemizedScanResults,
               otherIngredients: scannedProduct.getNotPreferredIngredientNames(),
               moreProductDetails: _getAdditionalProductDetails,
             ),
