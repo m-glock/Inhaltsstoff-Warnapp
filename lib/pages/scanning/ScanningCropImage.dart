@@ -8,7 +8,7 @@ import '../../customWidgets/LabelledIconButton.dart';
 class ScanningCropImage extends StatefulWidget {
   final String imgPath;
 
-  ScanningCropImage({this.imgPath});
+  ScanningCropImage(this.imgPath);
 
   @override
   _ScanningCropImageState createState() => new _ScanningCropImageState(imgPath);

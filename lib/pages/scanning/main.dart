@@ -26,6 +26,8 @@ class _ScanningPageState extends State<ScanningPage> {
                 return ScanningRoot();
               case '/camera':
                 return ScanningCamera();  
+              case '/crop_image':
+                return ScanningCropImage(settings.arguments);    
               case '/result':
                 return ScanningResult(settings.arguments);
               //return ScanningResult(testProduct);

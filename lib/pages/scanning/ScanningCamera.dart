@@ -6,7 +6,6 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../main.dart';
 import './ScanningCropImage.dart';
-// import './ScanningTextrecognition.dart';
 import '../../customWidgets/LabelledIconButton.dart';
 
 class ScanningCamera extends StatefulWidget {
@@ -29,43 +28,28 @@ class _ScanningCameraState extends State {
           ? Stack(
               overflow: Overflow.visible,
               children: <Widget>[
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(0),
-                          bottomRight: Radius.circular(0))),
-                  child: CameraPreview(_controller),
-                ),
+                CameraPreview(_controller),
                 Positioned(
                   bottom: 0,
                   left: 0,
                   right: 0,
                   child: Center(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: LabelledIconButton(
-                        label: '',
-                        icon: Icons.camera,
-                        isPrimary: true,
-                        onPressed: () async {
-                          await _takePicture().then((String path) {
-                            if (path != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      // ScanningTextrecognition(path),
-                                      ScanningCropImage(imgPath: path,),
-                                ),
-                              );
-                            }
-                          });
-                        },
-                        iconSize: 52,
-                      ),
+                    child: LabelledIconButton(
+                      label: '',
+                      icon: Icons.camera,
+                      isPrimary: true,
+                      onPressed: () {
+                        _takePicture().then((String path) {
+                          if (path != null) {
+                            Navigator.pushNamed(
+                              context,
+                              '/crop_image',
+                              arguments: path,
+                            );
+                          }
+                        });
+                      },
+                      iconSize: 52,
                     ),
                   ),
                 )
@@ -102,7 +86,6 @@ class _ScanningCameraState extends State {
   Future<String> _takePicture() async {
     // Checking whether the controller is initialized
     if (!_controller.value.isInitialized) {
-      print("Controller is not initialized");
       return null;
     }
 
@@ -114,7 +97,6 @@ class _ScanningCameraState extends State {
         .toString();
 
     String formattedDateTime = dateTime.replaceAll(' ', '');
-    print("Formatted: $formattedDateTime");
 
     // Retrieving the path for saving an image
     final Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -126,7 +108,6 @@ class _ScanningCameraState extends State {
     // to prevent execution of the function again
     // if previous execution has not ended
     if (_controller.value.isTakingPicture) {
-      print("Processing is in progress...");
       return null;
     }
 

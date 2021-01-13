@@ -92,6 +92,7 @@ class _ScanningTextrecognitionState extends State<ScanningTextrecognition> {
       appBar: AppBar(
         title: Text("Erkannter Text"),
       ),
+      backgroundColor: Colors.black,
       body: _imageSize != null
           ? Stack(
               children: <Widget>[
