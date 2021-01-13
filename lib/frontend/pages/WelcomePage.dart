@@ -22,8 +22,6 @@ class _WelcomePageState extends State<WelcomePage> {
     }
   }
 
-  void afterFirstLayout(BuildContext context) => checkFirstSeen();
-
   @override
   Widget build(BuildContext context) {
     new Timer(new Duration(milliseconds: 1000), () {
