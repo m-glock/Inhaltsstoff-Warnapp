@@ -1,4 +1,4 @@
-import 'FavouriteList.dart';
+import 'FavouritesList.dart';
 import 'History.dart';
 
 import '../Product.dart';
@@ -34,7 +34,7 @@ abstract class ProductList extends DbTable{
 
   static DbTable fromMap(Map<String, dynamic> data) {
     if(data['name'] == 'History') return History(id: data['id']);
-    else return FavouriteList(data['name'], id: data['id']);
+    else return FavouritesList(data['name'], id: data['id']);
   }
 
   List<Product> getProducts();

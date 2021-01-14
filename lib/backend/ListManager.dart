@@ -3,18 +3,18 @@ import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 import 'database/databaseHelper.dart';
 
-import 'Lists/FavouriteList.dart';
+import 'Lists/FavouritesList.dart';
 import 'Lists/History.dart';
 
 class ListManager{
 
   // Fields
   History _history;
-  FavouriteList _favouriteList;
+  FavouritesList _favouriteList;
 
   // Getter
   History get history => _history;
-  FavouriteList get favouriteList => _favouriteList;
+  FavouritesList get favouriteList => _favouriteList;
 
   // make this a singleton class
   ListManager._privateConstructor();

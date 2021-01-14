@@ -4,7 +4,7 @@ import '../database/databaseHelper.dart';
 import 'ProductList.dart';
 import '../Product.dart';
 
-class FavouriteList extends ProductList{
+class FavouritesList extends ProductList{
 
   // Fields
   List<Product> _favouriteProducts;
@@ -13,7 +13,7 @@ class FavouriteList extends ProductList{
   List<Product> get favouriteProducts => _favouriteProducts;
 
   // Constructor
-  FavouriteList(String name, {int id}) : super(id, name){
+  FavouritesList(String name, {int id}) : super(id, name){
     _favouriteProducts = List();
   }
 
