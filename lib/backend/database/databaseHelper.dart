@@ -140,8 +140,8 @@ class DatabaseHelper {
       list = await db.query(tableType.name, where: '$whereColumn = ?', whereArgs: whereArgs);
 
 
-    if(tableType == DbTableNames.productIngredient){
-      return await _getElementsFromJoinTable(list, whereColumn);
+    if(tableType == DbTableNames.productIngredient || tableType == DbTableNames.productList){
+      return await _getElementsFromJoinTable(list, whereColumn, tableType);
     } else {
       List<DbTable> objectList = new List();
       for(Map<String, dynamic> element in list){
@@ -151,13 +151,20 @@ class DatabaseHelper {
     }
   }
 
-  Future<List<DbTable>> _getElementsFromJoinTable(List<Map<String, dynamic>> list, String whereColumn) async {
+  Future<List<DbTable>> _getElementsFromJoinTable(List<Map<String, dynamic>> list, String whereColumn, DbTableNames joinTableType) async {
     List<DbTable> objectList = new List();
+    String columnToQuery;
+    DbTableNames tableName;
 
     // check whether the ingredients or the products are queried from the join table
-    bool getIngredients = whereColumn == 'productId';
-    String columnToQuery = getIngredients ? 'ingredientId' : 'productId';
-    DbTableNames tableName = getIngredients ? DbTableNames.ingredient : DbTableNames.product;
+    if(whereColumn == 'productId'){
+      bool getIngredient = joinTableType == DbTableNames.productIngredient;
+      columnToQuery = getIngredient ? 'ingredientId' : 'listId';
+      tableName = getIngredient ? DbTableNames.ingredient : DbTableNames.list;
+    } else {
+      columnToQuery = 'productId';
+      tableName = DbTableNames.product;
+    }
 
     // get ingredient/product object for each row in join table
     for(Map<String, dynamic> element in list){

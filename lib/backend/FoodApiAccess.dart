@@ -64,7 +64,7 @@ class FoodApiAccess{
       String tableName = productFromDb.getTableName().name;
       String newScanDate = productFromDb.scanDate.toIso8601String();
       int productId = productFromDb.id;
-      await helper.customQuery('UPDATE $tableName SET scanDate = $newScanDate WHERE id = $productId');
+      await helper.customQuery('UPDATE $tableName SET scanDate = \'$newScanDate\' WHERE id = $productId');
       return productFromDb;
     }
 
@@ -84,12 +84,12 @@ class FoodApiAccess{
       return null;
     }
 
-    // transform json data into a product object
+    // transform json data into a product object and save it in database
     Product product = await Product.fromApiJson(decodedJson['product']);
-    (ListManager.instance.history as History).addProduct(product);
-
-    // save product in database
     await product.saveInDatabase();
+
+    // save product in history
+    (ListManager.instance.history as History).addProduct(product);
 
     return product;
   }
