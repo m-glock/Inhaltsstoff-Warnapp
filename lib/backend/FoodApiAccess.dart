@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:Inhaltsstoff_Warnapp/backend/ListManager.dart';
 import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
 import 'package:http/http.dart' as http;
 
@@ -60,7 +61,12 @@ class FoodApiAccess{
       await PreferenceManager.getItemizedScanResults(productFromDb);
       productFromDb.preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(productFromDb);
 
-      await helper.update(productFromDb);
+      ListManager.instance.history.addProduct(productFromDb);
+
+      String tableName = productFromDb.getTableName().name;
+      String newScanDate = productFromDb.scanDate.toIso8601String();
+      int productId = productFromDb.id;
+      await helper.customQuery('UPDATE $tableName SET scanDate = \'$newScanDate\' WHERE id = $productId');
       return productFromDb;
     }
 
@@ -80,11 +86,12 @@ class FoodApiAccess{
       return null;
     }
 
-    // transform json data into a product object
+    // transform json data into a product object and save it in database
     Product product = await Product.fromApiJson(decodedJson['product']);
-
-    // save product in database
     await product.saveInDatabase();
+
+    // save product in history
+    ListManager.instance.history.addProduct(product);
 
     return product;
   }

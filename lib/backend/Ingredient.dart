@@ -13,16 +13,16 @@ class Ingredient extends DbTable {
 
   static final columns = ["name", "preferenceTypeId", "preferenceAddDate", "typeId", "id"];
 
+  // Constructor
+  Ingredient(this._name, this.preferenceType, this._preferenceAddDate, this._type, {int id})
+      : super(id);
+
   // Getter and Setter
   String get name => _name;
   Type get type => _type;
   DateTime get preferenceAddDate => _preferenceAddDate;
 
   set preferenceAddDate(DateTime newDate) => _preferenceAddDate = newDate;
-
-  // Constructor
-  Ingredient(this._name, this.preferenceType, this._type, this._preferenceAddDate,
-      {int id}) : super(id);
 
   // Methods
 
@@ -52,7 +52,7 @@ class Ingredient extends DbTable {
     Type type = Type.values.elementAt(typeId - 1);
 
     DateTime preferenceAddDate = data['preferenceAddDate'] != null ? DateTime.parse(data['preferenceAddDate']) : null;
-    return new Ingredient(data['name'], prefType, type, preferenceAddDate,
+    return new Ingredient(data['name'], prefType, preferenceAddDate, type,
         id: data['id']);
   }
 

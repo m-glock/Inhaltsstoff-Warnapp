@@ -204,4 +204,15 @@ class Product extends DbTable{
 
     return product;
   }
+
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is Product &&
+            runtimeType == other.runtimeType &&
+            id == other.id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
 }
