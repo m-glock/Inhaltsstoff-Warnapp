@@ -2,16 +2,16 @@ import 'Enums/PreferenceType.dart';
 import 'Enums/Type.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
-import 'package:intl/intl.dart';
 
 class Ingredient extends DbTable {
+
   // Fields
   String _name;
-  PreferenceType _preferencesType;
-  String _addDate;
+  PreferenceType preferenceType;
+  DateTime _preferenceAddDate;
   Type _type;
 
-  static final columns = ["id", "name", "preferencesTypeId", "addDate"];
+  static final columns = ["name", "preferenceTypeId", "preferenceAddDate", "typeId", "id"];
 
   // Constructor
   Ingredient(this._name, this._preferencesType, this._addDate, this._type, {int id})
@@ -20,31 +20,15 @@ class Ingredient extends DbTable {
   // Getter and Setter
   String get name => _name;
   Type get type => _type;
-  String get addDate => _addDate;
-  PreferenceType get preferenceType => _preferencesType;
+  DateTime get preferenceAddDate => _preferenceAddDate;
+
+  set preferenceAddDate(DateTime newDate) => _preferenceAddDate = newDate;
+
+  // Constructor
+  Ingredient(this._name, this.preferenceType, this._type, this._preferenceAddDate,
+      {int id}) : super(id);
 
   // Methods
-
-
-  /*
-  * get current date in a string format
-  * from https://stackoverflow.com/questions/16126579/how-do-i-format-a-date-with-dart
-  * @return: current date as a string in format yyyy-MM-dd-Hm
-  * */
-  String getCurrentDate() {
-    final DateTime now = DateTime.now();
-    final DateFormat formatter = DateFormat('yyyy-MM-dd-Hm');
-    return formatter.format(now);
-    //print(formatted); // something like 2013-04-20
-  }
-
-  /*
-  * changes the preference type of this ingredient
-  * @param preferenceType: the new preference for this ingredient
-  * */
-  void changePreference(PreferenceType preferenceType) {
-    //TODO implement
-  }
 
   // DB methods
   @override
@@ -52,17 +36,15 @@ class Ingredient extends DbTable {
     return DbTableNames.ingredient;
   }
 
-  //TODO: handle foreign keys
   @override
   Map<String, dynamic> toMap({bool withId: true}) {
     final map = new Map<String, dynamic>();
-    map['name'] = name;
-    //map['preferencesTypeId'] = preferencesTypeId;
-    map['addDate'] = addDate;
+    map['name'] = _name;
+    map['preferenceTypeId'] = preferenceType.id;
+    map['typeId'] = _type.id;
+    String test = _preferenceAddDate?.toIso8601String();
+    map['preferenceAddDate'] = test;
     if (withId) map['id'] = super.id;
-    //List<int> groupIds = new List();
-    //_groups.forEach((element) => groupIds.add(element.id));
-    //map['groups'] = groupIds;
     return map;
   }
 
@@ -73,7 +55,18 @@ class Ingredient extends DbTable {
     int typeId = data['typeId'];
     Type type = Type.values.elementAt(typeId - 1);
 
-    return new Ingredient(data['name'], prefType, data['preferenceAddDate'], type,
+    DateTime preferenceAddDate = data['preferenceAddDate'] != null ? DateTime.parse(data['preferenceAddDate']) : null;
+    return new Ingredient(data['name'], prefType, type, preferenceAddDate,
         id: data['id']);
   }
+
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+            other is Ingredient &&
+            runtimeType == other.runtimeType &&
+            id == other.id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

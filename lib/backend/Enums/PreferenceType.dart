@@ -3,14 +3,14 @@ enum PreferenceType { None, NotWanted, NotPreferred, Preferred }
 extension PreferenceTypeExtension on PreferenceType {
   String get name {
     switch (this) {
-      case PreferenceType.NotWanted:
-        return 'notwanted';
-      case PreferenceType.NotPreferred:
-        return 'notpreferred';
-      case PreferenceType.Preferred:
-        return 'preferred';
       case PreferenceType.None:
-        return 'none';
+        return 'None';
+      case PreferenceType.NotWanted:
+        return 'Not Wanted';
+      case PreferenceType.NotPreferred:
+        return 'Not Preferred';
+      case PreferenceType.Preferred:
+        return 'Preferred';
       default:
         return null;
     }

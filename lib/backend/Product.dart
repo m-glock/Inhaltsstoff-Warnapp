@@ -1,6 +1,7 @@
+import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'database/databaseHelper.dart';
+import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 import 'Enums/ScanResult.dart';
@@ -18,6 +19,8 @@ class Product extends DbTable{
   String _nutriscore;
 
   List<Ingredient> _ingredients;
+  Map<Ingredient, ScanResult> itemizedScanResults;
+  List<Ingredient> preferredIngredients;
 
   String _quantity;
   String _origin;
@@ -42,6 +45,7 @@ class Product extends DbTable{
   // Setter
   set name(String newName) => _name = newName;
   set scanDate(DateTime newTime) => _scanDate = newTime;
+  set scanResult(ScanResult newResult) => _scanResult = newResult;
 
   // constructor with minimal necessary information
   Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id}) : super(id) {
@@ -95,12 +99,8 @@ class Product extends DbTable{
       newProduct._ingredients.add(await DatabaseHelper.instance.read(DbTableNames.ingredient, [name], whereColumn: 'name'));
     }
 
-    // TODO: additives as separate field or inside of ingredients?
-    //List<dynamic> additiveNames = json['additives_tags'];
-    //newProduct.addAll(await foodApi.getIngredientsWithTranslatedNames(additiveNames, 'additives'));
-
-    //TODO use itemizedScanResults in PreferenceManager to get the overall scanresult, right now only dummy data
-    newProduct._scanResult = ScanResult.Yellow;
+    await PreferenceManager.getItemizedScanResults(newProduct);
+    newProduct.preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(newProduct);
 
     return newProduct;
   }
@@ -111,20 +111,29 @@ class Product extends DbTable{
   * @param unwantedIngredients: determines whether to return the ingredients that cause a negative scan result (unwanted)
   *                             or those that are explicitly wanted by the user and contained in the product
   * @return: a list of ingredient names
-  * TODO implement, right now only dummy data
   * */
-  List<String> getDecisiveIngredientNames(bool getUnwantedIngredients){
+  List<String> getDecisiveIngredientNames({bool getUnwantedIngredients = true}) {
+
     if(getUnwantedIngredients){
-      List<String> unwanted = List();
-      unwanted.add('Schokolade');
-      unwanted.add('Milch');
-      return unwanted;
+      List<String> ingredientsNames = List();
+      itemizedScanResults.entries.forEach((entry) {
+        if(entry.value != ScanResult.Green) ingredientsNames.add(entry.key.name);
+      });
+      return ingredientsNames;
     } else {
-      List<String> wanted = List();
-      wanted.add('Vitamin C');
-      wanted.add('Magnesium');
-      return wanted;
+      return preferredIngredients.map((e) => e.name).toList();
     }
+
+  }
+
+  /*
+  * get the names of ingredients that are not preferenced by the user and are contained in the product.
+  * @return: a list of ingredient names
+  * */
+  List<String> getNotPreferredIngredientNames(){
+    return _ingredients.toSet()
+        .difference(itemizedScanResults.keys.toSet())
+        .map((e) => e.name).toList();
   }
 
   Future<int> saveInDatabase() async {
@@ -136,11 +145,13 @@ class Product extends DbTable{
 
     // save each ingredients connection to the product in productingredient
     Database db = await helper.database;
-    for(Ingredient ingredient in _ingredients) {
-      Map<String, dynamic> values = Map();
-      values['productId'] = this.id;
-      values['ingredientId'] = ingredient.id;
-      db.insert(DbTableNames.productIngredient.name, values);
+    if(_ingredients.isNotEmpty) {
+      for (Ingredient ingredient in _ingredients) {
+        Map<String, dynamic> values = Map();
+        values['productId'] = this.id;
+        values['ingredientId'] = ingredient.id;
+        db.insert(DbTableNames.productIngredient.name, values);
+      }
     }
 
     return id;
