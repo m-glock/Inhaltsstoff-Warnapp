@@ -10,7 +10,7 @@ class FavouriteList extends ProductList{
   List<Product> _favouriteProducts;
 
   // Getter
-  get favouriteProducts => _favouriteProducts;
+  List<Product> get favouriteProducts => _favouriteProducts;
 
   // Constructor
   FavouriteList(String name, {int id}) : super(id, name){
@@ -19,7 +19,9 @@ class FavouriteList extends ProductList{
 
   // Methods
   bool addProduct(Product product){
-    if(_favouriteProducts.contains(product)) return false;
+    if(_favouriteProducts.contains(product)) {
+      return false;
+    }
     _favouriteProducts.add(product);
 
     Map<String, dynamic> row = Map();

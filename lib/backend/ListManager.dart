@@ -13,8 +13,8 @@ class ListManager{
   FavouriteList _favouriteList;
 
   // Getter
-  get history => _history;
-  get favouriteList => _favouriteList;
+  History get history => _history;
+  FavouriteList get favouriteList => _favouriteList;
 
   // make this a singleton class
   ListManager._privateConstructor();

@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:Inhaltsstoff_Warnapp/backend/ListManager.dart';
 import 'package:http/http.dart' as http;
 
-import 'Lists/History.dart';
 import 'database/DbTableNames.dart';
 import 'database/databaseHelper.dart';
 import 'database/DbTable.dart';
@@ -59,7 +58,7 @@ class FoodApiAccess{
       Product productFromDb = table as Product;
       productFromDb.scanDate = DateTime.now();
 
-      (ListManager.instance.history as History).addProduct(productFromDb);
+      ListManager.instance.history.addProduct(productFromDb);
 
       String tableName = productFromDb.getTableName().name;
       String newScanDate = productFromDb.scanDate.toIso8601String();
@@ -89,7 +88,7 @@ class FoodApiAccess{
     await product.saveInDatabase();
 
     // save product in history
-    (ListManager.instance.history as History).addProduct(product);
+    ListManager.instance.history.addProduct(product);
 
     return product;
   }

@@ -11,7 +11,7 @@ class History extends ProductList{
   SortedMap<Product, DateTime> _historyOfScannedProducts;
 
   // Getter
-  get historyOfScannedProducts => _historyOfScannedProducts;
+  SortedMap<Product, DateTime> get historyOfScannedProducts => _historyOfScannedProducts;
 
   // Constructor
   History({int id}) : super(id, 'History'){
@@ -20,11 +20,14 @@ class History extends ProductList{
 
   // Methods
   void addProduct(Product product){
+    bool productWasAlreadyInList = _historyOfScannedProducts.containsKey(product);
     _historyOfScannedProducts[product] = product.scanDate;
-    Map<String, dynamic> row = Map();
-    row['productId'] = product.id;
-    row['listId'] = id;
-    DatabaseHelper.instance.add(product, to: DbTableNames.productList, values: row);
+    if(!productWasAlreadyInList){
+      Map<String, dynamic> row = Map();
+      row['productId'] = product.id;
+      row['listId'] = id;
+      DatabaseHelper.instance.add(product, to: DbTableNames.productList, values: row);
+    }
   }
 
   void addAllProducts(List<Product> products){
