@@ -1,5 +1,5 @@
 import '../database/DbTableNames.dart';
-import '../database/databaseHelper.dart';
+import '../database/DatabaseHelper.dart';
 
 import 'ProductList.dart';
 import '../Product.dart';

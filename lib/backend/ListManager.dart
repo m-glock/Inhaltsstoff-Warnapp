@@ -1,7 +1,7 @@
 import 'Product.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
-import 'database/databaseHelper.dart';
+import 'database/DatabaseHelper.dart';
 
 import 'Lists/FavouritesList.dart';
 import 'Lists/History.dart';
