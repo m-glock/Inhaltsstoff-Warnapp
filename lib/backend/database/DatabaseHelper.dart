@@ -1,11 +1,10 @@
 import 'dart:io';
-
-import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
+import './../FoodApiAccess.dart';
 import 'DbTable.dart';
 import 'DbTableNames.dart';
 
