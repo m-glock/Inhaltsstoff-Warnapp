@@ -1,5 +1,5 @@
-import './../lib/backend/FoodApiAccess.dart';
-import './../lib/backend/Product.dart';
+import '../lib/backend/FoodApiAccess.dart';
+import '../lib/backend/Product.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
