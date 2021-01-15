@@ -1,9 +1,11 @@
+import '../Lists/ProductList.dart';
+
 import '../Ingredient.dart';
+import '../Product.dart';
 import 'DbTable.dart';
 
 enum DbTableNames{
   ingredient,
-  ingredientType,
   type,
   preferenceType,
   productIngredient,
@@ -19,8 +21,6 @@ extension DbTablesExtension on DbTableNames {
     switch (this) {
       case DbTableNames.ingredient:
         return 'ingredient';
-      case DbTableNames.ingredientType:
-        return 'ingredienttype';
       case DbTableNames.type:
         return 'type';
       case DbTableNames.preferenceType:
@@ -40,11 +40,14 @@ extension DbTablesExtension on DbTableNames {
     }
   }
 
-  //TODO: add mapping for all classes
-  DbTable fromMap(Map<String, dynamic> data){
+  Future<DbTable> fromMap(Map<String, dynamic> data) async {
     switch(this){
       case DbTableNames.ingredient:
         return Ingredient.fromMap(data);
+      case DbTableNames.product:
+        return await Product.fromMap(data);
+      case DbTableNames.list:
+        return ProductList.fromMap(data);
       default:
         return null;
     }
