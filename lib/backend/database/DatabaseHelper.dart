@@ -12,9 +12,8 @@ import 'DbTableNames.dart';
 // code adapted from https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
 class DatabaseHelper {
 
-  static final _databaseName = "MyDatabase.db";
+  static final _databaseName = "FoodDatabase.db";
   static final _databaseVersion = 1;
-  bool isFinished = false;
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
@@ -34,7 +33,7 @@ class DatabaseHelper {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     // comment in and execute once to delete old database, the comment out again
-    //File(path).delete();
+    //deleteDatabase(path);
     return await openDatabase(path,
         version: _databaseVersion,
         onConfigure: _onConfigure,
@@ -62,7 +61,6 @@ class DatabaseHelper {
      print(" created minerals ");
     await _insertIngredientsFromFoodApi(db, 'ingredients', 3);
      print(" created other ingredients ");
-    isFinished = true;
   }
 
   // execute sql queries that are saved in a text file in the assets folder
@@ -186,7 +184,8 @@ class DatabaseHelper {
   // update a specific row in a table
   Future<int> update(DbTable object) async {
     Database db = await instance.database;
-    return await db.update(object.getTableName().name, object.toMap(), where: 'id = ?', whereArgs: [object.id]);
+    Map<String, dynamic> test = object.toMap();
+    return await db.update(object.getTableName().name, test, where: 'id = ?', whereArgs: [object.id]);
   }
 
   // update multiple rows in a table
