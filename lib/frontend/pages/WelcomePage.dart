@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+import 'package:sqflite/sqflite.dart';
+
+import '../../backend/database/databaseHelper.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key key}) : super(key: key);
@@ -10,14 +12,15 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-  Future checkFirstSeen() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool _firstTime = (prefs.getBool('firstTime') ?? true);
-
-    if (_firstTime) {
+  waitforDatabaseBeforeRouting() async {
+    Database db = await DatabaseHelper.instance.database;
+    List<Map<String, dynamic>> map = await db
+        .rawQuery('SELECT * FROM metadataFlags WHERE name = \'Onboarding\'');
+    int isOnboardingDone = map[0]['isInitialized'] as int;
+    if (isOnboardingDone == 0) {
+      await db.rawUpdate('UPDATE metadataFlags SET isInitialized=1 WHERE name = \'Onboarding\'');
       Navigator.of(context).pushReplacementNamed('/onboarding');
     } else {
-      await prefs.setBool('firstTime', false);
       Navigator.of(context).pushReplacementNamed('/');
     }
   }
@@ -25,7 +28,7 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     new Timer(new Duration(milliseconds: 1000), () {
-      checkFirstSeen();
+      waitforDatabaseBeforeRouting();
     });
     return Scaffold(
       backgroundColor: Colors.white,

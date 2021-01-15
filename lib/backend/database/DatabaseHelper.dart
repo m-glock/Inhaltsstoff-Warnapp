@@ -14,6 +14,7 @@ class DatabaseHelper {
 
   static final _databaseName = "MyDatabase.db";
   static final _databaseVersion = 1;
+  bool isFinished = false;
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
@@ -33,7 +34,7 @@ class DatabaseHelper {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     // comment in and execute once to delete old database, the comment out again
-    // File(path).delete();
+    //File(path).delete();
     return await openDatabase(path,
         version: _databaseVersion,
         onConfigure: _onConfigure,
@@ -52,10 +53,16 @@ class DatabaseHelper {
     await _executeQueriesFromFile(db, 'insert_into_tables_sql');
 
     // get lists of ingredients from food api and save them into the DB
+    print(" before creation ");
     await _insertIngredientsFromFoodApi(db, 'allergens', 1);
+    print(" created allergens ");
     await _insertIngredientsFromFoodApi(db, 'vitamins', 2);
+     print(" created vitamins ");
     await _insertIngredientsFromFoodApi(db, 'minerals', 2);
+     print(" created minerals ");
     await _insertIngredientsFromFoodApi(db, 'ingredients', 3);
+     print(" created other ingredients ");
+    isFinished = true;
   }
 
   // execute sql queries that are saved in a text file in the assets folder
