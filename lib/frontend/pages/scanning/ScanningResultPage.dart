@@ -34,7 +34,7 @@ class ScanResultAppearance {
 }
 
 class ScanningResultPage extends StatefulWidget {
-  ScanningResultPage(this.scannedProduct, {Key key}) : super(key: key);
+  const ScanningResultPage(this.scannedProduct, {Key key}) : super(key: key);
   final Product scannedProduct;
 
   @override

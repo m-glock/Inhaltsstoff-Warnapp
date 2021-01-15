@@ -50,6 +50,7 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
                           Navigator.pushNamed(context, '/product',
                               arguments: product);
                         },
+                        removable: false,
                       ))
                   .toList(),
             ),
