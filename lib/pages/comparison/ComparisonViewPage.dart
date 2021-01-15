@@ -59,12 +59,9 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
   void _getItemizedResults() async {
     var resultsProductOne =
         await PreferenceManager.getItemizedScanResults(widget.productOne);
-    //print('results product one: ' + resultsProductOne.toString());
     var resultsProductTwo =
         await PreferenceManager.getItemizedScanResults(widget.productTwo);
-    //print('results product two: ' + resultsProductTwo.toString());
-    //var preferences = await PreferenceManager.getPreferencedIngredients();
-    //print('preferences: ' + preferences.toString());
+
     setState(() {
       _itemizedResultsProductOne = resultsProductOne;
       _itemizedResultsProductTwo = resultsProductTwo;
@@ -81,24 +78,24 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
         padding: EdgeInsets.all(24.0),
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(top: 10.0, bottom: 24.0),
+            padding: EdgeInsets.only(top: 12.0, bottom: 24.0),
             child: Row(
               children: [
                 Expanded(
-                  flex: 1,
                   child: ComparisonSelectedProductCard(
                     productNumber: 1,
                     productName: widget.productOne.name,
                     scanDate: widget.productOne.scanDate,
+                    scanResult: widget.productOne.scanResult,
                     showInfoButton: false,
                   ),
                 ),
                 Expanded(
-                  flex: 1,
                   child: ComparisonSelectedProductCard(
                     productNumber: 2,
                     productName: widget.productTwo.name,
                     scanDate: widget.productTwo.scanDate,
+                    scanResult: widget.productTwo.scanResult,
                     showInfoButton: false,
                   ),
                 ),
@@ -119,9 +116,11 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
                     CircularProgressIndicator(),
                   ]
                 : _preferences.map((preference) {
-                    return IntrinsicHeight(
+                    return Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 8.0,
+                      ),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Expanded(
                             child: ResultCircle(
@@ -131,14 +130,16 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
                           ),
                           Expanded(
                             flex: 3,
-                            child: ColoredBox(
-                              color: Theme.of(context).accentColor,
-                              child: Center(
-                                child: Text(
-                                  preference.name,
-                                  style: Theme.of(context).textTheme.bodyText1,
-                                  textAlign: TextAlign.center,
-                                ),
+                            child: Center(
+                              child: Text(
+                                preference.name,
+                                style:
+                                    Theme.of(context).textTheme.bodyText1.merge(
+                                          TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
@@ -161,9 +162,11 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
             ),
             initiallyExpanded: true,
             children: _notPreferencedIngredientsSum.map((ingredient) {
-              return IntrinsicHeight(
+              return Padding(
+                padding: EdgeInsets.only(
+                  bottom: 8.0,
+                ),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(
                       child: _notPreferencedIngredientsProductOne
@@ -173,14 +176,15 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
                     ),
                     Expanded(
                       flex: 3,
-                      child: ColoredBox(
-                        color: Theme.of(context).accentColor,
-                        child: Center(
-                          child: Text(
-                            ingredient,
-                            style: Theme.of(context).textTheme.bodyText1,
-                            textAlign: TextAlign.center,
-                          ),
+                      child: Center(
+                        child: Text(
+                          ingredient,
+                          style: Theme.of(context).textTheme.bodyText1.merge(
+                                TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
@@ -204,9 +208,11 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
             initiallyExpanded: true,
             children:
                 _additionalDetailsProductOne.entries.map((detailProductOne) {
-              return IntrinsicHeight(
+              return Padding(
+                padding: EdgeInsets.only(
+                  bottom: 8.0,
+                ),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(
                       child: Text(
@@ -217,14 +223,15 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
                     ),
                     Expanded(
                       flex: 3,
-                      child: ColoredBox(
-                        color: Theme.of(context).accentColor,
-                        child: Center(
-                          child: Text(
-                            detailProductOne.key,
-                            style: Theme.of(context).textTheme.bodyText1,
-                            textAlign: TextAlign.center,
-                          ),
+                      child: Center(
+                        child: Text(
+                          detailProductOne.key,
+                          style: Theme.of(context).textTheme.bodyText1.merge(
+                                TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),

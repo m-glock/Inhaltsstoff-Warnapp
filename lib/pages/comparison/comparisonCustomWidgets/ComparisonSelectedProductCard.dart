@@ -1,3 +1,5 @@
+import '../../../backend/Enums/ScanResult.dart';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -7,6 +9,7 @@ class ComparisonSelectedProductCard extends StatelessWidget {
     this.productNumber,
     this.productName,
     this.scanDate,
+    this.scanResult,
     this.showInfoButton,
     this.onInfoButtonPressed,
   }) : super(key: key);
@@ -14,6 +17,7 @@ class ComparisonSelectedProductCard extends StatelessWidget {
   final int productNumber;
   final String productName;
   final DateTime scanDate;
+  final ScanResult scanResult;
   final bool showInfoButton;
   final void Function() onInfoButtonPressed;
 
@@ -40,42 +44,44 @@ class ComparisonSelectedProductCard extends StatelessWidget {
   }
 
   Widget _buildProductCard(BuildContext context) {
-    return Container(
-      child: Card(
-        color: Theme.of(context).accentColor,
-        shape: Border.all(
-          width: 1.5,
+    return Card(
+      color: _getBackgroundColor,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
           color: Theme.of(context).primaryColor,
+          width: 1.0,
         ),
-        child: Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Column(
-            children: [
-              Text(
-                'Produkt $productNumber: $productName',
-                style: Theme.of(context).textTheme.headline2,
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                'gescannt am ' + new DateFormat('dd.MM.yyyy').format(scanDate),
-                //.format(DateTime.now()),
-                style: Theme.of(context).textTheme.bodyText1,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
+        borderRadius: BorderRadius.circular(4.0),
       ),
-      decoration: BoxDecoration(
-        boxShadow: <BoxShadow>[
-          new BoxShadow(
-            color: Colors.grey[50],
-            //Theme.of(context).disabledColor,
-            blurRadius: 0.1,
-            offset: new Offset(0.0, 1.0),
-          ),
-        ],
+      child: Padding(
+        padding: EdgeInsets.all(12.0),
+        child: Column(
+          children: [
+            Text(
+              'Produkt $productNumber: $productName',
+              style: Theme.of(context).textTheme.headline2,
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'gescannt am ' + new DateFormat('dd.MM.yyyy').format(scanDate),
+              //.format(DateTime.now()),
+              style: Theme.of(context).textTheme.bodyText1,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  get _getBackgroundColor{
+    switch(scanResult){
+      case ScanResult.Green:
+        return Colors.green[100];
+      case ScanResult.Yellow:
+        return Colors.yellow[100];
+      case ScanResult.Red:
+        return Colors.red[100];
+    }
   }
 }

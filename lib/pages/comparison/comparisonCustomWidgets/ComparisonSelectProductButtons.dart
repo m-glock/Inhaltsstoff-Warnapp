@@ -1,4 +1,3 @@
-import 'package:Inhaltsstoff_Warnapp/pages/scanning/ScanningRoot.dart';
 import 'package:flutter/material.dart';
 
 import '../../../backend/Product.dart';
@@ -17,7 +16,7 @@ class ComparisonSelectProductButtons extends StatelessWidget {
       children: [
         RaisedButton(
           color: Theme.of(context).primaryColor,
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(12),
           child: Text(
             'Scannen',
             style: Theme.of(context).textTheme.button.merge(
@@ -28,18 +27,18 @@ class ComparisonSelectProductButtons extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           onPressed: () {
-            Navigator.push(
+            Navigator.pushNamed(
               context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => ScanningRoot(
-                  onFetchedProduct: (product) {
-                    Navigator.pop(context);
-                    onProductSelected(product);
-                  },
-                ),
-              ),
+              '/scanning',
+              arguments: (product) {
+                Navigator.pop(context);
+                onProductSelected(product);
+              },
             );
           },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
         ),
         Padding(
           padding: EdgeInsets.symmetric(
@@ -63,9 +62,12 @@ class ComparisonSelectProductButtons extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           onPressed: () {},
-          shape: Border.all(
-            color: Theme.of(context).primaryColor,
-            width: 1.5,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+              color: Theme.of(context).primaryColor,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(4.0),
           ),
         ),
       ],

@@ -1,4 +1,3 @@
-import 'package:Inhaltsstoff_Warnapp/pages/scanning/ScanningResult.dart';
 import 'package:flutter/material.dart';
 
 import '../../backend/Product.dart';
@@ -43,7 +42,6 @@ class _ComparisonSelectionPageState extends State<ComparisonSelectionPage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(
-              //horizontal: 20.0,
               vertical: 20.0,
             ),
             child: Text(
@@ -59,31 +57,46 @@ class _ComparisonSelectionPageState extends State<ComparisonSelectionPage> {
             child: Row(
               children: [
                 Expanded(
-                  flex: 1,
                   child: _productOne != null
-                      ? ComparisonSelectedProductCard(
-                          productNumber: 1,
-                          productName: _productOne.name,
-                          scanDate: _productOne.scanDate,
-                          showInfoButton: true,
-                          onInfoButtonPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ScanningResult(_productOne),
+                      ? Column(
+                          children: [
+                            ComparisonSelectedProductCard(
+                              productNumber: 1,
+                              productName: _productOne.name,
+                              scanDate: _productOne.scanDate,
+                              scanResult: _productOne.scanResult,
+                              showInfoButton: true,
+                              onInfoButtonPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/product',
+                                  arguments: _productOne,
+                                );
+                              },
+                            ),
+                            TextButton(
+                              child: Text(
+                                'Anderes Produkt wählen',
+                                style: Theme.of(context).textTheme.button.merge(
+                                      new TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                textAlign: TextAlign.center,
                               ),
-                            );
-                          },
+                              onPressed: () {
+                                setState(() {
+                                  _productOne = null;
+                                });
+                              },
+                            ),
+                          ],
                         )
                       : ComparisonSelectProductButtons(
                           onProductSelected: (product) {
                             setState(() {
                               _productOne = product;
                             });
-                            if (_productOne != null && _productTwo != null)
-                              widget.onSelectedProducts(
-                                  _productOne, _productTwo);
                           },
                         ),
                 ),
@@ -97,37 +110,72 @@ class _ComparisonSelectionPageState extends State<ComparisonSelectionPage> {
                   ),
                 ),
                 Expanded(
-                  flex: 1,
                   child: _productTwo != null
-                      ? ComparisonSelectedProductCard(
-                          productNumber: 2,
-                          productName: _productTwo.name,
-                          scanDate: _productTwo.scanDate,
-                          showInfoButton: true,
-                          onInfoButtonPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ScanningResult(_productOne),
+                      ? Column(
+                          children: [
+                            ComparisonSelectedProductCard(
+                              productNumber: 2,
+                              productName: _productTwo.name,
+                              scanDate: _productTwo.scanDate,
+                              scanResult: _productTwo.scanResult,
+                              showInfoButton: true,
+                              onInfoButtonPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/product',
+                                  arguments: _productTwo,
+                                );
+                              },
+                            ),
+                            TextButton(
+                              child: Text(
+                                'Anderes Produkt wählen',
+                                style: Theme.of(context).textTheme.button.merge(
+                                      new TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                textAlign: TextAlign.center,
                               ),
-                            );
-                          },
+                              onPressed: () {
+                                setState(() {
+                                  _productTwo = null;
+                                });
+                              },
+                            ),
+                          ],
                         )
                       : ComparisonSelectProductButtons(
                           onProductSelected: (product) {
                             setState(() {
                               _productTwo = product;
                             });
-                            if (_productOne != null && _productTwo != null)
-                              widget.onSelectedProducts(
-                                  _productOne, _productTwo);
                           },
                         ),
                 ),
               ],
             ),
           ),
+          if (_productOne != null && _productTwo != null)
+            RaisedButton(
+              color: Theme.of(context).primaryColor,
+              padding: EdgeInsets.all(12),
+              child: Text(
+                'Vergleichen',
+                style: Theme.of(context).textTheme.button.merge(
+                      new TextStyle(
+                        color: Theme.of(context).primaryColorLight,
+                      ),
+                    ),
+                textAlign: TextAlign.center,
+              ),
+              onPressed: () {
+                widget.onSelectedProducts(_productOne, _productTwo);
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+            ),
         ],
       ),
     );
