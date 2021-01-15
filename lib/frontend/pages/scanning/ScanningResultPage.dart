@@ -165,26 +165,26 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
         : new ProductActionButton(
             'Speichern', Icons.favorite_border, addFavourite);
 
-    setState(() {
-      _productActionButtons = {
-        favButton,
-        ProductActionButton('Vergleichen', Icons.compare_arrows, () {}),
-        ProductActionButton('Kaufen', Icons.add_shopping_cart, null),
-      }.toList();
-    });
+    if (mounted) {
+      setState(() {
+        _productActionButtons = {
+          favButton,
+          ProductActionButton('Vergleichen', Icons.compare_arrows, () {}),
+          ProductActionButton('Kaufen', Icons.add_shopping_cart, null),
+        }.toList();
+      });
+    }
   }
 
   void addFavourite() {
     ListManager.instance.favouritesList
         .then((value) => value.addProduct(widget.scannedProduct));
-    print('add favourite');
     _getProductActionButtons();
   }
 
   void removeFavourite() {
     ListManager.instance.favouritesList
         .then((value) => value.removeProduct(widget.scannedProduct));
-    print('remove favourite');
     _getProductActionButtons();
   }
 
