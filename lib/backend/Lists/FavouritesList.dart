@@ -7,7 +7,7 @@ import '../Product.dart';
 class FavouritesList extends ProductList{
 
   // Fields
-  List<Product> _favouriteProducts;
+  List<Product> _favouriteProducts = new List<Product>();
 
   // Getter
   List<Product> get favouriteProducts => _favouriteProducts;

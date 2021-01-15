@@ -8,7 +8,7 @@ import 'package:sortedmap/sortedmap.dart';
 class History extends ProductList{
 
   // Fields
-  SortedMap<Product, DateTime> _historyOfScannedProducts;
+  SortedMap<Product, DateTime> _historyOfScannedProducts = new SortedMap<Product, DateTime>();
 
   // Getter
   SortedMap<Product, DateTime> get historyOfScannedProducts => _historyOfScannedProducts;
@@ -44,6 +44,6 @@ class History extends ProductList{
 
   @override
   List<Product> getProducts() {
-    return _historyOfScannedProducts.keys;
+    return _historyOfScannedProducts.keys.toList()?? new List<Product>();
   }
 }

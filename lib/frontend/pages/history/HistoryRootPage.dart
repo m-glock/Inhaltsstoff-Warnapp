@@ -1,18 +1,29 @@
-import '../../../backend/Enums/ScanResult.dart';
+import '../../../backend/ListManager.dart';
 import '../../../backend/Product.dart';
 import '../../customWidgets/ProductListItem.dart';
 import '../../customWidgets/CustomAppBar.dart';
 
 import 'package:flutter/material.dart';
 
-class HistoryRootPage extends StatelessWidget {
+class HistoryRootPage extends StatefulWidget {
   HistoryRootPage({Key key}) : super(key: key);
 
+  @override
+  _HistoryRootPageState createState() => _HistoryRootPageState();
+}
+
+class _HistoryRootPageState extends State<HistoryRootPage> {
+  
   List<Product> _scannedProducts;
 
   @override
+  void initState() {
+    super.initState();
+    _scannedProducts = ListManager.instance.history.getProducts();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    _scannedProducts = getScannedProductsList();
     return Scaffold(
       appBar: CustomAppBar('Verlauf'),
       backgroundColor: Colors.white,
@@ -34,8 +45,7 @@ class HistoryRootPage extends StatelessWidget {
                         image: NetworkImage(product.imageUrl),
                         name: product.name,
                         scanDate: product.scanDate,
-                        scanResult: ScanResult.Green,
-                        //product.scanResult,
+                        scanResult: product.scanResult,
                         onProductSelected: () {
                           Navigator.pushNamed(context, '/product',
                               arguments: product);
@@ -43,17 +53,22 @@ class HistoryRootPage extends StatelessWidget {
                       ))
                   .toList(),
             ),
+      floatingActionButton:
+          _scannedProducts != null && _scannedProducts.isNotEmpty
+              ? FloatingActionButton(
+                  backgroundColor: Colors.red,
+                  child: Icon(
+                    Icons.delete_forever,
+                    color: Theme.of(context).primaryColorLight,
+                  ),
+                  onPressed: () {
+                    ListManager.instance.history.clearHistory();
+                    setState(() {
+                      _scannedProducts.clear();
+                    });
+                  },
+                )
+              : null,
     );
-  }
-
-  List<Product> getScannedProductsList() {
-    //TODO: get list from backend
-    return [
-      new Product('Produkt 1', 'https://googleflutter.com/sample_image.jpg',
-          '4009077020122', DateTime.now()),
-      new Product('Produkt 2', 'https://googleflutter.com/sample_image.jpg',
-          '9001400005030', DateTime.now()),
-    ];
-    //return [];
   }
 }

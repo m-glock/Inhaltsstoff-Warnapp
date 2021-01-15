@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/backend/ListManager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -18,14 +19,8 @@ class ProductActionButton {
 
   String title;
   IconData icon;
-  void Function() onPressed;
+  Function onPressed;
 }
-
-List<ProductActionButton> productActionButtons = [
-  ProductActionButton('Speichern', Icons.favorite, () {}),
-  ProductActionButton('Vergleichen', Icons.compare_arrows, () {}),
-  ProductActionButton('Kaufen', Icons.add_shopping_cart, () {}),
-];
 
 class ScanResultAppearance {
   ScanResultAppearance(this.icon, this.textColor, this.backgroundColor,
@@ -39,7 +34,7 @@ class ScanResultAppearance {
 }
 
 class ScanningResultPage extends StatefulWidget {
-  const ScanningResultPage(this.scannedProduct, {Key key}) : super(key: key);
+  ScanningResultPage(this.scannedProduct, {Key key}) : super(key: key);
   final Product scannedProduct;
 
   @override
@@ -48,16 +43,19 @@ class ScanningResultPage extends StatefulWidget {
 
 class _ScanningResultPageState extends State<ScanningResultPage> {
   Map<Ingredient, ScanResult> _itemizedScanResults;
+  ScanResultAppearance _currentResultAppearance;
+  List<ProductActionButton> _productActionButtons;
 
   @override
   void initState() {
     super.initState();
     getItemizedScanResults(widget.scannedProduct);
+    _currentResultAppearance = _getScanResultAppearance;
+    _productActionButtons = _getProductActionButtons;
   }
 
   @override
   Widget build(BuildContext context) {
-    ScanResultAppearance _currentResultAppearance = _getScanResultAppearance;
     return Scaffold(
       appBar: CustomAppBar('Scan-Ergebnis'),
       backgroundColor: Theme.of(context).backgroundColor,
@@ -121,13 +119,13 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: productActionButtons
+            children: _productActionButtons
                 .map((ProductActionButton productActionButton) {
               return LabelledIconButton(
                 label: productActionButton.title,
                 icon: productActionButton.icon,
                 isPrimary: true,
-                onPressed: () {},
+                onPressed: productActionButton.onPressed,
               );
             }).toList(),
           ),
@@ -145,6 +143,35 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
         ],
       ),
     );
+  }
+
+  get _getProductActionButtons {
+    ProductActionButton favButton = ListManager.instance.favouriteList
+            .getProducts()
+            .contains(widget.scannedProduct)
+        ? new ProductActionButton(
+            'Entfernen', Icons.favorite, removeFavourite)
+        : new ProductActionButton('Speichern', Icons.favorite_border, addFavourite);
+
+    return {
+      favButton,
+      ProductActionButton('Vergleichen', Icons.compare_arrows, () {}),
+      ProductActionButton('Kaufen', Icons.add_shopping_cart, null),
+    }.toList();
+  }
+
+  void addFavourite() {
+    ListManager.instance.favouriteList.addProduct(widget.scannedProduct);
+    setState(() {
+      _productActionButtons = _getProductActionButtons;
+    });
+  }
+
+  void removeFavourite() {
+    ListManager.instance.favouriteList.removeProduct(widget.scannedProduct);
+    setState(() {
+      _productActionButtons = _getProductActionButtons;
+    });
   }
 
   get _getScanResultAppearance {

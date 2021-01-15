@@ -9,8 +9,8 @@ import 'Lists/History.dart';
 class ListManager{
 
   // Fields
-  History _history;
-  FavouritesList _favouriteList;
+  History _history = new History();
+  FavouritesList _favouriteList = new FavouritesList('Favourites');
 
   // Getter
   History get history => _history;

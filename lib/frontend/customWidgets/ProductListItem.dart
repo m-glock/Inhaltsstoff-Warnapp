@@ -10,7 +10,9 @@ class ProductListItem extends StatelessWidget {
   String name;
   DateTime scanDate;
   ScanResult scanResult;
+  bool removable;
   void Function() onProductSelected;
+  void Function() onRemove;
 
   ProductListItem({
     Key key,
@@ -18,14 +20,15 @@ class ProductListItem extends StatelessWidget {
     this.name,
     this.scanDate,
     this.scanResult,
+    this.removable,
     this.onProductSelected,
+    this.onRemove,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Card(
-        //color: Theme.of(context).accentColor,
         shape: RoundedRectangleBorder(
           side: BorderSide(width: 1.0, color: Colors.indigo[200]),
           borderRadius: BorderRadius.circular(4.0),
@@ -50,6 +53,13 @@ class ProductListItem extends StatelessWidget {
                 result: scanResult,
                 small: true,
               ),
+              if (removable)
+                IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                    onPressed: onRemove),
               Icon(
                 Icons.keyboard_arrow_right,
                 color: Theme.of(context).primaryColor,
