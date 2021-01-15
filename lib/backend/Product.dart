@@ -1,6 +1,6 @@
-import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
 import 'package:sqflite/sqflite.dart';
 
+import './PreferenceManager.dart';
 import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';

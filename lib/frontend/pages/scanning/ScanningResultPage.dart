@@ -1,7 +1,7 @@
-import 'package:Inhaltsstoff_Warnapp/backend/ListManager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../backend/ListManager.dart';
 import '../../../backend/Enums/ScanResult.dart';
 import '../../../backend/PreferenceManager.dart';
 import '../../../backend/Product.dart';

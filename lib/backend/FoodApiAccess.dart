@@ -2,8 +2,8 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:Inhaltsstoff_Warnapp/backend/ListManager.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
+import './ListManager.dart';
+import './PreferenceManager.dart';
 import 'package:http/http.dart' as http;
 
 import 'database/DbTableNames.dart';

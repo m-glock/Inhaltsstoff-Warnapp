@@ -1,5 +1,6 @@
-import 'package:Inhaltsstoff_Warnapp/frontend/pages/scanning/ScanningResultPage.dart';
 import 'package:flutter/material.dart';
+
+import '../scanning/ScanningResultPage.dart';
 import './FavouritesRootPage.dart';
 
 class FavouritesPage extends StatefulWidget {
