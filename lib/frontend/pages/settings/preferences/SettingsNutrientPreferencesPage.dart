@@ -47,15 +47,23 @@ class _SettingsNutrientPreferencesPageState
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: PreferencesNutrientsView(
-          nutrientPreferences: _nutrientPreferences,
-          onChange:
-              (Ingredient changedIngredient, PreferenceType newPreference) {
-            setState(() {
-              _nutrientPreferences[changedIngredient] = newPreference;
-            });
-          },
-        ),
+        child: _nutrientPreferences.isEmpty
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView(
+                children: [
+                  PreferencesNutrientsView(
+                    nutrientPreferences: _nutrientPreferences,
+                    onChange: (Ingredient changedIngredient,
+                        PreferenceType newPreference) {
+                      setState(() {
+                        _nutrientPreferences[changedIngredient] = newPreference;
+                      });
+                    },
+                  ),
+                ],
+              ),
       ),
     );
   }
