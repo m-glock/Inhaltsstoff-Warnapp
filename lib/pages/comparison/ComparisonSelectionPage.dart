@@ -64,7 +64,7 @@ class _ComparisonSelectionPageState extends State<ComparisonSelectionPage> {
                               productNumber: 1,
                               productName: _productOne.name,
                               scanDate: _productOne.scanDate,
-                              scanResult: _productOne.scanResult,
+                              useScanResultSpecificBackgroundColor: false,
                               showInfoButton: true,
                               onInfoButtonPressed: () {
                                 Navigator.pushNamed(
@@ -117,7 +117,7 @@ class _ComparisonSelectionPageState extends State<ComparisonSelectionPage> {
                               productNumber: 2,
                               productName: _productTwo.name,
                               scanDate: _productTwo.scanDate,
-                              scanResult: _productTwo.scanResult,
+                              useScanResultSpecificBackgroundColor: false,
                               showInfoButton: true,
                               onInfoButtonPressed: () {
                                 Navigator.pushNamed(

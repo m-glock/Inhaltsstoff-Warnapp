@@ -9,6 +9,7 @@ class ComparisonSelectedProductCard extends StatelessWidget {
     this.productNumber,
     this.productName,
     this.scanDate,
+    this.useScanResultSpecificBackgroundColor,
     this.scanResult,
     this.showInfoButton,
     this.onInfoButtonPressed,
@@ -17,6 +18,7 @@ class ComparisonSelectedProductCard extends StatelessWidget {
   final int productNumber;
   final String productName;
   final DateTime scanDate;
+  final bool useScanResultSpecificBackgroundColor;
   final ScanResult scanResult;
   final bool showInfoButton;
   final void Function() onInfoButtonPressed;
@@ -45,7 +47,9 @@ class ComparisonSelectedProductCard extends StatelessWidget {
 
   Widget _buildProductCard(BuildContext context) {
     return Card(
-      color: _getBackgroundColor,
+      color: useScanResultSpecificBackgroundColor
+          ? _getResultSpecificBackgroundColor
+          : Theme.of(context).accentColor,
       shape: RoundedRectangleBorder(
         side: BorderSide(
           color: Theme.of(context).primaryColor,
@@ -74,14 +78,14 @@ class ComparisonSelectedProductCard extends StatelessWidget {
     );
   }
 
-  get _getBackgroundColor{
-    switch(scanResult){
+  get _getResultSpecificBackgroundColor {
+    switch (scanResult) {
       case ScanResult.Green:
-        return Colors.green[100];
+        return Colors.green[50];
       case ScanResult.Yellow:
         return Colors.yellow[100];
       case ScanResult.Red:
-        return Colors.red[100];
+        return Colors.red[50];
     }
   }
 }
