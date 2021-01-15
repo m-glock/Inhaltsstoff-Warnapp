@@ -11,13 +11,12 @@ class ScanningCropImage extends StatefulWidget {
   ScanningCropImage(this.imgPath);
 
   @override
-  _ScanningCropImageState createState() => new _ScanningCropImageState(imgPath);
+  _ScanningCropImageState createState() => new _ScanningCropImageState();
 }
 
 class _ScanningCropImageState extends State<ScanningCropImage> {
-  _ScanningCropImageState(this.path);
+  _ScanningCropImageState();
 
-  final String path;
   final cropKey = GlobalKey<CropState>();
   File _sample;
   File _lastCropped;
@@ -52,7 +51,7 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
   }
 
   Future<void> _setSample() async {
-    var file = await _getImageFile(path);
+    var file = await _getImageFile(widget.imgPath);
 
     setState(() {
       _sample = file;
@@ -75,15 +74,12 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
           left: 0,
           right: 0,
           child: Center(
-            child: Container(
-              alignment: Alignment.center,
-              child: LabelledIconButton(
-                label: '',
-                icon: Icons.cut,
-                isPrimary: true,
-                onPressed: () => _cropImage(),
-                iconSize: 52,
-              ),
+            child: LabelledIconButton(
+              label: '',
+              icon: Icons.cut,
+              isPrimary: true,
+              onPressed: () => _cropImage(),
+              iconSize: 52,
             ),
           ),
         )
@@ -95,7 +91,6 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
     final scale = cropKey.currentState.scale;
     final area = cropKey.currentState.area;
     if (area == null) {
-      // cannot crop, widget is not setup
       return;
     }
 
@@ -112,16 +107,14 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
     );
 
     sample.delete();
-
     _lastCropped?.delete();
+    debugPrint('FILE:         $file');
     _lastCropped = file;
 
-    debugPrint('$file');
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => ScanningTextrecognition(file),
-      ),
+      '/result_textrecognition', 
+      arguments:file,
     );
   }
 }
