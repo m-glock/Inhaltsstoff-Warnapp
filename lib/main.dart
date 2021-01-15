@@ -1,6 +1,6 @@
-import 'package:Inhaltsstoff_Warnapp/backend/ListManager.dart';
 import 'package:flutter/material.dart';
 
+import './backend/ListManager.dart';
 import './frontend/pages/HomePage.dart';
 import './frontend/pages/onboarding/main.dart';
 import './frontend/pages/settings/SettingsRootPage.dart';
@@ -13,7 +13,7 @@ void main() {
 
 /// This is the main application widget.
 class MyApp extends StatelessWidget {
-  static const String _title = 'Inhaltsstoff Warnapp';
+  static const String _title = 'Essbar - Die Inhaltsstoff Warnapp';
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 {
-    "name": "Inhaltsstoff_Warnapp",
-    "short_name": "Inhaltsstoff_Warnapp",
+    "name": "EssBar - Die Inhaltstoff Warnapp",
+    "short_name": "EssBar",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
