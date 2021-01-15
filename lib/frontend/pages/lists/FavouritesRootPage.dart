@@ -18,7 +18,8 @@ class _FavouritesRootPageState extends State<FavouritesRootPage> {
   @override
   void initState() {
     super.initState();
-    _favouriteProducts = ListManager.instance.favouriteList.getProducts();
+    _getFavouriteProducts();
+    _addOnListUpdateListener();
   }
 
   @override
@@ -26,40 +27,75 @@ class _FavouritesRootPageState extends State<FavouritesRootPage> {
     return Scaffold(
       appBar: CustomAppBar('Favoriten'),
       backgroundColor: Colors.white,
-      body: _favouriteProducts == null || _favouriteProducts.isEmpty
-          ? Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              child: Center(
-                child: Text(
-                  'Du hast noch keine Favoriten gespeichert.',
-                  style: Theme.of(context).textTheme.headline2,
-                  textAlign: TextAlign.center,
+      body: _favouriteProducts == null
+          ? CircularProgressIndicator()
+          : _favouriteProducts.isEmpty
+              ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Center(
+                    child: Text(
+                      'Du hast keine Favoriten gespeichert.',
+                      style: Theme.of(context).textTheme.headline2,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              : ListView(
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  children: _favouriteProducts
+                      .map((product) => ProductListItem(
+                            image: product.imageUrl != null
+                                ? NetworkImage(product.imageUrl)
+                                : null,
+                            name: product.name,
+                            scanDate: product.scanDate,
+                            scanResult: product.scanResult,
+                            onProductSelected: () {
+                              Navigator.pushNamed(context, '/product',
+                                  arguments: product);
+                            },
+                            removable: true,
+                            onRemove: () {
+                              _removeFavourite(product);
+                            },
+                          ))
+                      .toList(),
                 ),
-              ),
-            )
-          : ListView(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              children: _favouriteProducts
-                  .map((product) => ProductListItem(
-                        image: NetworkImage(product.imageUrl),
-                        name: product.name,
-                        scanDate: product.scanDate,
-                        scanResult: product.scanResult,
-                        onProductSelected: () {
-                          Navigator.pushNamed(context, '/product',
-                              arguments: product);
-                        },
-                        removable: true,
-                        onRemove: () {
-                          ListManager.instance.favouriteList
-                              .removeProduct(product);
-                          setState(() {
-                            _favouriteProducts.remove(product);
-                          });
-                        },
-                      ))
-                  .toList(),
-            ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _removeOnListUpdateListener();
+  }
+
+  void _getFavouriteProducts() async {
+    var favouritesList = await ListManager.instance.favouritesList;
+    setState(() {
+      _favouriteProducts = favouritesList.getProducts();
+    });
+  }
+
+  void _addOnListUpdateListener() async {
+    var favouritesList = await ListManager.instance.favouritesList;
+    favouritesList.onUpdate.subscribe((args) {
+      _getFavouriteProducts();
+    });
+  }
+
+  void _removeOnListUpdateListener() async {
+    var favouritesList = await ListManager.instance.favouritesList;
+    favouritesList.onUpdate.unsubscribe((args) {
+      _getFavouriteProducts();
+    });
+  }
+
+  void _removeFavourite(Product product) async {
+    var favouritesList = await ListManager.instance.favouritesList;
+    favouritesList.removeProduct(product);
+    setState(() {
+      _favouriteProducts.remove(product);
+    });
   }
 }

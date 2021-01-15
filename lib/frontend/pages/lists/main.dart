@@ -1,3 +1,4 @@
+import 'package:Inhaltsstoff_Warnapp/frontend/pages/scanning/ScanningResultPage.dart';
 import 'package:flutter/material.dart';
 import './FavouritesRootPage.dart';
 
@@ -19,6 +20,8 @@ class _FavouritesPageState extends State<FavouritesPage> {
             switch(settings.name) {
               case '/':
                 return FavouritesRootPage();
+              case '/product':
+                return ScanningResultPage(settings.arguments);
             }
           },
         );

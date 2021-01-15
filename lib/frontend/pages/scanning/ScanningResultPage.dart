@@ -51,7 +51,8 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
     super.initState();
     getItemizedScanResults(widget.scannedProduct);
     _currentResultAppearance = _getScanResultAppearance;
-    _productActionButtons = _getProductActionButtons;
+    _getProductActionButtons();
+    _subscribeToFavouritesListUpdate();
   }
 
   @override
@@ -59,118 +60,145 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
     return Scaffold(
       appBar: CustomAppBar('Scan-Ergebnis'),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: ListView(
-        padding: EdgeInsets.symmetric(vertical: 20.0),
-        children: <Widget>[
-          widget.scannedProduct.name == null
-              ? EditableTitle(
-                  originalTitle: 'Unbenanntes Produkt',
-                  onTitleChanged: (String value) {
-                    widget.scannedProduct.name = value;
-                  },
-                )
-              : Text(
-                  widget.scannedProduct.name,
-                  style: Theme.of(context).textTheme.headline1,
+      body: _productActionButtons == null
+          ? CircularProgressIndicator()
+          : ListView(
+              padding: EdgeInsets.symmetric(vertical: 20.0),
+              children: <Widget>[
+                widget.scannedProduct.name == null
+                    ? EditableTitle(
+                        originalTitle: 'Unbenanntes Produkt',
+                        onTitleChanged: (String value) {
+                          widget.scannedProduct.name = value;
+                        },
+                      )
+                    : Text(
+                        widget.scannedProduct.name,
+                        style: Theme.of(context).textTheme.headline1,
+                        textAlign: TextAlign.center,
+                      ),
+                Text(
+                  new DateFormat('dd.MM.yyyy')
+                      .format(widget.scannedProduct.scanDate),
+                  style: Theme.of(context).textTheme.headline2,
                   textAlign: TextAlign.center,
                 ),
-          Text(
-            new DateFormat('dd.MM.yyyy').format(widget.scannedProduct.scanDate),
-            style: Theme.of(context).textTheme.headline2,
-            textAlign: TextAlign.center,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.0),
-            child: ResultCircle(
-              result: widget.scannedProduct.scanResult,
-              small: false,
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20.0),
+                  child: ResultCircle(
+                    result: widget.scannedProduct.scanResult,
+                    small: false,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 20.0,
+                  ),
+                  child: Text(
+                    _currentResultAppearance.resultText,
+                    style: TextStyle(
+                      color: _currentResultAppearance.textColor,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10.0),
+                  child: ScanningInfoLine(
+                    backgroundColor: _currentResultAppearance.backgroundColor,
+                    textColor: _currentResultAppearance.textColor,
+                    icon: _currentResultAppearance.icon,
+                    text: _currentResultAppearance.explanationText,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 20.0),
+                  child: ScanningProductNutrimentsInfo(
+                    nutriments:
+                        widget.scannedProduct.getDecisiveIngredientNames(
+                      getUnwantedIngredients: false,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: _productActionButtons
+                      .map((ProductActionButton productActionButton) {
+                    return LabelledIconButton(
+                      label: productActionButton.title,
+                      icon: productActionButton.icon,
+                      isPrimary: true,
+                      onPressed: productActionButton.onPressed,
+                    );
+                  }).toList(),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20.0),
+                  child: _itemizedScanResults != null
+                      ? ScanningProductDetails(
+                          preferencesResults: _itemizedScanResults,
+                          otherIngredients: widget.scannedProduct
+                              .getNotPreferredIngredientNames(),
+                          moreProductDetails: _getAdditionalProductDetails,
+                        )
+                      : CircularProgressIndicator(),
+                )
+              ],
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: 20.0,
-            ),
-            child: Text(
-              _currentResultAppearance.resultText,
-              style: TextStyle(
-                color: _currentResultAppearance.textColor,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 10.0),
-            child: ScanningInfoLine(
-              backgroundColor: _currentResultAppearance.backgroundColor,
-              textColor: _currentResultAppearance.textColor,
-              icon: _currentResultAppearance.icon,
-              text: _currentResultAppearance.explanationText,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 20.0),
-            child: ScanningProductNutrimentsInfo(
-              nutriments: widget.scannedProduct.getDecisiveIngredientNames(
-                getUnwantedIngredients: false,
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: _productActionButtons
-                .map((ProductActionButton productActionButton) {
-              return LabelledIconButton(
-                label: productActionButton.title,
-                icon: productActionButton.icon,
-                isPrimary: true,
-                onPressed: productActionButton.onPressed,
-              );
-            }).toList(),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 20.0),
-            child: _itemizedScanResults != null
-                ? ScanningProductDetails(
-                    preferencesResults: _itemizedScanResults,
-                    otherIngredients:
-                        widget.scannedProduct.getNotPreferredIngredientNames(),
-                    moreProductDetails: _getAdditionalProductDetails,
-                  )
-                : CircularProgressIndicator(),
-          )
-        ],
-      ),
     );
   }
 
-  get _getProductActionButtons {
-    ProductActionButton favButton = ListManager.instance.favouriteList
-            .getProducts()
-            .contains(widget.scannedProduct)
-        ? new ProductActionButton(
-            'Entfernen', Icons.favorite, removeFavourite)
-        : new ProductActionButton('Speichern', Icons.favorite_border, addFavourite);
-
-    return {
-      favButton,
-      ProductActionButton('Vergleichen', Icons.compare_arrows, () {}),
-      ProductActionButton('Kaufen', Icons.add_shopping_cart, null),
-    }.toList();
+  @override
+  void dispose() {
+    super.dispose();
+    _unsubscribeToFavouritesListUpdate();
   }
 
-  void addFavourite() {
-    ListManager.instance.favouriteList.addProduct(widget.scannedProduct);
+  void _getProductActionButtons() async {
+    var favourites = await ListManager.instance.favouritesList;
+    ProductActionButton favButton = favourites
+            .getProducts()
+            .contains(widget.scannedProduct)
+        ? new ProductActionButton('Entfernen', Icons.favorite, removeFavourite)
+        : new ProductActionButton(
+            'Speichern', Icons.favorite_border, addFavourite);
+
     setState(() {
-      _productActionButtons = _getProductActionButtons;
+      _productActionButtons = {
+        favButton,
+        ProductActionButton('Vergleichen', Icons.compare_arrows, () {}),
+        ProductActionButton('Kaufen', Icons.add_shopping_cart, null),
+      }.toList();
     });
   }
 
+  void addFavourite() {
+    ListManager.instance.favouritesList
+        .then((value) => value.addProduct(widget.scannedProduct));
+    print('add favourite');
+    _getProductActionButtons();
+  }
+
   void removeFavourite() {
-    ListManager.instance.favouriteList.removeProduct(widget.scannedProduct);
-    setState(() {
-      _productActionButtons = _getProductActionButtons;
+    ListManager.instance.favouritesList
+        .then((value) => value.removeProduct(widget.scannedProduct));
+    print('remove favourite');
+    _getProductActionButtons();
+  }
+
+  void _subscribeToFavouritesListUpdate() async {
+    var favouritesList = await ListManager.instance.favouritesList;
+    favouritesList.onUpdate.subscribe((args) {
+      _getProductActionButtons();
+    });
+  }
+
+  void _unsubscribeToFavouritesListUpdate() async {
+    var favouritesList = await ListManager.instance.favouritesList;
+    favouritesList.onUpdate.unsubscribe((args) {
+      _getProductActionButtons();
     });
   }
 

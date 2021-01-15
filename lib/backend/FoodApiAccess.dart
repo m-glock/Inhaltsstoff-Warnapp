@@ -53,6 +53,8 @@ class FoodApiAccess{
   Future<Product> scanProduct(String barcode) async{
     DatabaseHelper helper = DatabaseHelper.instance;
 
+    var history = await ListManager.instance.history;
+
     // if Product has already been scanned before, return data from DB
     DbTable table = await helper.read(DbTableNames.product, [barcode], whereColumn: 'barcode');
     if(table != null){
@@ -61,7 +63,7 @@ class FoodApiAccess{
       await PreferenceManager.getItemizedScanResults(productFromDb);
       productFromDb.preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(productFromDb);
 
-      ListManager.instance.history.addProduct(productFromDb);
+      history.addProduct(productFromDb);
 
       String tableName = productFromDb.getTableName().name;
       String newScanDate = productFromDb.scanDate.toIso8601String();
@@ -91,7 +93,7 @@ class FoodApiAccess{
     await product.saveInDatabase();
 
     // save product in history
-    ListManager.instance.history.addProduct(product);
+    history.addProduct(product);
 
     return product;
   }

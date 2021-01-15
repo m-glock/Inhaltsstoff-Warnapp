@@ -49,21 +49,26 @@ class ProductListItem extends StatelessWidget {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ResultCircle(
-                result: scanResult,
-                small: true,
+              Padding(
+                padding: EdgeInsets.only(
+                  right: 10.0,
+                ),
+                child: ResultCircle(
+                  result: scanResult,
+                  small: true,
+                ),
+              ),
+              Icon(
+                Icons.keyboard_arrow_right,
+                color: Theme.of(context).primaryColor,
               ),
               if (removable)
                 IconButton(
                     icon: Icon(
                       Icons.delete,
-                      color: Colors.red,
+                      color: Colors.red[200],
                     ),
                     onPressed: onRemove),
-              Icon(
-                Icons.keyboard_arrow_right,
-                color: Theme.of(context).primaryColor,
-              ),
             ],
           ),
           onTap: onProductSelected,
