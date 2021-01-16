@@ -2,6 +2,7 @@
 import '../lib/backend/Enums/PreferenceType.dart';
 import '../lib/backend/Enums/Type.dart';
 import '../lib/backend/PreferenceManager.dart';
+import '../lib/backend/database/DbTableNames.dart';
 import '../lib/backend/Ingredient.dart';
 import '../lib/backend/Product.dart';
 import '../lib/backend/FoodApiAccess.dart';
@@ -16,14 +17,30 @@ class MockPreferenceManager extends Mock implements PreferenceManager {
 class MockIngredient extends Mock implements Ingredient {
 }
 
+class MockProduct extends Mock implements Product {
+  MockProduct(String s, param1, String t, param3);
+}
+
 class MockFoodApiAccess extends Mock implements FoodApiAccess {
 }
+
+class MockDatabaseHelper extends Mock implements DatabaseHelper {
+
+}
+
+DatabaseHelper db(){
+  var database = MockDatabaseHelper();
+}
+
+
 
 void main() {
   MockPreferenceManager mockPreferenceManager = new MockPreferenceManager();
   MockIngredient mockIngredient = new MockIngredient();
   MockFoodApiAccess mockFoodApiAccess = new MockFoodApiAccess();
-  Product product1 = new Product("testName", null, '123123123123', null);
+  //Product product1 = new Product("testName", null, '123123123123', null);
+  MockProduct product2 = new MockProduct("testName", null, '123123123123', null);
+
   mockIngredient.id = 1;
 
   setUp((){});
@@ -32,10 +49,20 @@ void main() {
 
   test("test", () async {
     when(
-        await mockFoodApiAccess.scanProduct("123123123123")).thenReturn(product1);
+        await mockFoodApiAccess.scanProduct("123123123123")).thenReturn(product2);
     expect(await mockFoodApiAccess.scanProduct("123123123123"),
         "Success");
   });
+
+  test(
+      'test db',
+          () async {
+        var database = db();
+        final db1 = await database.database;
+        db1.rawInsert("INSERT INTO scanresult (name) VALUES ('Yellow')");
+       database.add(Ingredient('Magnesium', PreferenceType.NotPreferred, null, Type.Allergen));
+       verify(database.readAll(DbTableNames.ingredient));
+      });
 
   // //TODO implement
   // test('create ingredient and change preference type', () async {
