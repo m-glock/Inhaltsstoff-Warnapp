@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../scanning/ScanningResultPage.dart';
-import '../scanning/ScanningRootPage.dart';
 import './ComparisonRootPage.dart';
 
 class ComparisonPage extends StatefulWidget {
-  const ComparisonPage({ Key key }) : super(key: key);
+  const ComparisonPage({Key key}) : super(key: key);
 
   @override
   _ComparisonPageState createState() => _ComparisonPageState();
@@ -19,14 +17,14 @@ class _ComparisonPageState extends State<ComparisonPage> {
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            switch(settings.name) {
+            switch (settings.name) {
               case '/':
-                return ComparisonRoot();
-              //case '/comparison_view':
-              case '/product':
-                return ScanningResultPage(settings.arguments);
-              case '/scanning':
-                return ScanningRootPage(onFetchedProduct: settings.arguments);
+                return ComparisonRootPage();
+              // for every other comparison page not named routes have to be used
+            // in order that the comparison navigation also works in case
+            // it was started by the comparison button on the scanning result page
+            // which is reachable not only from the scanning section,
+            // but also from the lists history and favourites
             }
           },
         );

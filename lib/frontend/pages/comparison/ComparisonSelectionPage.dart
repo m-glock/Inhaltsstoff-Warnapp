@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../backend/Product.dart';
 import './comparisonCustomWidgets/ComparisonSelectProductButtons.dart';
 import './comparisonCustomWidgets/ComparisonSelectedProductCard.dart';
+import '../scanning/ScanningResultPage.dart';
 
 class ComparisonSelectionPage extends StatefulWidget {
   const ComparisonSelectionPage({
@@ -67,10 +68,12 @@ class _ComparisonSelectionPageState extends State<ComparisonSelectionPage> {
                               useScanResultSpecificBackgroundColor: false,
                               showInfoButton: true,
                               onInfoButtonPressed: () {
-                                Navigator.pushNamed(
+                                Navigator.push(
                                   context,
-                                  '/product',
-                                  arguments: _productOne,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        ScanningResultPage(_productOne),
+                                  ),
                                 );
                               },
                             ),
@@ -120,10 +123,12 @@ class _ComparisonSelectionPageState extends State<ComparisonSelectionPage> {
                               useScanResultSpecificBackgroundColor: false,
                               showInfoButton: true,
                               onInfoButtonPressed: () {
-                                Navigator.pushNamed(
+                                Navigator.push(
                                   context,
-                                  '/product',
-                                  arguments: _productTwo,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        ScanningResultPage(_productTwo),
+                                  ),
                                 );
                               },
                             ),

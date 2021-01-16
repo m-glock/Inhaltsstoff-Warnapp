@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../backend/Product.dart';
+import '../../scanning/ScanningRootPage.dart';
 
 class ComparisonSelectProductButtons extends StatelessWidget {
   const ComparisonSelectProductButtons({
@@ -27,13 +28,16 @@ class ComparisonSelectProductButtons extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           onPressed: () {
-            Navigator.pushNamed(
+            Navigator.push(
               context,
-              '/scanning',
-              arguments: (product) {
-                Navigator.pop(context);
-                onProductSelected(product);
-              },
+              MaterialPageRoute(
+                builder: (BuildContext context) => ScanningRootPage(
+                  onFetchedProduct: (product) {
+                    Navigator.pop(context);
+                    onProductSelected(product);
+                  },
+                ),
+              ),
             );
           },
           shape: RoundedRectangleBorder(

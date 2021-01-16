@@ -10,6 +10,7 @@ import '../../customWidgets/CustomAppBar.dart';
 import '../../customWidgets/ResultCircle.dart';
 import '../../customWidgets/EditableTitle.dart';
 import '../../customWidgets/LabelledIconButton.dart';
+import '../comparison/ComparisonRootPage.dart';
 import './scanningCustomWidgets/ScanningInfoLine.dart';
 import './scanningCustomWidgets/ScanningProductNutrimentsInfo.dart';
 import './scanningCustomWidgets/ScanningProductDetails.dart';
@@ -51,8 +52,8 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
     super.initState();
     getItemizedScanResults(widget.scannedProduct);
     _currentResultAppearance = _getScanResultAppearance;
-    _getProductActionButtons();
-    _subscribeToFavouritesListUpdate();
+    _getProductActionButtons(context);
+    _subscribeToFavouritesListUpdate(context);
   }
 
   @override
@@ -153,52 +154,65 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
   @override
   void dispose() {
     super.dispose();
-    _unsubscribeToFavouritesListUpdate();
+    _unsubscribeToFavouritesListUpdate(context);
   }
 
-  void _getProductActionButtons() async {
+  void _getProductActionButtons(BuildContext context) async {
     var favourites = await ListManager.instance.favouritesList;
-    ProductActionButton favButton = favourites
-            .getProducts()
-            .contains(widget.scannedProduct)
-        ? new ProductActionButton('Entfernen', Icons.favorite, removeFavourite)
-        : new ProductActionButton(
-            'Speichern', Icons.favorite_border, addFavourite);
+    ProductActionButton favButton =
+        favourites.getProducts().contains(widget.scannedProduct)
+            ? new ProductActionButton('Entfernen', Icons.favorite, () {
+                removeFavourite(context);
+              })
+            : new ProductActionButton('Speichern', Icons.favorite_border, () {
+                addFavourite(context);
+              });
+
+    ProductActionButton compButton =
+        ProductActionButton('Vergleichen', Icons.compare_arrows, () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) =>
+              ComparisonRootPage(productOne: widget.scannedProduct),
+        ),
+      );
+    });
 
     if (mounted) {
       setState(() {
         _productActionButtons = {
           favButton,
-          ProductActionButton('Vergleichen', Icons.compare_arrows, () {}),
+          compButton,
           ProductActionButton('Kaufen', Icons.add_shopping_cart, null),
         }.toList();
       });
     }
   }
 
-  void addFavourite() {
+  void addFavourite(BuildContext context) {
     ListManager.instance.favouritesList
         .then((value) => value.addProduct(widget.scannedProduct));
-    _getProductActionButtons();
+    _getProductActionButtons(context);
   }
 
-  void removeFavourite() {
+  void removeFavourite(BuildContext context) {
     ListManager.instance.favouritesList
         .then((value) => value.removeProduct(widget.scannedProduct));
-    _getProductActionButtons();
+    _getProductActionButtons(context);
   }
 
-  void _subscribeToFavouritesListUpdate() async {
+  void _subscribeToFavouritesListUpdate(BuildContext context) async {
     var favouritesList = await ListManager.instance.favouritesList;
     favouritesList.onUpdate.subscribe((args) {
-      _getProductActionButtons();
+      _getProductActionButtons(context);
     });
   }
 
-  void _unsubscribeToFavouritesListUpdate() async {
+  void _unsubscribeToFavouritesListUpdate(BuildContext context) async {
     var favouritesList = await ListManager.instance.favouritesList;
     favouritesList.onUpdate.unsubscribe((args) {
-      _getProductActionButtons();
+      _getProductActionButtons(context);
     });
   }
 

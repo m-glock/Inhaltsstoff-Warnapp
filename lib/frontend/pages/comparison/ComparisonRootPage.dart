@@ -5,8 +5,8 @@ import '../../../backend/Product.dart';
 import './ComparisonViewPage.dart';
 import './ComparisonSelectionPage.dart';
 
-class ComparisonRoot extends StatelessWidget {
-  const ComparisonRoot({Key key, this.productOne}) : super(key: key);
+class ComparisonRootPage extends StatelessWidget {
+  const ComparisonRootPage({Key key, this.productOne}) : super(key: key);
 
   final Product productOne;
 

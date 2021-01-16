@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../backend/ListManager.dart';
-
 import 'lists/main.dart';
 import 'comparison/main.dart';
 import 'analysis/main.dart';
