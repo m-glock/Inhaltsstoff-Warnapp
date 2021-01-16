@@ -26,6 +26,7 @@ dependencies:
   sqflite: ^1.3.1
   path_provider: ^1.6.24
   sortedmap: ^0.4.2
+  mockito: ^4.1.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
