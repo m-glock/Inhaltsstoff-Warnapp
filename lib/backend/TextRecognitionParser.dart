@@ -1,4 +1,3 @@
-
 import 'Enums/PreferenceType.dart';
 import'Enums/Type.dart';
 import 'Ingredient.dart';
@@ -7,38 +6,70 @@ import 'database/DatabaseHelper.dart';
 
 class TextRecognitionParser{
 
+  static final RegExp _patternStart = RegExp(r'[Zutaten]+:');
+  static final RegExp _patternEnd = RegExp(r'\D\.');
+
   static Future<List<Ingredient>> parseIngredientNames(String text) async {
-    //
     String parsedText;
-    String pattern = 'Zutaten: ';
-    if(text.contains(pattern)) parsedText = text.substring(text.indexOf(pattern) + pattern.length);
+
+    // ingredients start with a specific word
+    // everything before that is not needed
+    if(text.contains(_patternStart)) parsedText = text.substring(text.indexOf(_patternStart) + 9);
     else parsedText = text;
 
-    parsedText = parsedText.replaceAll(RegExp(r'[0-9]+%|[0-9]+.[0-9]+%|\.'), '');
-    if(parsedText.contains(RegExp(r'( & ) '))){
-      int indexOfBracket = parsedText.indexOf(RegExp(r'[] ('));
+    // dot normally marks the end of the ingredientslist
+    // remove everything that comes after
+    if(parsedText.contains(_patternEnd) || parsedText.endsWith('.')) {
+      int index = parsedText.indexOf(_patternEnd);
+      parsedText = parsedText.substring(0, index+1);
     }
+
+    // remove percentages such as 25% or 7.4%
+    // but do not remove other numbers such as in E150d
+    parsedText = parsedText.replaceAll(RegExp(r'[0-9]+%|[0-9]+.[0-9]+%'), '');
+
+    // remove any special character that might be in there
+    parsedText = parsedText.replaceAll(RegExp(r'[&+=#|^\*%!]'), '');
+
+    if(RegExp(r'\(\w+,').hasMatch(parsedText))
+      parsedText = _handleParentheses(parsedText);
+
+    // if text contains colon, then only the word after the colon
+    // is considered an ingredient
+    if(parsedText.contains(':'))
+      parsedText = parsedText.replaceAll(RegExp(r'[a-zA-zöäüß]+: '), '');
+
+    // spilt at either dot or semicolon
     List<String> ingredientNames = parsedText.split(RegExp(r', |; '));
-
-    String text3 = 'Zutaten: 76% Butter, 7% Zwiebeln, 6% Petersilie, Wasser, '
-        '3% Knoblauch, 1,8% Speisesalz, 1% Schnittlauch, 1% Kräuter (Dill, Zwiebellauch, Basilikum), '
-        'Gewürze, natürliches Aroma, Säuerungsmittel: Citronensäure';
-
-
-    // if contains (), then take elements from () separately
-    // remove ,name () before ()
-
-    for(int i = 0; i < ingredientNames.length; ++i){
-      String element = ingredientNames.elementAt(i);
-      if(element.contains(':')) {
-        ingredientNames.remove(element);
-        ingredientNames.add(element.substring(element.indexOf(':') + 2));
-        i -= 1;
-      }
-    }
 
     return null;
     //return await _getIngredientsFromText(ingredientNames);
+  }
+
+
+  /*
+  * remove brackets and Word before brackets
+  * inside the brackets are the actual ingredients while the word before that
+  * is more like a product that consists of some ingredients
+  * example: Weißbrot (WEIZENMEHL, Trinkwasser, Speisesalz, Hefe)
+  * should not remove pattern such as Gelatine (Rind)
+   */
+  static String _handleParentheses(String text){
+    // remove this kind of pattern and handle separately
+    RegExp parenthesesPattern = RegExp(r'[a-zA-ZäöüÄÖÜß]+\s*?\(((?:\w+,\s)+\w+)\)');
+    text = text.replaceAll(RegExp(r'\-'), '');
+    String parenthesesText = parenthesesPattern.stringMatch(text);
+    text = text.replaceAll(parenthesesPattern, '').trim();
+
+    // remove left over commas
+    if(text.endsWith(',')) text = text.substring(0, text.length - 1);
+    else text = text.replaceAll(RegExp(r',\s*,'), ',');
+
+    // remove word before parentheses and the closing parentheses
+    parenthesesText = parenthesesText.replaceAll(RegExp(r'[a-zA-ZäöüÄÖÜß]+\s*?\(|\)'), '');
+
+    // return original text with parsed text from parentheses
+    return text + ', ' + parenthesesText;
   }
 
   static Future<List<Ingredient>> _getIngredientsFromText(List<String> ingredientNames) async {
