@@ -48,7 +48,9 @@ class LabelledIconButton extends StatelessWidget {
             label,
             style: Theme.of(context).textTheme.bodyText2.merge(
                   TextStyle(
-                    color: Theme.of(context).primaryColor,
+                    color: onPressed != null
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).disabledColor,
                   ),
                 ),
           ),
