@@ -52,15 +52,10 @@ class DatabaseHelper {
     await _executeQueriesFromFile(db, 'insert_into_tables_sql');
 
     // get lists of ingredients from food api and save them into the DB
-    print(" before creation ");
     await _insertIngredientsFromFoodApi(db, 'allergens', 1);
-    print(" created allergens ");
     await _insertIngredientsFromFoodApi(db, 'vitamins', 2);
-     print(" created vitamins ");
     await _insertIngredientsFromFoodApi(db, 'minerals', 2);
-     print(" created minerals ");
     await _insertIngredientsFromFoodApi(db, 'ingredients', 3);
-     print(" created other ingredients ");
   }
 
   // execute sql queries that are saved in a text file in the assets folder
