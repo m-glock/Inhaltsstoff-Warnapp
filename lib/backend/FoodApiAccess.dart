@@ -59,9 +59,12 @@ class FoodApiAccess{
       Product productFromDb = table as Product;
       productFromDb.scanDate = DateTime.now();
       await PreferenceManager.getItemizedScanResults(productFromDb);
+      //await Future.delayed(Duration(seconds: 5));
       productFromDb.preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(productFromDb);
+      //await Future.delayed(Duration(seconds: 5));
 
-      ListManager.instance.history.addProduct(productFromDb);
+      //TODO uncomment
+      //ListManager.instance.history.addProduct(productFromDb);
 
       String tableName = productFromDb.getTableName().name;
       String newScanDate = productFromDb.scanDate.toIso8601String();
@@ -91,7 +94,8 @@ class FoodApiAccess{
     await product.saveInDatabase();
 
     // save product in history
-    ListManager.instance.history.addProduct(product);
+    //TODO uncomment
+    //ListManager.instance.history.addProduct(product);
 
     return product;
   }

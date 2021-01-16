@@ -145,11 +145,11 @@ class Product extends DbTable{
 
     // save each ingredients connection to the product in productingredient
     Database db = await helper.database;
-    if(_ingredients.isNotEmpty) {
+    if(_ingredients?.isNotEmpty ?? true) {
       for (Ingredient ingredient in _ingredients) {
         Map<String, dynamic> values = Map();
         values['productId'] = this.id;
-        values['ingredientId'] = ingredient.id;
+        values['ingredientId'] = ingredient.id;//ingredient.getId(ingredient);
         db.insert(DbTableNames.productIngredient.name, values);
       }
     }

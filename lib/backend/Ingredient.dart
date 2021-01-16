@@ -1,9 +1,12 @@
 import 'Enums/PreferenceType.dart';
 import 'Enums/Type.dart';
+import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 
 class Ingredient extends DbTable {
+
+  final dbHelper = DatabaseHelper.instance;
 
   // Fields
   String _name;
@@ -30,6 +33,18 @@ class Ingredient extends DbTable {
   @override
   DbTableNames getTableName() {
     return DbTableNames.ingredient;
+  }
+
+  getId(Ingredient ingredient) async {
+    final db = await dbHelper.database;
+    List<Map> resultSetIngredient = await db.rawQuery(
+        'select i.id as ing_id from ingredient i where i.name = ?',
+        [ingredient.name]);
+    // dynamic without var?
+    var dbItem = resultSetIngredient.first;
+    int ingrId = dbItem['ing_id'];
+
+    return ingrId;
   }
 
   @override

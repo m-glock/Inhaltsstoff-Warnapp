@@ -31,9 +31,11 @@ class History extends ProductList{
   }
 
   void addAllProducts(List<Product> products){
+    if (products?.isNotEmpty ??  true) {
     products.forEach((product) {
       addProduct(product);
     });
+    }
   }
 
   void clearHistory(){

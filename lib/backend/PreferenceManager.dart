@@ -70,18 +70,18 @@ class PreferenceManager {
     final dbHelper = DatabaseHelper.instance;
     List<Ingredient> ingredients = List();
     String tableName = DbTableNames.ingredient.name;
+    Type typeIn = type;
 
-    if (type == null) {
-      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName');
+    if (typeIn == null) {
+      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName LIMIT 300');
       results.forEach((result) {
         ingredients.add(Ingredient.fromMap(result));
       });
     }
 
-    if (type != null) {
+    if (typeIn != null) {
       String typeId = type.id.toString();
-
-      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE typeId = $typeId LIMIT 100');
+      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE typeId = $typeId LIMIT 300');
       results.forEach((result) {
         ingredients.add(Ingredient.fromMap(result));
       });
@@ -108,6 +108,7 @@ class PreferenceManager {
     List<Ingredient> productIngredients = product.ingredients;
 
     ScanResult overallResult = ScanResult.Green;
+    if (preferredIngredients?.isNotEmpty ?? true) {
     preferredIngredients.forEach((ingredient) {
       ScanResult result;
       if(productIngredients.contains(ingredient)){
@@ -121,7 +122,7 @@ class PreferenceManager {
       }
       itemizedScanResults[ingredient] = result;
     });
-
+    }
     product.scanResult = overallResult;
     product.itemizedScanResults = itemizedScanResults;
 
