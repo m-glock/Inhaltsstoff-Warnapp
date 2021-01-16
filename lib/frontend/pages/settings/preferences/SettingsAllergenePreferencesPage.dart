@@ -47,22 +47,31 @@ class _SettingsAllergenePreferencesPageState
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: PreferencesAllergensView(
-          allergenePreferences: _allergenePreferences,
-          onChange:
-              (Ingredient changedIngredient, PreferenceType newPreference) {
-            setState(() {
-              _allergenePreferences[changedIngredient] = newPreference;
-            });
-          },
-        ),
+        child: _allergenePreferences.isEmpty
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView(
+                children: [
+                  PreferencesAllergensView(
+                    allergenePreferences: _allergenePreferences,
+                    onChange: (Ingredient changedIngredient,
+                        PreferenceType newPreference) {
+                      setState(() {
+                        _allergenePreferences[changedIngredient] =
+                            newPreference;
+                      });
+                    },
+                  ),
+                ],
+              ),
       ),
     );
   }
 
   void setIngredients() async {
     Map<Ingredient, PreferenceType> allergenePreferences =
-    await getIngredients(Type.Allergen);
+        await getIngredients(Type.Allergen);
     setState(() {
       _allergenePreferences = allergenePreferences;
     });
@@ -70,7 +79,7 @@ class _SettingsAllergenePreferencesPageState
 
   Future<Map<Ingredient, PreferenceType>> getIngredients(Type type) async {
     List<Ingredient> getAllAvailIg =
-    await PreferenceManager.getAllAvailableIngredients(type);
+        await PreferenceManager.getAllAvailableIngredients(type);
     return Map.fromIterable(
         getAllAvailIg.where((ingredient) => ingredient.type == type),
         key: (ingredient) => ingredient,
