@@ -98,18 +98,18 @@ class Product extends DbTable{
     return newProduct;
   }
 
-  //TODO: where does name come from?
+  //TODO: where does name come from? Also get Image URL?
   static Future<Product> fromTextRecognition(String ingredientsText, String productName) async {
     if(ingredientsText?.isEmpty ?? true) return null;
 
     List<Ingredient> ingredients = await TextRecognitionParser.parseIngredientNames(ingredientsText);
-    /*Product product = Product(productName, null, null, DateTime.now());
+    Product product = Product(productName, null, null, DateTime.now());
     product.ingredients = ingredients;
 
     await PreferenceManager.getItemizedScanResults(product);
     product.preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(product);
-    await product.saveInDatabase();*/
-    return null;
+    await product.saveInDatabase();
+    return product;
   }
 
   /*
@@ -177,8 +177,8 @@ class Product extends DbTable{
     map['name'] = name;
     map['imageUrl'] = _imageUrl;
     map['barcode'] = _barcode;
-    map['scanDate'] = scanDate.toIso8601String();
-    map['lastUpdated'] = _lastUpdated.toIso8601String();
+    map['scanDate'] = scanDate == null ? '' : scanDate.toIso8601String();
+    map['lastUpdated'] = _lastUpdated == null ? '' : _lastUpdated.toIso8601String();
     map['nutriScore'] = _nutriscore;
 
     map['quantity'] = _quantity;
@@ -191,12 +191,18 @@ class Product extends DbTable{
 
   static Future<Product> fromMap(Map<String, dynamic> data) async {
     int productId = data['id'];
-    DateTime scanDate = DateTime.parse(data['scanDate']);
+    String scanDateDb = data['scanDate'];
+    DateTime scanDate = scanDateDb == ''
+        ? null
+        : DateTime.parse(data['scanDate']);
     Product product = Product(data['name'], data['imageUrl'], data['barcode'], scanDate, id: productId);
 
     int scanResultId = data['scanResultId'];
     product.scanResult = ScanResult.values.elementAt(scanResultId - 1);
-    product._lastUpdated = DateTime.parse(data['lastUpdated']);
+    String lastUpdatedDb = data['lastUpdated'];
+    product._lastUpdated = lastUpdatedDb == ''
+        ? null
+        : DateTime.parse(lastUpdatedDb);
     product._nutriscore = data['nutriScore'];
     product._quantity = data['quantity'];
     product._origin = data['originCountry'];

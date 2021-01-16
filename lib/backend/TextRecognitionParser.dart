@@ -89,6 +89,7 @@ class TextRecognitionParser{
         int id = await helper.add(ing);
         ing.id = id;
       }
+      ingredients.add(ing);
     }
 
     return ingredients;
