@@ -49,10 +49,8 @@ class TextRecognitionParser{
     // spilt at either dot or semicolon
     List<String> ingredientNames = parsedText.split(RegExp(r', |; '));
 
-    return null;
-    //return await _getIngredientsFromText(ingredientNames);
+    return await _getIngredientsFromText(ingredientNames);
   }
-
 
   /*
   * remove brackets and Word before brackets
@@ -83,12 +81,13 @@ class TextRecognitionParser{
     DatabaseHelper helper = DatabaseHelper.instance;
     List<Ingredient> ingredients = List();
 
-    for(int i = 0; i <= ingredientNames.length; ++i){
+    for(int i = 0; i <= ingredientNames.length - 1; ++i){
       String name = ingredientNames.elementAt(i).trim();
-      Ingredient ing = await helper.read(DbTableNames.ingredient, [name], whereColumn: 'name'); //TODO cast as ingredient?
+      Ingredient ing = await helper.read(DbTableNames.ingredient, [name], whereColumn: 'name');
       if(ing == null){
         ing = Ingredient(name, PreferenceType.None, Type.General, null);
-        await helper.add(ing);
+        int id = await helper.add(ing);
+        ing.id = id;
       }
     }
 
