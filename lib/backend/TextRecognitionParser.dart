@@ -8,20 +8,25 @@ class TextRecognitionParser{
 
   static final RegExp _patternStart = RegExp(r'[Zutaten]+:');
   static final RegExp _patternEnd = RegExp(r'\D\.');
+  static final List<String> _iDontKnowWhatTheyAreCalled = ['Säuerungsmittel',
+    'Verdickungsmittel', 'Emulgator', 'Stabilisator', 'Farbstoff',
+    'Geschmacksverstärker', 'Konservierungsstoff'];
 
   static Future<List<Ingredient>> parseIngredientNames(String text) async {
     String parsedText;
 
     // ingredients start with a specific word
     // everything before that is not needed
-    if(text.contains(_patternStart)) parsedText = text.substring(text.indexOf(_patternStart) + 9);
-    else parsedText = text;
+    if(text.contains(_patternStart)) parsedText = text.trim().substring(text.indexOf(_patternStart) + 9);
+    else parsedText = text.trim();
 
-    // dot normally marks the end of the ingredientslist
+    // dot normally marks the end of the ingredients list
     // remove everything that comes after
-    if(parsedText.contains(_patternEnd) || parsedText.endsWith('.')) {
+    if(parsedText.contains(_patternEnd)) {
       int index = parsedText.indexOf(_patternEnd);
       parsedText = parsedText.substring(0, index+1);
+    } else if(parsedText.endsWith('.')){
+      parsedText = parsedText.substring(0, parsedText.length - 1);
     }
 
     // remove percentages such as 25% or 7.4%
@@ -29,15 +34,17 @@ class TextRecognitionParser{
     parsedText = parsedText.replaceAll(RegExp(r'[0-9]+%|[0-9]+.[0-9]+%'), '');
 
     // remove any special character that might be in there
-    parsedText = parsedText.replaceAll(RegExp(r'[&+=#|^\*%!]'), '');
+    parsedText = parsedText.replaceAll(RegExp(r'[&+=#|^\*%!:]'), '');
 
     if(RegExp(r'\(\w+,').hasMatch(parsedText))
       parsedText = _handleParentheses(parsedText);
 
     // if text contains colon, then only the word after the colon
     // is considered an ingredient
-    if(parsedText.contains(':'))
-      parsedText = parsedText.replaceAll(RegExp(r'[a-zA-zöäüß]+: '), '');
+    _iDontKnowWhatTheyAreCalled.forEach((element) {
+      if(parsedText.contains(element))
+        parsedText = parsedText.replaceAll(element, '');
+    });
 
     // spilt at either dot or semicolon
     List<String> ingredientNames = parsedText.split(RegExp(r', |; '));
@@ -77,10 +84,10 @@ class TextRecognitionParser{
     List<Ingredient> ingredients = List();
 
     for(int i = 0; i <= ingredientNames.length; ++i){
-      String name = ingredientNames.elementAt(i);
+      String name = ingredientNames.elementAt(i).trim();
       Ingredient ing = await helper.read(DbTableNames.ingredient, [name], whereColumn: 'name'); //TODO cast as ingredient?
       if(ing == null){
-        ing = Ingredient(name, PreferenceType.None, Type.General, null); //TODO Type general?
+        ing = Ingredient(name, PreferenceType.None, Type.General, null);
         await helper.add(ing);
       }
     }
