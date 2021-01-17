@@ -32,7 +32,7 @@ class DatabaseHelper {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     // comment in and execute once to delete old database, the comment out again
-    // File(path).delete();
+    //File(path).delete();
     return await openDatabase(path,
         version: _databaseVersion,
         onConfigure: _onConfigure,
