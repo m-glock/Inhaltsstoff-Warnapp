@@ -25,12 +25,12 @@ class Product extends DbTable {
   String _origin;
   String _manufacturingPlaces;
   String _stores;
-  Future<void> _scanResultPromise;
-  Future<void> _preferredIngredientPromise;
+  Future<void> scanResultPromise;
+  Future<void> preferredIngredientsPromise;
 
   // async Getter and Setter for fields that are initialized asynchronously
   Future<ScanResult> getScanResult() async {
-    if (_scanResultPromise != null) await _scanResultPromise;
+    if (scanResultPromise != null) await scanResultPromise;
     return _scanResult;
   }
 
@@ -39,23 +39,23 @@ class Product extends DbTable {
   }
 
   Future<Map<Ingredient, ScanResult>> getItemizedScanResults() async {
-    if (_scanResultPromise != null) await _scanResultPromise;
+    if (scanResultPromise != null) await scanResultPromise;
     return _itemizedScanResults;
   }
 
   void setItemizedScanResults(Map<Ingredient, ScanResult> newResults) async {
     _itemizedScanResults = newResults;
-    _scanResultPromise = null;
+    scanResultPromise = null;
   }
 
   Future<List<Ingredient>> getPreferredIngredients() async {
-    if (_preferredIngredientPromise != null) await _preferredIngredientPromise;
+    if (preferredIngredientsPromise != null) await preferredIngredientsPromise;
     return _preferredIngredients;
   }
 
   void setPreferredIngredients(List<Ingredient> newIngredients) async {
     _preferredIngredients = newIngredients;
-    _preferredIngredientPromise = null;
+    preferredIngredientsPromise = null;
   }
 
   // Getter
@@ -134,10 +134,20 @@ class Product extends DbTable {
           .read(DbTableNames.ingredient, [name], whereColumn: 'name'));
     }
 
-    newProduct.setItemizedScanResults(await PreferenceManager.getItemizedScanResults(newProduct));
-    newProduct.setPreferredIngredients(await PreferenceManager.getPreferredIngredientsIn(newProduct));
+    newProduct.scanResultPromise = initializeScanResult(newProduct);
+    newProduct.preferredIngredientsPromise = initializePreferredIngredients(newProduct);
 
     return newProduct;
+  }
+
+  static Future<void> initializeScanResult(Product product) async {
+    Map<Ingredient, ScanResult> itemizedScanResults = await PreferenceManager.getItemizedScanResults(product);
+    product.setItemizedScanResults(itemizedScanResults);
+  }
+
+  static Future<void> initializePreferredIngredients(Product product) async {
+    List<Ingredient> preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(product);
+    product.setPreferredIngredients(preferredIngredients);
   }
 
   /*
@@ -207,9 +217,9 @@ class Product extends DbTable {
   }
 
   @override
-  Map<String, dynamic> toMap({bool withId = true}) {
+  Future<Map<String, dynamic>> toMap({bool withId = true}) async {
     final map = new Map<String, dynamic>();
-    map['scanResultId'] = _scanResult.id;
+    map['scanResultId'] = (await getScanResult()).id;
     map['name'] = name;
     map['imageUrl'] = _imageUrl;
     map['barcode'] = _barcode;
