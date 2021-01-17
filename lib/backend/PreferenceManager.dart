@@ -48,7 +48,7 @@ class PreferenceManager {
       });
     }
 
-    if (preferenceTypes?.isNotEmpty ?? true) {
+    if (preferenceTypes != null && preferenceTypes.isNotEmpty) {
       List<String> preferenceTypeIds = preferenceTypes.map((preferenceType) => preferenceType.id.toString()).toList();
       String ids = preferenceTypeIds.reduce((value, element) => value + ', ' + element);
 

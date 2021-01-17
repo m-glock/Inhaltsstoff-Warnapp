@@ -38,6 +38,7 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
   @override
   void initState() {
     super.initState();
+    _getPreferences();
     _getItemizedResults();
 
     _notPreferencedIngredientsProductOne =
@@ -54,6 +55,13 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
         _getAdditionalProductDetails(widget.productOne);
     _additionalDetailsProductTwo =
         _getAdditionalProductDetails(widget.productTwo);
+  }
+
+  void _getPreferences() async {
+    var preferences = await PreferenceManager.getPreferencedIngredients();
+    setState(() {
+      _preferences = preferences;
+    });
   }
 
   void _getItemizedResults() async {
@@ -111,50 +119,58 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
               //textAlign: TextAlign.center,
             ),
             initiallyExpanded: true,
-            children: _preferences == null ||
-                    _itemizedResultsProductOne == null ||
-                    _itemizedResultsProductTwo == null
-                ? [
-                    CircularProgressIndicator(),
-                  ]
-                : _preferences.map((preference) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 8.0,
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: ResultCircle(
-                              result: _itemizedResultsProductOne[preference],
-                              small: true,
-                            ),
+            children: //_preferences == null ||
+                _itemizedResultsProductOne == null ||
+                        _itemizedResultsProductTwo == null
+                    ? [
+                        CircularProgressIndicator(),
+                      ]
+                    : //_preferences.map((preference) {
+                    _itemizedResultsProductOne.entries
+                        .map((preferenceResultOne) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8.0,
                           ),
-                          Expanded(
-                            flex: 3,
-                            child: Center(
-                              child: Text(
-                                preference.name,
-                                style:
-                                    Theme.of(context).textTheme.bodyText1.merge(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ResultCircle(
+                                  result: preferenceResultOne.value,
+                                  //_itemizedResultsProductOne[preference],
+                                  small: true,
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Center(
+                                  child: Text(
+                                    preferenceResultOne
+                                        .key.name, //preference.name,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .merge(
                                           TextStyle(
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                textAlign: TextAlign.center,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
                               ),
-                            ),
+                              Expanded(
+                                child: ResultCircle(
+                                  result: _itemizedResultsProductTwo[
+                                      preferenceResultOne
+                                          .key], //_itemizedResultsProductTwo[preference],
+                                  small: true,
+                                ),
+                              ),
+                            ],
                           ),
-                          Expanded(
-                            child: ResultCircle(
-                              result: _itemizedResultsProductTwo[preference],
-                              small: true,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                        );
+                      }).toList(),
           ),
           ExpansionTile(
             title: Text(

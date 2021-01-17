@@ -1,8 +1,8 @@
-import 'package:Essbar/frontend/pages/comparison/ComparisonFavouritesListPage.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../backend/Product.dart';
 import '../../scanning/ScanningRootPage.dart';
+import '../ComparisonFavouritesListPage.dart';
 
 class ComparisonSelectProductButtons extends StatelessWidget {
   const ComparisonSelectProductButtons({

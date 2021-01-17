@@ -18,7 +18,8 @@ class Product extends DbTable {
   String _nutriscore;
 
   List<Ingredient> _ingredients;
-  Map<Ingredient, ScanResult> itemizedScanResults;
+  Map<Ingredient, ScanResult> itemizedScanResults =
+      new Map<Ingredient, ScanResult>();
   List<Ingredient> preferredIngredients;
 
   String _quantity;
@@ -154,7 +155,9 @@ class Product extends DbTable {
   List<String> getNotPreferredIngredientNames() {
     return _ingredients
         .toSet()
-        .difference(itemizedScanResults.keys.toSet())
+        .difference(itemizedScanResults != null
+            ? itemizedScanResults.keys.toSet()
+            : new Set<Ingredient>())
         .map((e) => e.name)
         .toList();
   }
