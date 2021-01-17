@@ -176,7 +176,7 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
     List<String> unwantedIngredientNames =
     await _getContainedUnwantedIngredientNames();
 
-    switch (_scanResult) {
+    switch (scanResult) {
       case ScanResult.Green:
         return ScanResultAppearance(
           Icons.done,
