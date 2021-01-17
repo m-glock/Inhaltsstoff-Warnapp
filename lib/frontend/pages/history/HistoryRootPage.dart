@@ -1,3 +1,5 @@
+import 'package:Essbar/backend/Enums/ScanResult.dart';
+
 import '../../../backend/ListManager.dart';
 import '../../../backend/Product.dart';
 import '../../customWidgets/ProductListItem.dart';
@@ -14,6 +16,7 @@ class HistoryRootPage extends StatefulWidget {
 
 class _HistoryRootPageState extends State<HistoryRootPage> {
   List<Product> _scannedProducts;
+  Map<Product, ScanResult> _productsScanResults;
 
   @override
   void initState() {
@@ -27,7 +30,7 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
     return Scaffold(
       appBar: CustomAppBar('Verlauf'),
       backgroundColor: Colors.white,
-      body: _scannedProducts == null
+      body: _scannedProducts == null || _productsScanResults == null
           ? CircularProgressIndicator()
           : _scannedProducts.isEmpty
               ? Padding(
@@ -49,7 +52,7 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
                                 : null,
                             name: product.name,
                             scanDate: product.scanDate,
-                            scanResult: product.scanResult,
+                            scanResult: _productsScanResults[product],
                             onProductSelected: () {
                               Navigator.pushNamed(context, '/product',
                                   arguments: product);
@@ -82,8 +85,13 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
 
   void _getScannedProducts() async {
     var history = await ListManager.instance.history;
+    List<Product> scannedProducts = history.getProducts();
+    Map<Product, ScanResult> productsResults = {
+      for (Product p in scannedProducts) p: await p.getScanResult()
+    };
     setState(() {
       _scannedProducts = history.getProducts();
+      _productsScanResults = productsResults;
     });
   }
 
