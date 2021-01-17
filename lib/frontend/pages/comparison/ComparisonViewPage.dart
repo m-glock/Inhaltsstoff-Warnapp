@@ -2,6 +2,7 @@ import '../../../backend/Product.dart';
 import '../../../backend/Enums/ScanResult.dart';
 import '../../../backend/Ingredient.dart';
 import '../../../backend/PreferenceManager.dart';
+import '../../../backend/Enums/PreferenceType.dart';
 import '../../../frontend/customWidgets/CustomAppBar.dart';
 import '../../../frontend/customWidgets/ResultCircle.dart';
 import './comparisonCustomWidgets/ComparisonSelectedProductCard.dart';
@@ -23,10 +24,13 @@ class ComparisonViewPage extends StatefulWidget {
 }
 
 class _ComparisonViewPageState extends State<ComparisonViewPage> {
+  List<Ingredient> _preferences;
   Map<Ingredient, ScanResult> _itemizedResultsProductOne;
   Map<Ingredient, ScanResult> _itemizedResultsProductTwo;
 
-  List<Ingredient> _preferences;
+  List<String> _preferredIngredientsNames;
+  List<String> _preferredIngredientsInProductOne;
+  List<String> _preferredIngredientsInProductTwo;
 
   List<String> _notPreferencedIngredientsSum;
   List<String> _notPreferencedIngredientsProductOne;
@@ -40,6 +44,9 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
     super.initState();
     _getPreferences();
     _getItemizedResults();
+
+    _getPreferredIngredients();
+    _getPreferredIngredientsInProducts();
 
     _notPreferencedIngredientsProductOne =
         widget.productOne.getNotPreferredIngredientNames();
@@ -121,56 +128,106 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
             initiallyExpanded: true,
             children: //_preferences == null ||
                 _itemizedResultsProductOne == null ||
-                        _itemizedResultsProductTwo == null
+                        _itemizedResultsProductTwo == null ||
+                        _preferredIngredientsNames == null ||
+                        _preferredIngredientsInProductOne == null ||
+                        _preferredIngredientsInProductTwo == null
                     ? [
                         CircularProgressIndicator(),
                       ]
                     : //_preferences.map((preference) {
-                    _itemizedResultsProductOne.entries
-                        .map((preferenceResultOne) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 8.0,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: ResultCircle(
-                                  result: preferenceResultOne.value,
-                                  //_itemizedResultsProductOne[preference],
-                                  small: true,
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Center(
-                                  child: Text(
-                                    preferenceResultOne
-                                        .key.name, //preference.name,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .merge(
-                                          TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                    textAlign: TextAlign.center,
+                    [
+                        ..._itemizedResultsProductOne.entries
+                            .map((preferenceResultOne) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 8.0,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: ResultCircle(
+                                    result: preferenceResultOne.value,
+                                    //_itemizedResultsProductOne[preference],
+                                    small: true,
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                child: ResultCircle(
-                                  result: _itemizedResultsProductTwo[
+                                Expanded(
+                                  flex: 3,
+                                  child: Center(
+                                    child: Text(
                                       preferenceResultOne
-                                          .key], //_itemizedResultsProductTwo[preference],
-                                  small: true,
+                                          .key.name, //preference.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .merge(
+                                            TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
+                                Expanded(
+                                  child: ResultCircle(
+                                    result: _itemizedResultsProductTwo[
+                                        preferenceResultOne
+                                            .key], //_itemizedResultsProductTwo[preference],
+                                    small: true,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                        ..._preferredIngredientsNames
+                            .map((preferredIngredientName) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 8.0,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Icon(
+                                    _preferredIngredientsInProductOne
+                                            .contains(preferredIngredientName)
+                                        ? Icons.done
+                                        : Icons.clear,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Center(
+                                    child: Text(
+                                      preferredIngredientName,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .merge(
+                                            TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Icon(
+                                    _preferredIngredientsInProductTwo
+                                            .contains(preferredIngredientName)
+                                        ? Icons.done
+                                        : Icons.clear,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ],
           ),
           ExpansionTile(
             title: Text(
@@ -278,5 +335,30 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
       'Geschäfte': product.stores ?? '-',
       'Nutriscore': product.nutriscore ?? '-',
     };
+  }
+
+  void _getPreferredIngredients() async {
+    var preferredIngredients =
+        await PreferenceManager.getPreferencedIngredients(
+            [PreferenceType.Preferred]);
+    setState(() {
+      _preferredIngredientsNames =
+          preferredIngredients.map((ingredient) => ingredient.name).toList();
+    });
+  }
+
+  void _getPreferredIngredientsInProducts() async {
+    List<Ingredient> preferredIngredientsInProductOne =
+        await PreferenceManager.getPreferredIngredientsIn(widget.productOne);
+    List<Ingredient> preferredIngredientsInProductTwo =
+        await PreferenceManager.getPreferredIngredientsIn(widget.productTwo);
+    setState(() {
+      _preferredIngredientsInProductOne = preferredIngredientsInProductOne
+          .map((ingredient) => ingredient.name)
+          .toList();
+      _preferredIngredientsInProductTwo = preferredIngredientsInProductTwo
+          .map((ingredient) => ingredient.name)
+          .toList();
+    });
   }
 }

@@ -142,9 +142,8 @@ class Product extends DbTable {
       });
       return ingredientsNames;
     } else {
-      return preferredIngredients != null
-          ? preferredIngredients.map((e) => e.name).toList()
-          : new List<String>();
+      //TODO: handle state when preferredIngredients are not set yet (returning an empty list is wrong in that case as it is not known yet)
+      return preferredIngredients.map((e) => e.name).toList();
     }
   }
 
@@ -155,6 +154,7 @@ class Product extends DbTable {
   List<String> getNotPreferredIngredientNames() {
     return _ingredients
         .toSet()
+    //TODO: handle state when itemizedScanResults are not set yet (returning an empty Set is wrong in that case as it is not known yet)
         .difference(itemizedScanResults != null
             ? itemizedScanResults.keys.toSet()
             : new Set<Ingredient>())

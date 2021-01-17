@@ -44,13 +44,15 @@ class ScanningResultPage extends StatefulWidget {
 
 class _ScanningResultPageState extends State<ScanningResultPage> {
   Map<Ingredient, ScanResult> _itemizedScanResults;
+  List<String> _preferredIngredientsInProduct;
   ScanResultAppearance _currentResultAppearance;
   List<ProductActionButton> _productActionButtons;
 
   @override
   void initState() {
     super.initState();
-    getItemizedScanResults(widget.scannedProduct);
+    _getItemizedScanResults(widget.scannedProduct);
+    _getPreferredIngredientsInProduct(widget.scannedProduct);
     _currentResultAppearance = _getScanResultAppearance;
     _getProductActionButtons(context);
     _subscribeToFavouritesListUpdate(context);
@@ -61,8 +63,12 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
     return Scaffold(
       appBar: CustomAppBar('Scan-Ergebnis'),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: _productActionButtons == null
-          ? CircularProgressIndicator()
+      body: _productActionButtons == null ||
+              _itemizedScanResults == null ||
+              _preferredIngredientsInProduct == null
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
           : ListView(
               padding: EdgeInsets.symmetric(vertical: 20.0),
               children: <Widget>[
@@ -117,11 +123,7 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
                 Padding(
                   padding: EdgeInsets.only(bottom: 20.0),
                   child: ScanningProductNutrimentsInfo(
-                    nutriments:
-                        widget.scannedProduct.getDecisiveIngredientNames(
-                      getUnwantedIngredients: false,
-                    ),
-                  ),
+                      nutriments: _preferredIngredientsInProduct),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -137,14 +139,14 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20.0),
-                  child: _itemizedScanResults != null
-                      ? ScanningProductDetails(
-                          preferencesResults: _itemizedScanResults,
-                          otherIngredients: widget.scannedProduct
-                              .getNotPreferredIngredientNames(),
-                          moreProductDetails: _getAdditionalProductDetails,
-                        )
-                      : CircularProgressIndicator(),
+                  child: ScanningProductDetails(
+                    preferencesResults: _itemizedScanResults,
+                    preferredIngredientsInProduct:
+                        _preferredIngredientsInProduct,
+                    otherIngredients:
+                        widget.scannedProduct.getNotPreferredIngredientNames(),
+                    moreProductDetails: _getAdditionalProductDetails,
+                  ),
                 )
               ],
             ),
@@ -270,11 +272,21 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
     }
   }
 
-  getItemizedScanResults(Product scannedProduct) async {
+  void _getItemizedScanResults(Product scannedProduct) async {
     Map<Ingredient, ScanResult> itemizedScanResults =
         await PreferenceManager.getItemizedScanResults(scannedProduct);
     setState(() {
       _itemizedScanResults = itemizedScanResults;
+    });
+  }
+
+  void _getPreferredIngredientsInProduct(Product scannedProduct) async {
+    List<Ingredient> preferredIngredientsInProduct =
+        await PreferenceManager.getPreferredIngredientsIn(scannedProduct);
+    setState(() {
+      _preferredIngredientsInProduct = preferredIngredientsInProduct
+          .map((ingredient) => ingredient.name)
+          .toList();
     });
   }
 }
