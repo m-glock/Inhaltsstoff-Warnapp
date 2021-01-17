@@ -1,3 +1,4 @@
+import 'package:Essbar/frontend/pages/comparison/ComparisonFavouritesListPage.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../backend/Product.dart';
@@ -65,7 +66,19 @@ class ComparisonSelectProductButtons extends StatelessWidget {
                 ),
             textAlign: TextAlign.center,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => ComparisonFavouritesListPage(
+                  onProductSelected: (product) {
+                    Navigator.pop(context);
+                    onProductSelected(product);
+                  },
+                ),
+              ),
+            );
+          },
           shape: RoundedRectangleBorder(
             side: BorderSide(
               color: Theme.of(context).primaryColor,

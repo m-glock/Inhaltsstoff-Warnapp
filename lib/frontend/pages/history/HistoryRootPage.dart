@@ -1,6 +1,6 @@
 import '../../../backend/ListManager.dart';
 import '../../../backend/Product.dart';
-import '../../customWidgets/ProductListItem.dart';
+import '../../customWidgets/ProductsList.dart';
 import '../../customWidgets/CustomAppBar.dart';
 
 import 'package:flutter/material.dart';
@@ -29,35 +29,14 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
       backgroundColor: Colors.white,
       body: _scannedProducts == null
           ? CircularProgressIndicator()
-          : _scannedProducts.isEmpty
-              ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Center(
-                    child: Text(
-                      'Du hast noch keine Produkte eingescannt.',
-                      style: Theme.of(context).textTheme.headline2,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
-              : ListView(
-                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                  children: _scannedProducts
-                      .map((product) => ProductListItem(
-                            image: product.imageUrl != null
-                                ? NetworkImage(product.imageUrl)
-                                : null,
-                            name: product.name,
-                            scanDate: product.scanDate,
-                            scanResult: product.scanResult,
-                            onProductSelected: () {
-                              Navigator.pushNamed(context, '/product',
-                                  arguments: product);
-                            },
-                            removable: false,
-                          ))
-                      .toList(),
-                ),
+          : ProductsList(
+              products: _scannedProducts,
+              listEmptyText: 'Du hast noch keine Produkte eingescannt.',
+              onProductSelected: (product) {
+                Navigator.pushNamed(context, '/product', arguments: product);
+              },
+              productsRemovable: false,
+            ),
       floatingActionButton:
           _scannedProducts != null && _scannedProducts.isNotEmpty
               ? FloatingActionButton(

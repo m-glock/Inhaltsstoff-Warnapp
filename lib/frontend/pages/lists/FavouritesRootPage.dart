@@ -1,6 +1,6 @@
 import '../../../backend/ListManager.dart';
 import '../../../backend/Product.dart';
-import '../../customWidgets/ProductListItem.dart';
+import '../../customWidgets/ProductsList.dart';
 import '../../customWidgets/CustomAppBar.dart';
 
 import 'package:flutter/material.dart';
@@ -29,38 +29,17 @@ class _FavouritesRootPageState extends State<FavouritesRootPage> {
       backgroundColor: Colors.white,
       body: _favouriteProducts == null
           ? CircularProgressIndicator()
-          : _favouriteProducts.isEmpty
-              ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Center(
-                    child: Text(
-                      'Du hast keine Favoriten gespeichert.',
-                      style: Theme.of(context).textTheme.headline2,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
-              : ListView(
-                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                  children: _favouriteProducts
-                      .map((product) => ProductListItem(
-                            image: product.imageUrl != null
-                                ? NetworkImage(product.imageUrl)
-                                : null,
-                            name: product.name,
-                            scanDate: product.scanDate,
-                            scanResult: product.scanResult,
-                            onProductSelected: () {
-                              Navigator.pushNamed(context, '/product',
-                                  arguments: product);
-                            },
-                            removable: true,
-                            onRemove: () {
-                              _removeFavourite(product);
-                            },
-                          ))
-                      .toList(),
-                ),
+          : ProductsList(
+              products: _favouriteProducts,
+              listEmptyText: 'Du hast keine Favoriten gespeichert.',
+              onProductSelected: (product) {
+                Navigator.pushNamed(context, '/product', arguments: product);
+              },
+              productsRemovable: true,
+              onProductRemove: (product) {
+                _removeFavourite(product);
+              },
+            ),
     );
   }
 
