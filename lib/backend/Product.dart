@@ -18,17 +18,48 @@ class Product extends DbTable {
   String _nutriscore;
 
   List<Ingredient> _ingredients;
-  Map<Ingredient, ScanResult> itemizedScanResults;
-  List<Ingredient> preferredIngredients;
+  Map<Ingredient, ScanResult> _itemizedScanResults;
+  List<Ingredient> _preferredIngredients;
 
   String _quantity;
   String _origin;
   String _manufacturingPlaces;
   String _stores;
+  Future<void> _scanResultPromise;
+  Future<void> _preferredIngredientPromise;
+
+  // async Getter and Setter for fields that are initialized asynchronously
+  Future<ScanResult> getScanResult() async {
+    if (_scanResultPromise != null) await _scanResultPromise;
+    return _scanResult;
+  }
+
+  void setScanResult(ScanResult newResult) {
+    _scanResult = newResult;
+  }
+
+  Future<Map<Ingredient, ScanResult>> getItemizedScanResults() async {
+    if (_scanResultPromise != null) await _scanResultPromise;
+    return _itemizedScanResults;
+  }
+
+  void setItemizedScanResults(Map<Ingredient, ScanResult> newResults) async {
+    _itemizedScanResults = newResults;
+    _scanResultPromise = null;
+  }
+
+  Future<List<Ingredient>> getPreferredIngredients() async {
+    if (_preferredIngredientPromise != null) await _preferredIngredientPromise;
+    return _preferredIngredients;
+  }
+
+  void setPreferredIngredients(List<Ingredient> newIngredients) async {
+    _preferredIngredients = newIngredients;
+    _preferredIngredientPromise = null;
+  }
 
   // Getter
   String get name => _name;
-  ScanResult get scanResult => _scanResult;
   String get imageUrl => _imageUrl;
   String get barcode => _barcode;
   DateTime get scanDate => _scanDate;
@@ -43,7 +74,6 @@ class Product extends DbTable {
   // Setter
   set name(String newName) => _name = newName;
   set scanDate(DateTime newTime) => _scanDate = newTime;
-  set scanResult(ScanResult newResult) => _scanResult = newResult;
 
   // constructor with minimal necessary information
   Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id})
@@ -104,9 +134,8 @@ class Product extends DbTable {
           .read(DbTableNames.ingredient, [name], whereColumn: 'name'));
     }
 
-    await PreferenceManager.getItemizedScanResults(newProduct);
-    newProduct.preferredIngredients =
-        await PreferenceManager.getPreferredIngredientsIn(newProduct);
+    newProduct.setItemizedScanResults(await PreferenceManager.getItemizedScanResults(newProduct));
+    newProduct.setPreferredIngredients(await PreferenceManager.getPreferredIngredientsIn(newProduct));
 
     return newProduct;
   }
@@ -118,19 +147,19 @@ class Product extends DbTable {
   *                             or those that are explicitly wanted by the user and contained in the product
   * @return: a list of ingredient names
   * */
-  List<String> getDecisiveIngredientNames(
-      {bool getUnwantedIngredients = true}) {
+  Future<List<String>> getDecisiveIngredientNames(
+      {bool getUnwantedIngredients = true}) async {
     if (getUnwantedIngredients) {
       List<String> ingredientsNames = List();
+      Map<Ingredient, ScanResult> itemizedScanResults = await getItemizedScanResults();
       itemizedScanResults.entries.forEach((entry) {
         if (entry.value != ScanResult.Green)
           ingredientsNames.add(entry.key.name);
       });
       return ingredientsNames;
     } else {
-      return preferredIngredients != null
-          ? preferredIngredients.map((e) => e.name).toList()
-          : new List<String>();
+      List<Ingredient> preferredIngredients = await getPreferredIngredients();
+      return preferredIngredients.map((e) => e.name).toList();
     }
   }
 
@@ -138,9 +167,11 @@ class Product extends DbTable {
   * get the names of ingredients that are not preferenced by the user and are contained in the product.
   * @return: a list of ingredient names
   * */
-  List<String> getNotPreferredIngredientNames() {
+  Future<List<String>> getNotPreferredIngredientNames() async {
     List<String> notPreferredIngredients = List();
+    Map<Ingredient, ScanResult> itemizedScanResults = await getItemizedScanResults();
     List<Ingredient> unwantedPreferences = itemizedScanResults.keys.toList();
+    List<Ingredient> preferredIngredients = await getPreferredIngredients();
     _ingredients.forEach((element) {
       if(!unwantedPreferences.contains(element) && !preferredIngredients.contains(element)) notPreferredIngredients.add(element.name);
     });
@@ -200,8 +231,8 @@ class Product extends DbTable {
     Product product = Product(
         data['name'], data['imageUrl'], data['barcode'], scanDate,
         id: productId);
-
     int scanResultId = data['scanResultId'];
+
     product._scanResult = ScanResult.values.elementAt(scanResultId - 1);
     product._lastUpdated = DateTime.parse(data['lastUpdated']);
     product._nutriscore = data['nutriScore'];

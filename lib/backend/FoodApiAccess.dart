@@ -60,8 +60,8 @@ class FoodApiAccess{
     if(table != null){
       Product productFromDb = table as Product;
       productFromDb.scanDate = DateTime.now();
-      await PreferenceManager.getItemizedScanResults(productFromDb);
-      productFromDb.preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(productFromDb);
+      productFromDb.setItemizedScanResults(await PreferenceManager.getItemizedScanResults(productFromDb));
+      productFromDb.setPreferredIngredients(await PreferenceManager.getPreferredIngredientsIn(productFromDb));
 
       history.addProduct(productFromDb);
 

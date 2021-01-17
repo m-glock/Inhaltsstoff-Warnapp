@@ -121,8 +121,7 @@ class PreferenceManager {
       itemizedScanResults[ingredient] = result;
     });
 
-    product.scanResult = overallResult;
-    product.itemizedScanResults = itemizedScanResults;
+    product.setScanResult(overallResult);
 
     return itemizedScanResults;
   }
