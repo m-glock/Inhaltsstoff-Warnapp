@@ -1,13 +1,15 @@
 import '../database/DbTableNames.dart';
-import '../database/databaseHelper.dart';
-
-import 'ProductList.dart';
+import '../database/DatabaseHelper.dart';
 import '../Product.dart';
+import './ProductList.dart';
+
+import 'package:event/event.dart';
 
 class FavouritesList extends ProductList{
 
   // Fields
-  List<Product> _favouriteProducts;
+  List<Product> _favouriteProducts = new List<Product>();
+  Event onUpdate = new Event();
 
   // Getter
   List<Product> get favouriteProducts => _favouriteProducts;
@@ -29,6 +31,8 @@ class FavouritesList extends ProductList{
     row['listId'] = id;
     DatabaseHelper.instance.add(product, to: DbTableNames.productList, values: row);
 
+    onUpdate.broadcast();
+
     return true;
   }
 
@@ -36,6 +40,7 @@ class FavouritesList extends ProductList{
     products.forEach((product) {
       addProduct(product);
     });
+    onUpdate.broadcast();
   }
 
   void removeProduct(Product product){
@@ -43,6 +48,7 @@ class FavouritesList extends ProductList{
     int productId = product.id;
     DatabaseHelper.instance.customQuery('DELETE FROM $tableName WHERE productId = $productId AND listId = $id');
     _favouriteProducts.removeWhere((element) => element.compareTo(product) == 0);
+    onUpdate.broadcast();
   }
 
   @override
