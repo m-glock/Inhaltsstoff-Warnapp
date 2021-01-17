@@ -1,12 +1,9 @@
 import 'Enums/PreferenceType.dart';
 import 'Enums/Type.dart';
-import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 
 class Ingredient extends DbTable {
-
-  final dbHelper = DatabaseHelper.instance;
 
   // Fields
   String _name;
