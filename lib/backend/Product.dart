@@ -30,6 +30,8 @@ class Product extends DbTable {
 
   // async Getter and Setter for fields that are initialized asynchronously
   Future<ScanResult> getScanResult() async {
+    if (_scanResult == null && scanResultPromise == null)
+      scanResultPromise = initializeScanResult(this);
     if (scanResultPromise != null) await scanResultPromise;
     return _scanResult;
   }
@@ -39,6 +41,8 @@ class Product extends DbTable {
   }
 
   Future<Map<Ingredient, ScanResult>> getItemizedScanResults() async {
+    if (_itemizedScanResults == null && scanResultPromise == null)
+      scanResultPromise = initializeScanResult(this);
     if (scanResultPromise != null) await scanResultPromise;
     return _itemizedScanResults;
   }
@@ -49,6 +53,8 @@ class Product extends DbTable {
   }
 
   Future<List<Ingredient>> getPreferredIngredients() async {
+    if (_preferredIngredients == null && preferredIngredientsPromise == null)
+      preferredIngredientsPromise = initializePreferredIngredients(this);
     if (preferredIngredientsPromise != null) await preferredIngredientsPromise;
     return _preferredIngredients;
   }
@@ -60,19 +66,30 @@ class Product extends DbTable {
 
   // Getter
   String get name => _name;
+
   String get imageUrl => _imageUrl;
+
   String get barcode => _barcode;
+
   DateTime get scanDate => _scanDate;
+
   DateTime get lastUpdated => _lastUpdated;
+
   String get nutriscore => _nutriscore;
+
   List<Ingredient> get ingredients => _ingredients;
+
   String get quantity => _quantity;
+
   String get origin => _origin;
+
   String get manufacturingPlaces => _manufacturingPlaces;
+
   String get stores => _stores;
 
   // Setter
   set name(String newName) => _name = newName;
+
   set scanDate(DateTime newTime) => _scanDate = newTime;
 
   // constructor with minimal necessary information
@@ -135,18 +152,21 @@ class Product extends DbTable {
     }
 
     newProduct.scanResultPromise = initializeScanResult(newProduct);
-    newProduct.preferredIngredientsPromise = initializePreferredIngredients(newProduct);
+    newProduct.preferredIngredientsPromise =
+        initializePreferredIngredients(newProduct);
 
     return newProduct;
   }
 
   static Future<void> initializeScanResult(Product product) async {
-    Map<Ingredient, ScanResult> itemizedScanResults = await PreferenceManager.getItemizedScanResults(product);
+    Map<Ingredient, ScanResult> itemizedScanResults =
+        await PreferenceManager.getItemizedScanResults(product);
     product.setItemizedScanResults(itemizedScanResults);
   }
 
   static Future<void> initializePreferredIngredients(Product product) async {
-    List<Ingredient> preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(product);
+    List<Ingredient> preferredIngredients =
+        await PreferenceManager.getPreferredIngredientsIn(product);
     product.setPreferredIngredients(preferredIngredients);
   }
 
@@ -161,7 +181,8 @@ class Product extends DbTable {
       {bool getUnwantedIngredients = true}) async {
     if (getUnwantedIngredients) {
       List<String> ingredientsNames = List();
-      Map<Ingredient, ScanResult> itemizedScanResults = await getItemizedScanResults();
+      Map<Ingredient, ScanResult> itemizedScanResults =
+          await getItemizedScanResults();
       itemizedScanResults.entries.forEach((entry) {
         if (entry.value != ScanResult.Green)
           ingredientsNames.add(entry.key.name);
@@ -179,11 +200,14 @@ class Product extends DbTable {
   * */
   Future<List<String>> getNotPreferredIngredientNames() async {
     List<String> notPreferredIngredients = List();
-    Map<Ingredient, ScanResult> itemizedScanResults = await getItemizedScanResults();
+    Map<Ingredient, ScanResult> itemizedScanResults =
+        await getItemizedScanResults();
     List<Ingredient> unwantedPreferences = itemizedScanResults.keys.toList();
     List<Ingredient> preferredIngredients = await getPreferredIngredients();
     _ingredients.forEach((element) {
-      if(!unwantedPreferences.contains(element) && !preferredIngredients.contains(element)) notPreferredIngredients.add(element.name);
+      if (!unwantedPreferences.contains(element) &&
+          !preferredIngredients.contains(element))
+        notPreferredIngredients.add(element.name);
     });
 
     return notPreferredIngredients;
