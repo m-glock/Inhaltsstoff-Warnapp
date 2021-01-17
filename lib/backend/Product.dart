@@ -28,34 +28,21 @@ class Product extends DbTable {
 
   // Getter
   String get name => _name;
-
   ScanResult get scanResult => _scanResult;
-
   String get imageUrl => _imageUrl;
-
   String get barcode => _barcode;
-
   DateTime get scanDate => _scanDate;
-
   DateTime get lastUpdated => _lastUpdated;
-
   String get nutriscore => _nutriscore;
-
   List<Ingredient> get ingredients => _ingredients;
-
   String get quantity => _quantity;
-
   String get origin => _origin;
-
   String get manufacturingPlaces => _manufacturingPlaces;
-
   String get stores => _stores;
 
   // Setter
   set name(String newName) => _name = newName;
-
   set scanDate(DateTime newTime) => _scanDate = newTime;
-
   set scanResult(ScanResult newResult) => _scanResult = newResult;
 
   // constructor with minimal necessary information
@@ -152,11 +139,13 @@ class Product extends DbTable {
   * @return: a list of ingredient names
   * */
   List<String> getNotPreferredIngredientNames() {
-    return _ingredients
-        .toSet()
-        .difference(itemizedScanResults.keys.toSet())
-        .map((e) => e.name)
-        .toList();
+    List<String> notPreferredIngredients = List();
+    List<Ingredient> unwantedPreferences = itemizedScanResults.keys.toList();
+    _ingredients.forEach((element) {
+      if(!unwantedPreferences.contains(element) && !preferredIngredients.contains(element)) notPreferredIngredients.add(element.name);
+    });
+
+    return notPreferredIngredients;
   }
 
   Future<int> saveInDatabase() async {
