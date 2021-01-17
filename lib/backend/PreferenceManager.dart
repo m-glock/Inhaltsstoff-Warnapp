@@ -23,7 +23,6 @@ class PreferenceManager {
     if (preferenceChanges?.isNotEmpty ?? true) {
       preferenceChanges.forEach((ingredient, preferenceType) async {
         ingredient.preferenceType  = preferenceType;
-        //TODO only if preferencetype has changed
         if(preferenceType != PreferenceType.None) ingredient.preferenceAddDate = DateTime.now();
         await dbHelper.update(ingredient);
       });
@@ -70,16 +69,15 @@ class PreferenceManager {
     final dbHelper = DatabaseHelper.instance;
     List<Ingredient> ingredients = List();
     String tableName = DbTableNames.ingredient.name;
-    Type typeIn = type;
 
-    if (typeIn == null) {
+    if (type == null) {
       List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName LIMIT 300');
       results.forEach((result) {
         ingredients.add(Ingredient.fromMap(result));
       });
     }
 
-    if (typeIn != null) {
+    if (type != null) {
       String typeId = type.id.toString();
       List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE typeId = $typeId LIMIT 300');
       results.forEach((result) {
