@@ -1,7 +1,7 @@
-import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/TextRecognitionParser.dart';
 import 'package:sqflite/sqflite.dart';
 
+import './TextRecognitionParser.dart';
+import './PreferenceManager.dart';
 import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
@@ -32,8 +32,8 @@ class Product extends DbTable{
   String get imageUrl => _imageUrl;
   String get barcode => _barcode;
   DateTime get lastUpdated => _lastUpdated;
-  String get nutriscore => _nutriscore;
 
+  String get nutriscore => _nutriscore;
   String get quantity => _quantity;
   String get origin => _origin;
   String get manufacturingPlaces => _manufacturingPlaces;
@@ -72,27 +72,35 @@ class Product extends DbTable{
     Set<String> translatedIngredientNames = Set();
 
     List<dynamic> allergenNames = json['allergens_tags'];
-    if(allergenNames != null && allergenNames.isNotEmpty)
-      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('allergens', tagValues: allergenNames));
+    if (allergenNames != null && allergenNames.isNotEmpty)
+      translatedIngredientNames.addAll(await foodApi
+          .getTranslatedValuesForTag('allergens', tagValues: allergenNames));
 
     List<dynamic> vitaminNames = json['vitamins_tags'];
-    if(vitaminNames != null && vitaminNames.isNotEmpty)
-      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('vitamins', tagValues: vitaminNames));
+    if (vitaminNames != null && vitaminNames.isNotEmpty)
+      translatedIngredientNames.addAll(await foodApi
+          .getTranslatedValuesForTag('vitamins', tagValues: vitaminNames));
 
     List<dynamic> mineralNames = json['minerals_tags'];
-    if(mineralNames != null && mineralNames.isNotEmpty)
-      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('minerals', tagValues: mineralNames));
+    if (mineralNames != null && mineralNames.isNotEmpty)
+      translatedIngredientNames.addAll(await foodApi
+          .getTranslatedValuesForTag('minerals', tagValues: mineralNames));
 
     List<dynamic> ingredientNames = json['ingredients_tags'];
-    if(ingredientNames != null && ingredientNames.isNotEmpty)
-      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag('ingredients', tagValues: ingredientNames));
 
-    for(String name in translatedIngredientNames) {
-      newProduct.ingredients.add(await DatabaseHelper.instance.read(DbTableNames.ingredient, [name], whereColumn: 'name'));
+    if (ingredientNames != null && ingredientNames.isNotEmpty)
+      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag(
+          'ingredients',
+          tagValues: ingredientNames));
+
+    for (String name in translatedIngredientNames) {
+      newProduct.ingredients.add(await DatabaseHelper.instance
+          .read(DbTableNames.ingredient, [name], whereColumn: 'name'));
     }
 
     await PreferenceManager.getItemizedScanResults(newProduct);
-    newProduct.preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(newProduct);
+    newProduct.preferredIngredients =
+        await PreferenceManager.getPreferredIngredientsIn(newProduct);
     await newProduct.saveInDatabase();
 
     return newProduct;
@@ -119,28 +127,32 @@ class Product extends DbTable{
   *                             or those that are explicitly wanted by the user and contained in the product
   * @return: a list of ingredient names
   * */
-  List<String> getDecisiveIngredientNames({bool getUnwantedIngredients = true}) {
-
-    if(getUnwantedIngredients){
+  List<String> getDecisiveIngredientNames(
+      {bool getUnwantedIngredients = true}) {
+    if (getUnwantedIngredients) {
       List<String> ingredientsNames = List();
       itemizedScanResults.entries.forEach((entry) {
-        if(entry.value != ScanResult.Green) ingredientsNames.add(entry.key.name);
+        if (entry.value != ScanResult.Green)
+          ingredientsNames.add(entry.key.name);
       });
       return ingredientsNames;
     } else {
-      return preferredIngredients.map((e) => e.name).toList();
+      return preferredIngredients != null
+          ? preferredIngredients.map((e) => e.name).toList()
+          : new List<String>();
     }
-
   }
 
   /*
   * get the names of ingredients that are not preferenced by the user and are contained in the product.
   * @return: a list of ingredient names
   * */
-  List<String> getNotPreferredIngredientNames(){
-    return ingredients.toSet()
+  List<String> getNotPreferredIngredientNames() {
+    return _ingredients
+        .toSet()
         .difference(itemizedScanResults.keys.toSet())
-        .map((e) => e.name).toList();
+        .map((e) => e.name)
+        .toList();
   }
 
   Future<int> saveInDatabase() async {
@@ -195,7 +207,9 @@ class Product extends DbTable{
     DateTime scanDate = scanDateDb == ''
         ? null
         : DateTime.parse(data['scanDate']);
-    Product product = Product(data['name'], data['imageUrl'], data['barcode'], scanDate, id: productId);
+    Product product = Product(
+        data['name'], data['imageUrl'], data['barcode'], scanDate,
+        id: productId);
 
     int scanResultId = data['scanResultId'];
     product.scanResult = ScanResult.values.elementAt(scanResultId - 1);
@@ -210,11 +224,22 @@ class Product extends DbTable{
     product._stores = data['stores'];
 
     // get all Ingredients associated with this product from the database
-    List<DbTable> ingredients = await DatabaseHelper.instance.readAll(DbTableNames.productIngredient, whereColumn: 'productId', whereArgs: [productId]);
+    List<DbTable> ingredients = await DatabaseHelper.instance.readAll(
+        DbTableNames.productIngredient,
+        whereColumn: 'productId',
+        whereArgs: [productId]);
     ingredients.forEach((element) {
       product.ingredients.add(element as Ingredient);
     });
 
     return product;
   }
+
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is Product && runtimeType == other.runtimeType && id == other.id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

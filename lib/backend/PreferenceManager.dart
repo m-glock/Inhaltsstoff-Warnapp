@@ -1,7 +1,6 @@
 import 'dart:core';
 
-import 'package:Inhaltsstoff_Warnapp/backend/database/DbTableNames.dart';
-
+import './database/DbTableNames.dart';
 import 'Enums/ScanResult.dart';
 import 'Ingredient.dart';
 import 'Enums/PreferenceType.dart';

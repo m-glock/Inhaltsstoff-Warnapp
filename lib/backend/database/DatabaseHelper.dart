@@ -1,11 +1,10 @@
 import 'dart:io';
-
-import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
+import './../FoodApiAccess.dart';
 import 'DbTable.dart';
 import 'DbTableNames.dart';
 
@@ -92,11 +91,15 @@ class DatabaseHelper {
   }
 
   // insert one row into a table
-  Future<int> add(DbTable object) async {
+  Future<int> add(DbTable object, {DbTableNames to, Map<String, dynamic> values}) async {
     Database db = await instance.database;
-    Map<String, dynamic> row = object.toMap(withId: false);
-
-    return await db.insert(object.getTableName().name, row);
+    
+    if(to != null && values != null){
+      return await db.insert(to.name, values);
+    } else {
+      Map<String, dynamic> row = object.toMap(withId: false);
+      return await db.insert(object.getTableName().name, row);
+    }
   }
 
   // insert multiple rows into one or more tables
@@ -136,8 +139,8 @@ class DatabaseHelper {
       list = await db.query(tableType.name, where: '$whereColumn = ?', whereArgs: whereArgs);
 
 
-    if(tableType == DbTableNames.productIngredient){
-      return await _getElementsFromJoinTable(list, whereColumn);
+    if(tableType == DbTableNames.productIngredient || tableType == DbTableNames.productList){
+      return await _getElementsFromJoinTable(list, whereColumn, tableType);
     } else {
       List<DbTable> objectList = new List();
       for(Map<String, dynamic> element in list){
@@ -147,13 +150,20 @@ class DatabaseHelper {
     }
   }
 
-  Future<List<DbTable>> _getElementsFromJoinTable(List<Map<String, dynamic>> list, String whereColumn) async {
+  Future<List<DbTable>> _getElementsFromJoinTable(List<Map<String, dynamic>> list, String whereColumn, DbTableNames joinTableType) async {
     List<DbTable> objectList = new List();
+    String columnToQuery;
+    DbTableNames tableName;
 
     // check whether the ingredients or the products are queried from the join table
-    bool getIngredients = whereColumn == 'productId';
-    String columnToQuery = getIngredients ? 'ingredientId' : 'productId';
-    DbTableNames tableName = getIngredients ? DbTableNames.ingredient : DbTableNames.product;
+    if(whereColumn == 'productId'){
+      bool getIngredient = joinTableType == DbTableNames.productIngredient;
+      columnToQuery = getIngredient ? 'ingredientId' : 'listId';
+      tableName = getIngredient ? DbTableNames.ingredient : DbTableNames.list;
+    } else {
+      columnToQuery = 'productId';
+      tableName = DbTableNames.product;
+    }
 
     // get ingredient/product object for each row in join table
     for(Map<String, dynamic> element in list){
@@ -184,7 +194,7 @@ class DatabaseHelper {
     return updatedRowIds;
   }
 
-  // delete one row with a specific id
+  // delete one row
   Future<int> delete(DbTable object) async {
     Database db = await instance.database;
     return await db.delete(object.getTableName().name, where: 'id = ?', whereArgs: [object.id]);

@@ -47,15 +47,24 @@ class _SettingsOtherIngredientPreferencesPageState
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: PreferencesOtherIngredientsView(
-          otherIngredientPreferences: _otherIngredientPreferences,
-          onChange:
-              (Ingredient changedIngredient, PreferenceType newPreference) {
-            setState(() {
-              _otherIngredientPreferences[changedIngredient] = newPreference;
-            });
-          },
-        ),
+        child: _otherIngredientPreferences.isEmpty
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView(
+                children: [
+                  PreferencesOtherIngredientsView(
+                    otherIngredientPreferences: _otherIngredientPreferences,
+                    onChange: (Ingredient changedIngredient,
+                        PreferenceType newPreference) {
+                      setState(() {
+                        _otherIngredientPreferences[changedIngredient] =
+                            newPreference;
+                      });
+                    },
+                  ),
+                ],
+              ),
       ),
     );
   }

@@ -1,9 +1,8 @@
-import 'package:Inhaltsstoff_Warnapp/backend/Enums/PreferenceType.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/Enums/Type.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/PreferenceManager.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/Ingredient.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/Product.dart';
-import 'package:Inhaltsstoff_Warnapp/backend/database/DatabaseHelper.dart';
+import '../lib/backend/Enums/PreferenceType.dart';
+import '../lib/backend/Enums/Type.dart';
+import '../lib/backend/PreferenceManager.dart';
+import '../lib/backend/Ingredient.dart';
+import '../lib/backend/database/DatabaseHelper.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
@@ -23,7 +22,7 @@ void main() async {
     //add map with ingredient with preferenceType to change
     //Ingredient ingredient_milch = Ingredient("MilchTestIngredient", PreferenceType.NotPreferred, "null");
     Ingredient ingredient_milch = Ingredient("Hydroxocobalamin",
-        PreferenceType.NotPreferred, Type.Nutriment, DateTime.parse(''));
+        PreferenceType.NotPreferred, DateTime.parse(''), Type.Nutriment);
     Map<Ingredient, PreferenceType> preferenceToChange = {
       ingredient_milch: PreferenceType.Preferred
     };
