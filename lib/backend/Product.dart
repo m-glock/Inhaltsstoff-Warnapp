@@ -148,7 +148,7 @@ class Product extends DbTable{
   * @return: a list of ingredient names
   * */
   List<String> getNotPreferredIngredientNames() {
-    return _ingredients
+    return ingredients
         .toSet()
         .difference(itemizedScanResults.keys.toSet())
         .map((e) => e.name)

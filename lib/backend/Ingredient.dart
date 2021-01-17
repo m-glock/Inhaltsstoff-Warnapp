@@ -47,7 +47,7 @@ class Ingredient extends DbTable {
     Type type = Type.values.elementAt(typeId - 1);
 
     DateTime preferenceAddDate = data['preferenceAddDate'] != null ? DateTime.parse(data['preferenceAddDate']) : null;
-    return new Ingredient(data['name'], prefType, preferenceAddDate, type,
+    return new Ingredient(data['name'], prefType, type, preferenceAddDate,
         id: data['id']);
   }
 
