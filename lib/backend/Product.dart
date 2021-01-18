@@ -14,14 +14,14 @@ import 'Ingredient.dart';
 class Product extends DbTable{
 
   String name;
-  ScanResult scanResult;
+  ScanResult _scanResult;
   String _imageUrl;
   String _barcode;
   DateTime scanDate;
   DateTime _lastUpdated;
   String _nutriscore;
 
-  List<Ingredient> _ingredients;
+  List<Ingredient> ingredients;
   Map<Ingredient, ScanResult> _itemizedScanResults;
   List<Ingredient> _preferredIngredients;
 
@@ -69,7 +69,6 @@ class Product extends DbTable{
   }
 
   // Getter
-  String get name => _name;
   String get imageUrl => _imageUrl;
   String get barcode => _barcode;
   DateTime get lastUpdated => _lastUpdated;
@@ -79,10 +78,6 @@ class Product extends DbTable{
   String get origin => _origin;
   String get manufacturingPlaces => _manufacturingPlaces;
   String get stores => _stores;
-
-  // Setter
-  set name(String newName) => _name = newName;
-  set scanDate(DateTime newTime) => _scanDate = newTime;
 
   // constructor with minimal necessary information
   Product(this.name, this._imageUrl, this._barcode, this.scanDate, {int id}) : super(id) {
@@ -142,11 +137,11 @@ class Product extends DbTable{
       Ingredient ingredient = await DatabaseHelper.instance
           .read(DbTableNames.ingredient, [name], whereColumn: 'name');
       if (ingredient == null) {
-        ingredient = new Ingredient(name, PreferenceType.None, null, Type.General);
+        ingredient = new Ingredient(name, PreferenceType.None, Type.General, null);
         int id = await DatabaseHelper.instance.add(ingredient);
         ingredient.id = id;
       }
-      newProduct._ingredients.add(ingredient);
+      newProduct.ingredients.add(ingredient);
     }
 
     newProduct.scanResultPromise = initializeScanResult(newProduct);
@@ -176,8 +171,10 @@ class Product extends DbTable{
     Product product = Product(productName, null, null, DateTime.now());
     product.ingredients = ingredients;
 
-    await PreferenceManager.getItemizedScanResults(product);
-    product.preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(product);
+    product.scanResultPromise = initializeScanResult(product);
+    product.preferredIngredientsPromise =
+        initializePreferredIngredients(product);
+
     await product.saveInDatabase();
     return product;
   }
@@ -216,7 +213,7 @@ class Product extends DbTable{
         await getItemizedScanResults();
     List<Ingredient> unwantedPreferences = itemizedScanResults.keys.toList();
     List<Ingredient> preferredIngredients = await getPreferredIngredients();
-    _ingredients.forEach((element) {
+    ingredients.forEach((element) {
       if (!unwantedPreferences.contains(element) &&
           !preferredIngredients.contains(element))
         notPreferredIngredients.add(element.name);
