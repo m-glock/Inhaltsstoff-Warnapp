@@ -25,7 +25,6 @@ class Ingredient extends DbTable {
   set preferenceAddDate(DateTime newDate) => _preferenceAddDate = newDate;
 
   // Methods
-
   // DB methods
   @override
   DbTableNames getTableName() {

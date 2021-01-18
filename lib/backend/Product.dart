@@ -1,3 +1,4 @@
+import 'package:Essbar/backend/Enums/PreferenceType.dart';
 import 'package:sqflite/sqflite.dart';
 
 import './PreferenceManager.dart';
@@ -5,6 +6,7 @@ import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 import 'Enums/ScanResult.dart';
+import 'Enums/Type.dart';
 import 'FoodApiAccess.dart';
 import 'Ingredient.dart';
 
@@ -147,8 +149,14 @@ class Product extends DbTable {
           tagValues: ingredientNames));
 
     for (String name in translatedIngredientNames) {
-      newProduct._ingredients.add(await DatabaseHelper.instance
-          .read(DbTableNames.ingredient, [name], whereColumn: 'name'));
+      Ingredient ingredient = await DatabaseHelper.instance
+          .read(DbTableNames.ingredient, [name], whereColumn: 'name');
+      if (ingredient == null) {
+        ingredient = new Ingredient(name, PreferenceType.None, null, Type.General);
+        int id = await DatabaseHelper.instance.add(ingredient);
+        ingredient.id = id;
+      }
+      newProduct._ingredients.add(ingredient);
     }
 
     newProduct.scanResultPromise = initializeScanResult(newProduct);
