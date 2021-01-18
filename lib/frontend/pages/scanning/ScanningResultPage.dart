@@ -42,15 +42,20 @@ class ScanningResultPage extends StatefulWidget {
 }
 
 class _ScanningResultPageState extends State<ScanningResultPage> {
-  Map<Ingredient, ScanResult> _itemizedScanResults;
+  ScanResult _scanResult;
   ScanResultAppearance _currentResultAppearance;
+  Map<Ingredient, ScanResult> _itemizedScanResults;
   List<ProductActionButton> _productActionButtons;
+  List<String> _containedWantedIngredientNames;
+  List<String> _otherIngredientNames;
 
   @override
   void initState() {
     super.initState();
-    getItemizedScanResults(widget.scannedProduct);
-    _currentResultAppearance = _getScanResultAppearance;
+    _getScanResultAndAppearance();
+    _getContainedWantedIngredientNames();
+    _getItemizedScanResults(widget.scannedProduct);
+    _getOtherIngredients();
     _getProductActionButtons();
     _subscribeToFavouritesListUpdate();
   }
@@ -60,8 +65,13 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
     return Scaffold(
       appBar: CustomAppBar('Scan-Ergebnis'),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: _productActionButtons == null
-          ? CircularProgressIndicator()
+      body: _scanResult == null ||
+              _currentResultAppearance == null ||
+              _containedWantedIngredientNames == null ||
+              _productActionButtons == null
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
           : ListView(
               padding: EdgeInsets.symmetric(vertical: 20.0),
               children: <Widget>[
@@ -86,7 +96,7 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 20.0),
                   child: ResultCircle(
-                    result: widget.scannedProduct.scanResult,
+                    result: _scanResult,
                     small: false,
                   ),
                 ),
@@ -116,10 +126,7 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
                 Padding(
                   padding: EdgeInsets.only(bottom: 20.0),
                   child: ScanningProductNutrimentsInfo(
-                    nutriments:
-                        widget.scannedProduct.getDecisiveIngredientNames(
-                      getUnwantedIngredients: false,
-                    ),
+                    nutriments: _containedWantedIngredientNames,
                   ),
                 ),
                 Row(
@@ -136,11 +143,11 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20.0),
-                  child: _itemizedScanResults != null
+                  child: _itemizedScanResults != null &&
+                          _otherIngredientNames != null
                       ? ScanningProductDetails(
                           preferencesResults: _itemizedScanResults,
-                          otherIngredients: widget.scannedProduct
-                              .getNotPreferredIngredientNames(),
+                          otherIngredients: _otherIngredientNames,
                           moreProductDetails: _getAdditionalProductDetails,
                         )
                       : CircularProgressIndicator(),
@@ -156,14 +163,72 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
     _unsubscribeToFavouritesListUpdate();
   }
 
+  _getScanResultAndAppearance() async {
+    ScanResult result = await widget.scannedProduct.getScanResult();
+    ScanResultAppearance appearance = await _getScanResultAppearance(result);
+    setState(() {
+      _scanResult = result;
+      _currentResultAppearance = appearance;
+    });
+  }
+
+  Future<ScanResultAppearance> _getScanResultAppearance(ScanResult scanResult) async {
+    List<String> unwantedIngredientNames =
+    await _getContainedUnwantedIngredientNames();
+
+    switch (scanResult) {
+      case ScanResult.Green:
+        return ScanResultAppearance(
+          Icons.done,
+          Colors.green[800],
+          Colors.green[100],
+          'Gute Wahl!',
+          'Enthält keine ungewollten Inhaltsstoffe.',
+        );
+      case ScanResult.Yellow:
+        return ScanResultAppearance(
+            Icons.warning,
+            Colors.yellow[800],
+            Colors.yellow[100],
+            'Achtung!',
+            'Enthält ' +
+                unwantedIngredientNames
+                    .reduce((value, element) => value + ', ' + element));
+      case ScanResult.Red:
+        return ScanResultAppearance(
+            Icons.clear,
+            Colors.red,
+            Colors.red[100],
+            'Schlechte Wahl!',
+            'Enthält ' +
+                unwantedIngredientNames
+                    .reduce((value, element) => value + ', ' + element));
+      default:
+        throw ('illegal State: result is not of type ScanResult');
+    }
+  }
+
+  Future<List<String>> _getContainedUnwantedIngredientNames() async {
+    return await widget.scannedProduct
+        .getDecisiveIngredientNames(getUnwantedIngredients: true);
+  }
+
+  _getContainedWantedIngredientNames() async {
+    List<String> names = await widget.scannedProduct
+        .getDecisiveIngredientNames(getUnwantedIngredients: false);
+    setState(() {
+      _containedWantedIngredientNames = names;
+    });
+  }
+
   void _getProductActionButtons() async {
     var favourites = await ListManager.instance.favouritesList;
     ProductActionButton favButton = favourites
-            .getProducts()
-            .contains(widget.scannedProduct)
+        .getProducts()
+        .contains(widget.scannedProduct)
         ? new ProductActionButton('Entfernen', Icons.favorite, removeFavourite)
         : new ProductActionButton(
-            'Speichern', Icons.favorite_border, addFavourite);
+        'Speichern', Icons.favorite_border, addFavourite);
 
     if (mounted) {
       setState(() {
@@ -202,43 +267,20 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
     });
   }
 
-  get _getScanResultAppearance {
-    switch (widget.scannedProduct.scanResult) {
-      case ScanResult.Green:
-        return ScanResultAppearance(
-          Icons.done,
-          Colors.green[800],
-          Colors.green[100],
-          'Gute Wahl!',
-          'Enthält keine ungewollten Inhaltsstoffe.',
-        );
-      case ScanResult.Yellow:
-        return ScanResultAppearance(
-            Icons.warning,
-            Colors.yellow[800],
-            Colors.yellow[100],
-            'Achtung!',
-            'Enthält ' +
-                widget.scannedProduct
-                    .getDecisiveIngredientNames(
-                      getUnwantedIngredients: true,
-                    )
-                    .reduce((value, element) => value + ', ' + element));
-      case ScanResult.Red:
-        return ScanResultAppearance(
-            Icons.clear,
-            Colors.red,
-            Colors.red[100],
-            'Schlechte Wahl!',
-            'Enthält ' +
-                widget.scannedProduct
-                    .getDecisiveIngredientNames(
-                      getUnwantedIngredients: true,
-                    )
-                    .reduce((value, element) => value + ', ' + element));
-      default:
-        throw ('illegal State: result is not of type ScanResult');
-    }
+  _getItemizedScanResults(Product scannedProduct) async {
+    Map<Ingredient, ScanResult> itemizedScanResults =
+        await PreferenceManager.getItemizedScanResults(scannedProduct);
+    setState(() {
+      _itemizedScanResults = itemizedScanResults;
+    });
+  }
+
+  _getOtherIngredients() async {
+    List<String> names =
+        await widget.scannedProduct.getNotPreferredIngredientNames();
+    setState(() {
+      _otherIngredientNames = names;
+    });
   }
 
   get _getAdditionalProductDetails {
@@ -249,18 +291,10 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
         'Menge': widget.scannedProduct.quantity.toString() ?? 'keine Angabe',
         'Herkunft': widget.scannedProduct.origin ?? 'keine Angabe',
         'Herstellungsorte':
-            widget.scannedProduct.manufacturingPlaces ?? 'keine Angabe',
+        widget.scannedProduct.manufacturingPlaces ?? 'keine Angabe',
         'Geschäfte': widget.scannedProduct.stores ?? 'keine Angabe',
         'Nutriscore': widget.scannedProduct.nutriscore ?? 'keine Angabe',
       };
     }
-  }
-
-  getItemizedScanResults(Product scannedProduct) async {
-    Map<Ingredient, ScanResult> itemizedScanResults =
-        await PreferenceManager.getItemizedScanResults(scannedProduct);
-    setState(() {
-      _itemizedScanResults = itemizedScanResults;
-    });
   }
 }

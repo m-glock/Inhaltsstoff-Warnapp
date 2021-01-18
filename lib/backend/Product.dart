@@ -1,3 +1,4 @@
+import 'package:Essbar/backend/Enums/PreferenceType.dart';
 import 'package:sqflite/sqflite.dart';
 
 import './TextRecognitionParser.dart';
@@ -6,6 +7,7 @@ import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 import 'Enums/ScanResult.dart';
+import 'Enums/Type.dart';
 import 'FoodApiAccess.dart';
 import 'Ingredient.dart';
 
@@ -19,16 +21,55 @@ class Product extends DbTable{
   DateTime _lastUpdated;
   String _nutriscore;
 
-  List<Ingredient> ingredients;
-  Map<Ingredient, ScanResult> itemizedScanResults;
-  List<Ingredient> preferredIngredients;
+  List<Ingredient> _ingredients;
+  Map<Ingredient, ScanResult> _itemizedScanResults;
+  List<Ingredient> _preferredIngredients;
 
   String _quantity;
   String _origin;
   String _manufacturingPlaces;
   String _stores;
+  Future<void> scanResultPromise;
+  Future<void> preferredIngredientsPromise;
+
+  // async Getter and Setter for fields that are initialized asynchronously
+  Future<ScanResult> getScanResult() async {
+    if (_scanResult == null && scanResultPromise == null)
+      scanResultPromise = initializeScanResult(this);
+    if (scanResultPromise != null) await scanResultPromise;
+    return _scanResult;
+  }
+
+  void setScanResult(ScanResult newResult) {
+    _scanResult = newResult;
+  }
+
+  Future<Map<Ingredient, ScanResult>> getItemizedScanResults() async {
+    if (_itemizedScanResults == null && scanResultPromise == null)
+      scanResultPromise = initializeScanResult(this);
+    if (scanResultPromise != null) await scanResultPromise;
+    return _itemizedScanResults;
+  }
+
+  void setItemizedScanResults(Map<Ingredient, ScanResult> newResults) async {
+    _itemizedScanResults = newResults;
+    scanResultPromise = null;
+  }
+
+  Future<List<Ingredient>> getPreferredIngredients() async {
+    if (_preferredIngredients == null && preferredIngredientsPromise == null)
+      preferredIngredientsPromise = initializePreferredIngredients(this);
+    if (preferredIngredientsPromise != null) await preferredIngredientsPromise;
+    return _preferredIngredients;
+  }
+
+  void setPreferredIngredients(List<Ingredient> newIngredients) async {
+    _preferredIngredients = newIngredients;
+    preferredIngredientsPromise = null;
+  }
 
   // Getter
+  String get name => _name;
   String get imageUrl => _imageUrl;
   String get barcode => _barcode;
   DateTime get lastUpdated => _lastUpdated;
@@ -38,6 +79,10 @@ class Product extends DbTable{
   String get origin => _origin;
   String get manufacturingPlaces => _manufacturingPlaces;
   String get stores => _stores;
+
+  // Setter
+  set name(String newName) => _name = newName;
+  set scanDate(DateTime newTime) => _scanDate = newTime;
 
   // constructor with minimal necessary information
   Product(this.name, this._imageUrl, this._barcode, this.scanDate, {int id}) : super(id) {
@@ -94,16 +139,33 @@ class Product extends DbTable{
           tagValues: ingredientNames));
 
     for (String name in translatedIngredientNames) {
-      newProduct.ingredients.add(await DatabaseHelper.instance
-          .read(DbTableNames.ingredient, [name], whereColumn: 'name'));
+      Ingredient ingredient = await DatabaseHelper.instance
+          .read(DbTableNames.ingredient, [name], whereColumn: 'name');
+      if (ingredient == null) {
+        ingredient = new Ingredient(name, PreferenceType.None, null, Type.General);
+        int id = await DatabaseHelper.instance.add(ingredient);
+        ingredient.id = id;
+      }
+      newProduct._ingredients.add(ingredient);
     }
 
-    await PreferenceManager.getItemizedScanResults(newProduct);
-    newProduct.preferredIngredients =
-        await PreferenceManager.getPreferredIngredientsIn(newProduct);
-    await newProduct.saveInDatabase();
+    newProduct.scanResultPromise = initializeScanResult(newProduct);
+    newProduct.preferredIngredientsPromise =
+        initializePreferredIngredients(newProduct);
 
     return newProduct;
+  }
+
+  static Future<void> initializeScanResult(Product product) async {
+    Map<Ingredient, ScanResult> itemizedScanResults =
+        await PreferenceManager.getItemizedScanResults(product);
+    product.setItemizedScanResults(itemizedScanResults);
+  }
+
+  static Future<void> initializePreferredIngredients(Product product) async {
+    List<Ingredient> preferredIngredients =
+        await PreferenceManager.getPreferredIngredientsIn(product);
+    product.setPreferredIngredients(preferredIngredients);
   }
 
   //TODO: where does name come from? Also get Image URL?
@@ -127,19 +189,20 @@ class Product extends DbTable{
   *                             or those that are explicitly wanted by the user and contained in the product
   * @return: a list of ingredient names
   * */
-  List<String> getDecisiveIngredientNames(
-      {bool getUnwantedIngredients = true}) {
+  Future<List<String>> getDecisiveIngredientNames(
+      {bool getUnwantedIngredients = true}) async {
     if (getUnwantedIngredients) {
       List<String> ingredientsNames = List();
+      Map<Ingredient, ScanResult> itemizedScanResults =
+          await getItemizedScanResults();
       itemizedScanResults.entries.forEach((entry) {
         if (entry.value != ScanResult.Green)
           ingredientsNames.add(entry.key.name);
       });
       return ingredientsNames;
     } else {
-      return preferredIngredients != null
-          ? preferredIngredients.map((e) => e.name).toList()
-          : new List<String>();
+      List<Ingredient> preferredIngredients = await getPreferredIngredients();
+      return preferredIngredients.map((e) => e.name).toList();
     }
   }
 
@@ -147,12 +210,19 @@ class Product extends DbTable{
   * get the names of ingredients that are not preferenced by the user and are contained in the product.
   * @return: a list of ingredient names
   * */
-  List<String> getNotPreferredIngredientNames() {
-    return ingredients
-        .toSet()
-        .difference(itemizedScanResults.keys.toSet())
-        .map((e) => e.name)
-        .toList();
+  Future<List<String>> getNotPreferredIngredientNames() async {
+    List<String> notPreferredIngredients = List();
+    Map<Ingredient, ScanResult> itemizedScanResults =
+        await getItemizedScanResults();
+    List<Ingredient> unwantedPreferences = itemizedScanResults.keys.toList();
+    List<Ingredient> preferredIngredients = await getPreferredIngredients();
+    _ingredients.forEach((element) {
+      if (!unwantedPreferences.contains(element) &&
+          !preferredIngredients.contains(element))
+        notPreferredIngredients.add(element.name);
+    });
+
+    return notPreferredIngredients;
   }
 
   Future<int> saveInDatabase() async {
@@ -183,9 +253,9 @@ class Product extends DbTable{
   }
 
   @override
-  Map<String, dynamic> toMap({bool withId = true}) {
+  Future<Map<String, dynamic>> toMap({bool withId = true}) async {
     final map = new Map<String, dynamic>();
-    map['scanResultId'] = scanResult.id;
+    map['scanResultId'] = (await getScanResult()).id;
     map['name'] = name;
     map['imageUrl'] = _imageUrl;
     map['barcode'] = _barcode;
@@ -210,9 +280,9 @@ class Product extends DbTable{
     Product product = Product(
         data['name'], data['imageUrl'], data['barcode'], scanDate,
         id: productId);
-
     int scanResultId = data['scanResultId'];
-    product.scanResult = ScanResult.values.elementAt(scanResultId - 1);
+
+    product._scanResult = ScanResult.values.elementAt(scanResultId - 1);
     String lastUpdatedDb = data['lastUpdated'];
     product._lastUpdated = lastUpdatedDb == ''
         ? null

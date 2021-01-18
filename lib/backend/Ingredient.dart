@@ -20,7 +20,6 @@ class Ingredient extends DbTable {
       {int id}) : super(id);
 
   // Methods
-
   // DB methods
   @override
   DbTableNames getTableName() {
@@ -28,7 +27,7 @@ class Ingredient extends DbTable {
   }
 
   @override
-  Map<String, dynamic> toMap({bool withId: true}) {
+  Future<Map<String, dynamic>> toMap({bool withId: true}) async {
     final map = new Map<String, dynamic>();
     map['name'] = _name;
     map['preferenceTypeId'] = preferenceType.id;
