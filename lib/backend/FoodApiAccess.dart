@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import './ListManager.dart';
-import './PreferenceManager.dart';
 import 'package:http/http.dart' as http;
 
 import 'database/DbTableNames.dart';
@@ -60,8 +59,8 @@ class FoodApiAccess{
     if(table != null){
       Product productFromDb = table as Product;
       productFromDb.scanDate = DateTime.now();
-      await PreferenceManager.getItemizedScanResults(productFromDb);
-      productFromDb.preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(productFromDb);
+      productFromDb.scanResultPromise = Product.initializeScanResult(productFromDb);
+      productFromDb.preferredIngredientsPromise = Product.initializePreferredIngredients(productFromDb);
 
       history.addProduct(productFromDb);
 

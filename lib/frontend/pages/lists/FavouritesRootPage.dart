@@ -1,3 +1,5 @@
+import 'package:Essbar/backend/Enums/ScanResult.dart';
+
 import '../../../backend/ListManager.dart';
 import '../../../backend/Product.dart';
 import '../../customWidgets/ProductListItem.dart';
@@ -14,6 +16,7 @@ class FavouritesRootPage extends StatefulWidget {
 
 class _FavouritesRootPageState extends State<FavouritesRootPage> {
   List<Product> _favouriteProducts;
+  Map<Product, ScanResult> _productsScanResults;
 
   @override
   void initState() {
@@ -27,7 +30,7 @@ class _FavouritesRootPageState extends State<FavouritesRootPage> {
     return Scaffold(
       appBar: CustomAppBar('Favoriten'),
       backgroundColor: Colors.white,
-      body: _favouriteProducts == null
+      body: _favouriteProducts == null || _productsScanResults == null
           ? CircularProgressIndicator()
           : _favouriteProducts.isEmpty
               ? Padding(
@@ -49,7 +52,7 @@ class _FavouritesRootPageState extends State<FavouritesRootPage> {
                                 : null,
                             name: product.name,
                             scanDate: product.scanDate,
-                            scanResult: product.scanResult,
+                            scanResult: _productsScanResults[product],
                             onProductSelected: () {
                               Navigator.pushNamed(context, '/product',
                                   arguments: product);
@@ -72,8 +75,14 @@ class _FavouritesRootPageState extends State<FavouritesRootPage> {
 
   void _getFavouriteProducts() async {
     var favouritesList = await ListManager.instance.favouritesList;
+    List<Product> favouriteProducts = favouritesList.getProducts();
+    Map<Product, ScanResult> productsResults = {
+      for (Product p in favouriteProducts) p: await p.getScanResult()
+    };
+
     setState(() {
       _favouriteProducts = favouritesList.getProducts();
+      _productsScanResults = productsResults;
     });
   }
 

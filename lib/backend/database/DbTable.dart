@@ -14,7 +14,7 @@ abstract class DbTable extends Comparable{
 
   // Methods
   DbTableNames getTableName();
-  Map<String, dynamic> toMap({bool withId: true});
+  Future<Map<String, dynamic>> toMap({bool withId: true});
   static DbTable fromMap(Map<String, dynamic> data) {}
 
   @override

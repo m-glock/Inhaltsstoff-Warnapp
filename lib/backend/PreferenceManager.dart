@@ -41,13 +41,12 @@ class PreferenceManager {
     String tableName = DbTableNames.ingredient.name;
 
     if (preferenceTypes?.isEmpty ?? true) {
-      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE preferenceTypeId IS NOT \'None\'');
+      int prefTypeId = PreferenceType.None.id;
+      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE preferenceTypeId IS NOT $prefTypeId');
       results.forEach((result) {
         ingredients.add(Ingredient.fromMap(result));
       });
-    }
-
-    if (preferenceTypes?.isNotEmpty ?? true) {
+    } else {
       List<String> preferenceTypeIds = preferenceTypes.map((preferenceType) => preferenceType.id.toString()).toList();
       String ids = preferenceTypeIds.reduce((value, element) => value + ', ' + element);
 
@@ -120,8 +119,7 @@ class PreferenceManager {
       itemizedScanResults[ingredient] = result;
     });
 
-    product.scanResult = overallResult;
-    product.itemizedScanResults = itemizedScanResults;
+    product.setScanResult(overallResult);
 
     return itemizedScanResults;
   }

@@ -32,7 +32,7 @@ class Ingredient extends DbTable {
   }
 
   @override
-  Map<String, dynamic> toMap({bool withId: true}) {
+  Future<Map<String, dynamic>> toMap({bool withId: true}) async {
     final map = new Map<String, dynamic>();
     map['name'] = _name;
     map['preferenceTypeId'] = preferenceType.id;
