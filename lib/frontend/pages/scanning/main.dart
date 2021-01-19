@@ -1,3 +1,4 @@
+import '../comparison/ComparisonRootPage.dart';
 import 'package:flutter/material.dart';
 
 import 'ScanningResultPage.dart';
@@ -24,7 +25,6 @@ class _ScanningPageState extends State<ScanningPage> {
                 return ScanningRootPage();
               case '/result':
                 return ScanningResultPage(settings.arguments);
-              //return ScanningResult(testProduct);
             }
           },
         );
