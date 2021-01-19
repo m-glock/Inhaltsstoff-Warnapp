@@ -1,14 +1,27 @@
+import 'package:Essbar/main.dart';
+
 import '../lib/backend/Enums/PreferenceType.dart';
 import '../lib/backend/Enums/Type.dart';
 import '../lib/backend/PreferenceManager.dart';
 import '../lib/backend/Ingredient.dart';
 import '../lib/backend/database/DatabaseHelper.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'dart:async';
+import '../lib/main.dart';
+//import 'package:test/test.dart';
 
 void main() async {
   final dbHelper = DatabaseHelper.instance;
   final db = await dbHelper.database;
 
+  test('get ingredients due to the preference type None', () async {
+    var ingredients = await PreferenceManager
+        .getPreferencedIngredients();
+    assert(ingredients != null);
+  });
+}
+
+  /*
   //TODO implement
   test('create ingredient and change preference type', () async {
     //var resultSetIngredient = await db.rawQuery('select name as ing_name from ingredient where name = "MilchTestIngredient"');
@@ -70,4 +83,4 @@ void main() async {
   });
 
   // TODO implement tests for PreferenceManager.getItemizedScanResults()
-}
+*/

@@ -34,8 +34,6 @@
 //             //vars
 //             final dbHelper = DatabaseHelper.instance;
 //             final db = await dbHelper.database;
-//
-//
 //             //method for getCurrentTime
 //             final DateTime now = DateTime.now();
 //             final DateFormat formatter = DateFormat('yyyy-MM-dd-Hm');
@@ -52,8 +50,6 @@
 //             //print('added Type & Ingredient'); //               <-- logging
 //
 //             //ingredient.changePreference(PreferenceType.NotWanted);
-//
-//
 //             //List<Map> results_preference_type = await dbHelper.readAll(DbTableNames.preferenceType);
 //             //print(results_preference_type);
 //             //List<Ingredient> ingredients1 = List();
