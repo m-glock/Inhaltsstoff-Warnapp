@@ -8,7 +8,7 @@ class TextRecognitionParser{
 
   static final RegExp _patternStart = RegExp(r'[Zutaten]+:');
   static final RegExp _patternEnd = RegExp(r'\D\.');
-  static final List<String> _iDontKnowWhatTheyAreCalled = ['Säuerungsmittel',
+  static final List<String> _additiveNames = ['Säuerungsmittel',
     'Verdickungsmittel', 'Emulgator', 'Stabilisator', 'Farbstoff',
     'Geschmacksverstärker', 'Konservierungsstoff'];
 
@@ -41,7 +41,7 @@ class TextRecognitionParser{
 
     // if text contains colon, then only the word after the colon
     // is considered an ingredient
-    _iDontKnowWhatTheyAreCalled.forEach((element) {
+    _additiveNames.forEach((element) {
       if(parsedText.contains(element))
         parsedText = parsedText.replaceAll(element, '');
     });
