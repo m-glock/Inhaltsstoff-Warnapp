@@ -1,9 +1,11 @@
+import 'package:Essbar/backend/Enums/PreferenceType.dart';
+import 'package:Essbar/backend/Ingredient.dart';
+import 'package:Essbar/backend/Enums/Type.dart';
 import 'package:Essbar/main.dart';
 
-import '../lib/backend/Enums/PreferenceType.dart';
-import '../lib/backend/Enums/Type.dart';
+
+
 import '../lib/backend/PreferenceManager.dart';
-import '../lib/backend/Ingredient.dart';
 import '../lib/backend/database/DatabaseHelper.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'dart:async';
@@ -11,15 +13,14 @@ import '../lib/main.dart' as app;
 import '../lib/main.dart';
 //import 'package:test/test.dart';
 
-void main() async {
-  final dbHelper = DatabaseHelper.instance;
-  final db = await dbHelper.database;
+void main() {
+
+  Ingredient ingredient = new Ingredient("name", PreferenceType.None, Type.General, null);
 
   //app.main();
-  test('get ingredients due to the preference type None', () async {
-    List <Ingredient> ingredients = await PreferenceManager
-        .getPreferencedIngredients();
-    assert(ingredients != null);
+  test('test toMap() ingredient', () {
+    var ingredient1 = ingredient.name;
+    assert(ingredient1 != null);
   });
 }
 
