@@ -11,7 +11,7 @@ import 'DbTableNames.dart';
 // code adapted from https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
 class DatabaseHelper {
 
-  static final _databaseName = "MyDatabase.db";
+  static final _databaseName = 'FoodDatabaseTheSecond.db';
   static final _databaseVersion = 1;
 
   // make this a singleton class
@@ -32,7 +32,7 @@ class DatabaseHelper {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     // comment in and execute once to delete old database, the comment out again
-    // File(path).delete();
+    //File(path).delete();
     return await openDatabase(path,
         version: _databaseVersion,
         onConfigure: _onConfigure,
@@ -97,7 +97,7 @@ class DatabaseHelper {
     if(to != null && values != null){
       return await db.insert(to.name, values);
     } else {
-      Map<String, dynamic> row = object.toMap(withId: false);
+      Map<String, dynamic> row = await object.toMap(withId: false);
       return await db.insert(object.getTableName().name, row);
     }
   }
@@ -108,7 +108,7 @@ class DatabaseHelper {
     List<int> newRowIds = new List();
 
     objects.forEach((element) async {
-      Map<String, dynamic> row = element.toMap(withId: false);
+      Map<String, dynamic> row = await element.toMap(withId: false);
       int rowId = await db.insert(element.getTableName().name, row);
       newRowIds.add(rowId);
     });
@@ -178,7 +178,8 @@ class DatabaseHelper {
   // update a specific row in a table
   Future<int> update(DbTable object) async {
     Database db = await instance.database;
-    return await db.update(object.getTableName().name, object.toMap(), where: 'id = ?', whereArgs: [object.id]);
+    Map<String, dynamic> objectRows = await object.toMap();
+    return await db.update(object.getTableName().name, objectRows, where: 'id = ?', whereArgs: [object.id]);
   }
 
   // update multiple rows in a table
@@ -187,7 +188,8 @@ class DatabaseHelper {
     List<int> updatedRowIds = new List();
 
     objects.forEach((element) async {
-      int rowId = await db.update(element.getTableName().name, element.toMap(), where: 'id = ?', whereArgs: [element.id]);
+      Map<String, dynamic> objectRows = await element.toMap();
+      int rowId = await db.update(element.getTableName().name, objectRows, where: 'id = ?', whereArgs: [element.id]);
       updatedRowIds.add(rowId);
     });
 

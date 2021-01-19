@@ -1,3 +1,5 @@
+import 'package:Essbar/backend/Enums/ScanResult.dart';
+
 import '../../../backend/ListManager.dart';
 import '../../../backend/Product.dart';
 import '../../customWidgets/ProductsList.dart';

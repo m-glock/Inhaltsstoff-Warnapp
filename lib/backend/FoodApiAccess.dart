@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import './ListManager.dart';
-import './PreferenceManager.dart';
 import 'package:http/http.dart' as http;
 
 import 'database/DbTableNames.dart';
@@ -60,8 +59,8 @@ class FoodApiAccess{
     if(table != null){
       Product productFromDb = table as Product;
       productFromDb.scanDate = DateTime.now();
-      await PreferenceManager.getItemizedScanResults(productFromDb);
-      productFromDb.preferredIngredients = await PreferenceManager.getPreferredIngredientsIn(productFromDb);
+      productFromDb.scanResultPromise = Product.initializeScanResult(productFromDb);
+      productFromDb.preferredIngredientsPromise = Product.initializePreferredIngredients(productFromDb);
 
       history.addProduct(productFromDb);
 
@@ -159,12 +158,29 @@ class FoodApiAccess{
         String translatedName;
         if(allTagValues.containsKey(element)){
           LinkedHashMap tagValueTranslations = allTagValues[element]['name'];
-          translatedName = tagValueTranslations.containsKey(languageCode)
-              ? tagValueTranslations[languageCode]
-              : tagValueTranslations['en'];
+
+          // get either the translation for the specified language
+          // or the english translation
+          if(languageCode == null){
+            translatedName = tagValueTranslations['en'];
+          } else {
+            translatedName = tagValueTranslations.containsKey(languageCode)
+                ? tagValueTranslations[languageCode]
+                : tagValueTranslations['en'];
+          }
+
+          // if translatedName is still null, take the original name and
+          // remove the language code and colon (i.e. 'fr:')
+          if(translatedName == null){
+            translatedName = element
+                .substring(element.indexOf(':') + 1)
+                .replaceAll('-', ' ');
+          }
         } else {
           String name = element.toString();
-          translatedName = name.substring(name.indexOf(':') + 1);
+          translatedName = name
+              .substring(name.indexOf(':') + 1)
+              .replaceAll('-', ' ');
         }
         translatedTagValues.add(translatedName);
       });

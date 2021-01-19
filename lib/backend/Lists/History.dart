@@ -49,6 +49,7 @@ class History extends ProductList{
 
   @override
   List<Product> getProducts() {
-    return _historyOfScannedProducts.keys.toList()?? new List<Product>();
+    return _historyOfScannedProducts.keys.toList().reversed.toList()
+        ?? new List<Product>();
   }
 }

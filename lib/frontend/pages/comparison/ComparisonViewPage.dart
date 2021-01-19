@@ -24,6 +24,9 @@ class ComparisonViewPage extends StatefulWidget {
 }
 
 class _ComparisonViewPageState extends State<ComparisonViewPage> {
+  ScanResult _scanResultProductOne;
+  ScanResult _scanResultProductTwo;
+
   List<Ingredient> _notWantedPreferences;
   Map<Ingredient, ScanResult> _itemizedResultsProductOne;
   Map<Ingredient, ScanResult> _itemizedResultsProductTwo;
@@ -42,50 +45,20 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
   @override
   void initState() {
     super.initState();
+    _getScanResults();
+
     _getNotWantedPreferences();
     _getItemizedResults();
 
     _getPreferredIngredients();
     _getPreferredIngredientsInProducts();
 
-    _notPreferencedIngredientsProductOne =
-        widget.productOne.getNotPreferredIngredientNames();
-    _notPreferencedIngredientsProductTwo =
-        widget.productTwo.getNotPreferredIngredientNames();
-
-    var notPreferencedIngredientsSet = new Set<String>();
-    notPreferencedIngredientsSet.addAll(_notPreferencedIngredientsProductOne);
-    notPreferencedIngredientsSet.addAll(_notPreferencedIngredientsProductTwo);
-    _notPreferencedIngredientsSum = notPreferencedIngredientsSet.toList();
+    _getNotPreferredIngredients();
 
     _additionalDetailsProductOne =
         _getAdditionalProductDetails(widget.productOne);
     _additionalDetailsProductTwo =
         _getAdditionalProductDetails(widget.productTwo);
-  }
-
-  void _getNotWantedPreferences() async {
-    var notWantedPreferences =
-        await PreferenceManager.getPreferencedIngredients([
-      PreferenceType.NotPreferred,
-      PreferenceType.NotWanted,
-    ]);
-    setState(() {
-      _notWantedPreferences = notWantedPreferences;
-    });
-  }
-
-  void _getItemizedResults() async {
-    var resultsProductOne =
-        await PreferenceManager.getItemizedScanResults(widget.productOne);
-    var resultsProductTwo =
-        await PreferenceManager.getItemizedScanResults(widget.productTwo);
-
-    setState(() {
-      _itemizedResultsProductOne = resultsProductOne;
-      _itemizedResultsProductTwo = resultsProductTwo;
-      //_preferences = preferences;
-    });
   }
 
   @override
@@ -100,26 +73,30 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
             padding: EdgeInsets.only(top: 12.0, bottom: 24.0),
             child: Row(
               children: [
-                Expanded(
-                  child: ComparisonSelectedProductCard(
-                    productNumber: 1,
-                    productName: widget.productOne.name,
-                    scanDate: widget.productOne.scanDate,
-                    useScanResultSpecificBackgroundColor: true,
-                    scanResult: widget.productOne.scanResult,
-                    showInfoButton: false,
-                  ),
-                ),
-                Expanded(
-                  child: ComparisonSelectedProductCard(
-                    productNumber: 2,
-                    productName: widget.productTwo.name,
-                    scanDate: widget.productTwo.scanDate,
-                    useScanResultSpecificBackgroundColor: true,
-                    scanResult: widget.productTwo.scanResult,
-                    showInfoButton: false,
-                  ),
-                ),
+                _scanResultProductOne == null
+                    ? CircularProgressIndicator()
+                    : Expanded(
+                        child: ComparisonSelectedProductCard(
+                          productNumber: 1,
+                          productName: widget.productOne.name,
+                          scanDate: widget.productOne.scanDate,
+                          useScanResultSpecificBackgroundColor: true,
+                          scanResult: _scanResultProductOne,
+                          showInfoButton: false,
+                        ),
+                      ),
+                _scanResultProductTwo == null
+                    ? CircularProgressIndicator()
+                    : Expanded(
+                        child: ComparisonSelectedProductCard(
+                          productNumber: 2,
+                          productName: widget.productTwo.name,
+                          scanDate: widget.productTwo.scanDate,
+                          useScanResultSpecificBackgroundColor: true,
+                          scanResult: _scanResultProductTwo,
+                          showInfoButton: false,
+                        ),
+                      ),
               ],
             ),
           ),
@@ -127,7 +104,6 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
             title: Text(
               'Deine Präferenzen',
               style: Theme.of(context).textTheme.headline2,
-              //textAlign: TextAlign.center,
             ),
             initiallyExpanded: true,
             children: _notWantedPreferences == null ||
@@ -234,43 +210,50 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
               //textAlign: TextAlign.center,
             ),
             initiallyExpanded: true,
-            children: _notPreferencedIngredientsSum.map((ingredient) {
-              return Padding(
-                padding: EdgeInsets.only(
-                  bottom: 8.0,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _notPreferencedIngredientsProductOne
-                              .contains(ingredient)
-                          ? Icon(Icons.done)
-                          : Icon(Icons.clear),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Center(
-                        child: Text(
-                          ingredient,
-                          style: Theme.of(context).textTheme.bodyText1.merge(
-                                TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
+            children: _notPreferencedIngredientsSum == null ||
+                    _notPreferencedIngredientsProductOne == null ||
+                    _notPreferencedIngredientsProductTwo == null
+                ? [
+                    CircularProgressIndicator(),
+                  ]
+                : _notPreferencedIngredientsSum.map((ingredient) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        bottom: 8.0,
                       ),
-                    ),
-                    Expanded(
-                      child: _notPreferencedIngredientsProductTwo
-                              .contains(ingredient)
-                          ? Icon(Icons.done)
-                          : Icon(Icons.clear),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _notPreferencedIngredientsProductOne
+                                    .contains(ingredient)
+                                ? Icon(Icons.done)
+                                : Icon(Icons.clear),
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Center(
+                              child: Text(
+                                ingredient,
+                                style:
+                                    Theme.of(context).textTheme.bodyText1.merge(
+                                          TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: _notPreferencedIngredientsProductTwo
+                                    .contains(ingredient)
+                                ? Icon(Icons.done)
+                                : Icon(Icons.clear),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
           ),
           ExpansionTile(
             title: Text(
@@ -325,14 +308,37 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
     );
   }
 
-  Map<String, String> _getAdditionalProductDetails(Product product) {
-    return {
-      'Menge': product.quantity ?? '-',
-      'Herkunft': product.origin ?? '-',
-      'Herstellungsorte': product.manufacturingPlaces ?? '-',
-      'Geschäfte': product.stores ?? '-',
-      'Nutriscore': product.nutriscore ?? '-',
-    };
+  void _getScanResults() async {
+    ScanResult resultProductOne = await widget.productOne.getScanResult();
+    ScanResult resultProductTwo = await widget.productTwo.getScanResult();
+    setState(() {
+      _scanResultProductOne = resultProductOne;
+      _scanResultProductTwo = resultProductTwo;
+    });
+  }
+
+  void _getNotWantedPreferences() async {
+    var notWantedPreferences =
+        await PreferenceManager.getPreferencedIngredients([
+      PreferenceType.NotPreferred,
+      PreferenceType.NotWanted,
+    ]);
+    setState(() {
+      _notWantedPreferences = notWantedPreferences;
+    });
+  }
+
+  void _getItemizedResults() async {
+    var resultsProductOne =
+        await PreferenceManager.getItemizedScanResults(widget.productOne);
+    var resultsProductTwo =
+        await PreferenceManager.getItemizedScanResults(widget.productTwo);
+
+    setState(() {
+      _itemizedResultsProductOne = resultsProductOne;
+      _itemizedResultsProductTwo = resultsProductTwo;
+      //_preferences = preferences;
+    });
   }
 
   void _getPreferredIngredients() async {
@@ -358,5 +364,36 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
           .map((ingredient) => ingredient.name)
           .toList();
     });
+  }
+
+  void _getNotPreferredIngredients() async {
+    List<String> notPreferencedIngredientsProductOne =
+        await widget.productOne.getNotPreferredIngredientNames();
+    List<String> notPreferencedIngredientsProductTwo =
+        await widget.productTwo.getNotPreferredIngredientNames();
+
+    var notPreferencedIngredientsSet = new Set<String>();
+    notPreferencedIngredientsSet.addAll(notPreferencedIngredientsProductOne);
+    notPreferencedIngredientsSet.addAll(notPreferencedIngredientsProductTwo);
+    List<String> notPreferencedIngredientsSum =
+        notPreferencedIngredientsSet.toList();
+
+    setState(() {
+      _notPreferencedIngredientsProductOne =
+          notPreferencedIngredientsProductOne;
+      _notPreferencedIngredientsProductTwo =
+          notPreferencedIngredientsProductTwo;
+      _notPreferencedIngredientsSum = notPreferencedIngredientsSum;
+    });
+  }
+
+  Map<String, String> _getAdditionalProductDetails(Product product) {
+    return {
+      'Menge': product.quantity ?? '-',
+      'Herkunft': product.origin ?? '-',
+      'Herstellungsorte': product.manufacturingPlaces ?? '-',
+      'Geschäfte': product.stores ?? '-',
+      'Nutriscore': product.nutriscore ?? '-',
+    };
   }
 }

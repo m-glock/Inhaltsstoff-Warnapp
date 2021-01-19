@@ -23,7 +23,7 @@ abstract class ProductList extends DbTable{
   }
 
   @override
-  Map<String, dynamic> toMap({bool withId = true}) {
+  Future<Map<String, dynamic>> toMap({bool withId = true}) async {
     final map = new Map<String, dynamic>();
 
     map['id'] = id;
