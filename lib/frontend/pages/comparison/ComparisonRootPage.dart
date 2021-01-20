@@ -1,40 +1,34 @@
 import 'package:flutter/material.dart';
+
 import '../../customWidgets/CustomAppBar.dart';
+import '../../../backend/Product.dart';
+import './ComparisonViewPage.dart';
+import './ComparisonSelectionPage.dart';
 
-class ComparisonRootPage extends StatefulWidget {
-  const ComparisonRootPage({ Key key }) : super(key: key);
+class ComparisonRootPage extends StatelessWidget {
+  const ComparisonRootPage({Key key, this.productOne}) : super(key: key);
 
-  @override
-  _ComparisonRootPageState createState() => _ComparisonRootPageState();
-}
-
-class _ComparisonRootPageState extends State<ComparisonRootPage> {
-  TextEditingController _textController;
-
-  @override
-  void initState() {
-    super.initState();
-    _textController = TextEditingController(
-      text: "Comparison",
-    );
-  }
+  final Product productOne;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar('Vergleich'),
       backgroundColor: Colors.white,
-      body: Container(
-        padding: const EdgeInsets.all(32.0),
-        alignment: Alignment.center,
-        child: TextField(controller: _textController),
+      body: ComparisonSelectionPage(
+        productOne: productOne,
+        onSelectedProducts: (productOne, productTwo) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => ComparisonViewPage(
+                productOne: productOne,
+                productTwo: productTwo,
+              ),
+            ),
+          );
+        },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
   }
 }

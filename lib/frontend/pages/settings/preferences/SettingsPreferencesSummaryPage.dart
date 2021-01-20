@@ -44,12 +44,16 @@ class _SettingsPreferencesSummaryPageState
           horizontal: 16.0,
           vertical: 4.0,
         ),
-        child: PreferencesSummary(
-          allergenePreferences: _allergenePreferences,
-          nutrientPreferences: _nutrientPreferences,
-          otherIngredientPreferences: _otherIngredientPreferences,
-          onEditPreference: (String newPageName) =>
-              _routeToSubPage(newPageName, context),
+        child: ListView(
+          children: [
+            PreferencesSummary(
+              allergenePreferences: _allergenePreferences,
+              nutrientPreferences: _nutrientPreferences,
+              otherIngredientPreferences: _otherIngredientPreferences,
+              onEditPreference: (String newPageName) =>
+                  _routeToSubPage(newPageName, context),
+            ),
+          ],
         ),
       ),
     );

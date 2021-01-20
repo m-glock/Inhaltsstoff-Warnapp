@@ -1,7 +1,10 @@
+import 'package:Essbar/frontend/customWidgets/ComingSoonView.dart';
 import 'package:flutter/material.dart';
 
 class SettingsGeneralPage extends StatelessWidget {
-  const SettingsGeneralPage({Key key,}) : super(key: key);
+  const SettingsGeneralPage({
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,10 +14,8 @@ class SettingsGeneralPage extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
-      body: Container(
-        padding: const EdgeInsets.all(32.0),
-        alignment: Alignment.center,
-        child: Text('Hier kann man die allgemeinen Einstellungen vornehmen.'),
+      body: ComingSoonView(
+        teaser: 'Hier kannst du bald Schriftgröße, Sprache und Co. ändern.',
       ),
     );
   }

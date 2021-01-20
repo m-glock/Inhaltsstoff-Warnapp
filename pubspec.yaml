@@ -1,5 +1,5 @@
-name: Inhaltsstoff_Warnapp
-description: A new Flutter project.
+name: Essbar
+description: "Die Inhaltsstoff Warnapp"
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -25,7 +25,13 @@ dependencies:
     sdk: flutter
   sqflite: ^1.3.1
   path_provider: ^1.6.24
+  path: ^1.6.2
+  intl: ^0.16.1
+  firebase_ml_vision: ^0.9.10
+  image_crop: ^0.3.4
+  camera: ^0.5.8+17
   sortedmap: ^0.4.2
+  event: ^1.1.4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

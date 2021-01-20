@@ -37,7 +37,7 @@ class LabelledIconButton extends StatelessWidget {
               ? CircleBorder(
                   side: BorderSide(
                     color: Theme.of(context).primaryColor,
-                    width: 1.5,
+                    width: 1.0,
                   ),
                 )
               : CircleBorder(),
@@ -48,7 +48,9 @@ class LabelledIconButton extends StatelessWidget {
             label,
             style: Theme.of(context).textTheme.bodyText2.merge(
                   TextStyle(
-                    color: Theme.of(context).primaryColor,
+                    color: onPressed != null
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).disabledColor,
                   ),
                 ),
           ),

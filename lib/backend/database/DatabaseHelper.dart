@@ -1,11 +1,10 @@
 import 'dart:io';
-
-import 'package:Inhaltsstoff_Warnapp/backend/FoodApiAccess.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
+import './../FoodApiAccess.dart';
 import 'DbTable.dart';
 import 'DbTableNames.dart';
 
@@ -98,7 +97,7 @@ class DatabaseHelper {
     if(to != null && values != null){
       return await db.insert(to.name, values);
     } else {
-      Map<String, dynamic> row = object.toMap(withId: false);
+      Map<String, dynamic> row = await object.toMap(withId: false);
       return await db.insert(object.getTableName().name, row);
     }
   }
@@ -109,7 +108,7 @@ class DatabaseHelper {
     List<int> newRowIds = new List();
 
     objects.forEach((element) async {
-      Map<String, dynamic> row = element.toMap(withId: false);
+      Map<String, dynamic> row = await element.toMap(withId: false);
       int rowId = await db.insert(element.getTableName().name, row);
       newRowIds.add(rowId);
     });
@@ -179,8 +178,8 @@ class DatabaseHelper {
   // update a specific row in a table
   Future<int> update(DbTable object) async {
     Database db = await instance.database;
-    Map<String, dynamic> test = object.toMap();
-    return await db.update(object.getTableName().name, test, where: 'id = ?', whereArgs: [object.id]);
+    Map<String, dynamic> objectRows = await object.toMap();
+    return await db.update(object.getTableName().name, objectRows, where: 'id = ?', whereArgs: [object.id]);
   }
 
   // update multiple rows in a table
@@ -189,7 +188,8 @@ class DatabaseHelper {
     List<int> updatedRowIds = new List();
 
     objects.forEach((element) async {
-      int rowId = await db.update(element.getTableName().name, element.toMap(), where: 'id = ?', whereArgs: [element.id]);
+      Map<String, dynamic> objectRows = await element.toMap();
+      int rowId = await db.update(element.getTableName().name, objectRows, where: 'id = ?', whereArgs: [element.id]);
       updatedRowIds.add(rowId);
     });
 

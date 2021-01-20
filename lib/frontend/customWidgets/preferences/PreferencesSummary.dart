@@ -55,43 +55,41 @@ class PreferencesSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          EditableChipsList(
-            icon: Icons.medical_services_outlined,
-            title: "Allergien",
-            items: _allergens,
-            onEdit: () {
-              onEditPreference("allergens");
-            },
-          ),
-          EditableChipsList(
-            icon: Icons.insights,
-            title: "Erwünschte Nährstoffe",
-            items: _nutrients,
-            onEdit: () {
-              onEditPreference("nutrients");
-            },
-          ),
-          EditableChipsList(
-            icon: Icons.remove_circle_outline,
-            title: "Verbotene Inhaltsstoffe",
-            items: _unWantedOtherIngredients,
-            onEdit: () {
-              onEditPreference("unwantedIngredients");
-            },
-          ),
-          EditableChipsList(
-            icon: Icons.trending_down,
-            title: "Zu reduzierende Inhaltsstoffe",
-            items: _unPreferredOtherIngredients,
-            onEdit: () {
-              onEditPreference("unpreferredIngredients");
-            },
-          )
-        ],
-      ),
+    return Column(
+      children: [
+        EditableChipsList(
+          icon: Icons.medical_services_outlined,
+          title: "Allergien",
+          items: _allergens,
+          onEdit: () {
+            onEditPreference("allergens");
+          },
+        ),
+        EditableChipsList(
+          icon: Icons.insights,
+          title: "Erwünschte Nährstoffe",
+          items: _nutrients,
+          onEdit: () {
+            onEditPreference("nutrients");
+          },
+        ),
+        EditableChipsList(
+          icon: Icons.remove_circle_outline,
+          title: "Verbotene Inhaltsstoffe",
+          items: _unWantedOtherIngredients,
+          onEdit: () {
+            onEditPreference("unwantedIngredients");
+          },
+        ),
+        EditableChipsList(
+          icon: Icons.trending_down,
+          title: "Zu reduzierende Inhaltsstoffe",
+          items: _unPreferredOtherIngredients,
+          onEdit: () {
+            onEditPreference("unpreferredIngredients");
+          },
+        )
+      ],
     );
   }
 }

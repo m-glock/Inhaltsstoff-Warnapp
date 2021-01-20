@@ -1,4 +1,4 @@
-import 'package:Inhaltsstoff_Warnapp/backend/Lists/ProductList.dart';
+import '../Lists/ProductList.dart';
 
 import '../Ingredient.dart';
 import '../Product.dart';
