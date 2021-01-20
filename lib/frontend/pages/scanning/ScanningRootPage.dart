@@ -10,7 +10,9 @@ import '../../customWidgets/LabelledIconButton.dart';
 import 'scanningCustomWidgets/ScanningBarcodeDialog.dart';
 
 class ScanningRootPage extends StatefulWidget {
-  const ScanningRootPage({Key key}) : super(key: key);
+  ScanningRootPage({Key key, this.onFetchedProduct}) : super(key: key);
+
+  Function(Product) onFetchedProduct;
 
   @override
   _ScanningRootPageState createState() => _ScanningRootPageState();
@@ -52,7 +54,9 @@ class _ScanningRootPageState extends State<ScanningRootPage> {
     setState(() {
       _isLoading = false;
     });
-    Navigator.pushNamed(context, '/result', arguments: product);
+    widget.onFetchedProduct != null
+        ? widget.onFetchedProduct(product)
+        : Navigator.pushNamed(context, '/result', arguments: product);
   }
 
   @override

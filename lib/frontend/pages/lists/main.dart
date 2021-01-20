@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'FavouritesRootPage.dart';
-import 'FavouritesSecondPage.dart';
+
+import '../scanning/ScanningResultPage.dart';
+import './FavouritesRootPage.dart';
 
 class FavouritesPage extends StatefulWidget {
   const FavouritesPage({ Key key }) : super(key: key);
@@ -20,8 +21,8 @@ class _FavouritesPageState extends State<FavouritesPage> {
             switch(settings.name) {
               case '/':
                 return FavouritesRootPage();
-              case '/second':
-                return FavouritesSecondPage();
+              case '/product':
+                return ScanningResultPage(settings.arguments);
             }
           },
         );
