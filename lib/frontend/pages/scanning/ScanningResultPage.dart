@@ -119,6 +119,17 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 10.0),
+                  child: widget.scannedProduct.barcode == null
+                    ? ScanningInfoLine(
+                        backgroundColor: Colors.red,
+                        textColor: Colors.red[100],
+                        icon: Icons.warning_amber_sharp,
+                        text: 'Es konnten nicht alle Inhaltsstoffe mit den Präferenzen abgeglichen werden.',
+                      )
+                    : Container(),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10.0),
                   child: ScanningInfoLine(
                     backgroundColor: _currentResultAppearance.backgroundColor,
                     textColor: _currentResultAppearance.textColor,
