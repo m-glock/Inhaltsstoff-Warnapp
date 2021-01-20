@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:Essbar/frontend/customWidgets/CustomAlertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import '../../../backend/FoodApiAccess.dart';
 import '../../../backend/Product.dart';
+import '../../customWidgets/CustomAlertDialog.dart';
 import '../../customWidgets/CustomAppBar.dart';
 import '../../customWidgets/LabelledIconButton.dart';
 import 'scanningCustomWidgets/ScanningBarcodeDialog.dart';
@@ -41,7 +41,7 @@ class _ScanningRootPageState extends State<ScanningRootPage> {
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
-    if (!mounted) return;
+    if (!mounted || barcodeScanRes == '-1') return;
 
     _fetchProduct(barcodeScanRes);
   }
