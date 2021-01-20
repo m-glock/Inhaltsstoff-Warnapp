@@ -26,10 +26,10 @@ void main() {
       (WidgetTester tester) async {
     // mock allergenePreferences map
     Ingredient firstIngredient = Ingredient(
-        "Haselnuss", PreferenceType.NotWanted, DateTime.now(), Type.Allergen,
+        "Haselnuss", PreferenceType.NotWanted, Type.Allergen, DateTime.now(),
         id: 2);
     Ingredient secondIngredient = Ingredient(
-        "Soja", PreferenceType.None, DateTime.now(), Type.Allergen,
+        "Soja", PreferenceType.None, Type.Allergen, DateTime.now(),
         id: 1);
     Map<Ingredient, PreferenceType> mockedAllegenePreferences = {
       firstIngredient: PreferenceType.NotWanted,
