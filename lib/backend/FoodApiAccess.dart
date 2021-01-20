@@ -158,12 +158,29 @@ class FoodApiAccess{
         String translatedName;
         if(allTagValues.containsKey(element)){
           LinkedHashMap tagValueTranslations = allTagValues[element]['name'];
-          translatedName = tagValueTranslations.containsKey(languageCode)
-              ? tagValueTranslations[languageCode]
-              : tagValueTranslations['en'];
+
+          // get either the translation for the specified language
+          // or the english translation
+          if(languageCode == null){
+            translatedName = tagValueTranslations['en'];
+          } else {
+            translatedName = tagValueTranslations.containsKey(languageCode)
+                ? tagValueTranslations[languageCode]
+                : tagValueTranslations['en'];
+          }
+
+          // if translatedName is still null, take the original name and
+          // remove the language code and colon (i.e. 'fr:')
+          if(translatedName == null){
+            translatedName = element
+                .substring(element.indexOf(':') + 1)
+                .replaceAll('-', ' ');
+          }
         } else {
           String name = element.toString();
-          translatedName = name.substring(name.indexOf(':') + 1);
+          translatedName = name
+              .substring(name.indexOf(':') + 1)
+              .replaceAll('-', ' ');
         }
         translatedTagValues.add(translatedName);
       });

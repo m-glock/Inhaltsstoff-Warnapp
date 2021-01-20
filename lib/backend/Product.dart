@@ -1,6 +1,7 @@
 import 'package:Essbar/backend/Enums/PreferenceType.dart';
 import 'package:sqflite/sqflite.dart';
 
+import './TextRecognitionParser.dart';
 import './PreferenceManager.dart';
 import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
@@ -10,16 +11,17 @@ import 'Enums/Type.dart';
 import 'FoodApiAccess.dart';
 import 'Ingredient.dart';
 
-class Product extends DbTable {
-  String _name;
+class Product extends DbTable{
+
+  String name;
   ScanResult _scanResult;
   String _imageUrl;
   String _barcode;
-  DateTime _scanDate;
+  DateTime scanDate;
   DateTime _lastUpdated;
   String _nutriscore;
 
-  List<Ingredient> _ingredients;
+  List<Ingredient> ingredients;
   Map<Ingredient, ScanResult> _itemizedScanResults;
   List<Ingredient> _preferredIngredients;
 
@@ -67,37 +69,19 @@ class Product extends DbTable {
   }
 
   // Getter
-  String get name => _name;
-
   String get imageUrl => _imageUrl;
-
   String get barcode => _barcode;
-
-  DateTime get scanDate => _scanDate;
-
   DateTime get lastUpdated => _lastUpdated;
 
   String get nutriscore => _nutriscore;
-
-  List<Ingredient> get ingredients => _ingredients;
-
   String get quantity => _quantity;
-
   String get origin => _origin;
-
   String get manufacturingPlaces => _manufacturingPlaces;
-
   String get stores => _stores;
 
-  // Setter
-  set name(String newName) => _name = newName;
-
-  set scanDate(DateTime newTime) => _scanDate = newTime;
-
   // constructor with minimal necessary information
-  Product(this._name, this._imageUrl, this._barcode, this._scanDate, {int id})
-      : super(id) {
-    _ingredients = List();
+  Product(this.name, this._imageUrl, this._barcode, this.scanDate, {int id}) : super(id) {
+    ingredients = List();
   }
 
   /*
@@ -143,6 +127,7 @@ class Product extends DbTable {
           .getTranslatedValuesForTag('minerals', tagValues: mineralNames));
 
     List<dynamic> ingredientNames = json['ingredients_tags'];
+
     if (ingredientNames != null && ingredientNames.isNotEmpty)
       translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag(
           'ingredients',
@@ -152,11 +137,11 @@ class Product extends DbTable {
       Ingredient ingredient = await DatabaseHelper.instance
           .read(DbTableNames.ingredient, [name], whereColumn: 'name');
       if (ingredient == null) {
-        ingredient = new Ingredient(name, PreferenceType.None, null, Type.General);
+        ingredient = new Ingredient(name, PreferenceType.None, Type.General, null);
         int id = await DatabaseHelper.instance.add(ingredient);
         ingredient.id = id;
       }
-      newProduct._ingredients.add(ingredient);
+      newProduct.ingredients.add(ingredient);
     }
 
     newProduct.scanResultPromise = initializeScanResult(newProduct);
@@ -176,6 +161,22 @@ class Product extends DbTable {
     List<Ingredient> preferredIngredients =
         await PreferenceManager.getPreferredIngredientsIn(product);
     product.setPreferredIngredients(preferredIngredients);
+  }
+
+  //TODO: where does name come from? Also get Image URL?
+  static Future<Product> fromTextRecognition(String ingredientsText, String productName) async {
+    if(ingredientsText?.isEmpty ?? true) return null;
+
+    List<Ingredient> ingredients = await TextRecognitionParser.parseIngredientNames(ingredientsText);
+    Product product = Product(productName, null, null, DateTime.now());
+    product.ingredients = ingredients;
+
+    product.scanResultPromise = initializeScanResult(product);
+    product.preferredIngredientsPromise =
+        initializePreferredIngredients(product);
+
+    await product.saveInDatabase();
+    return product;
   }
 
   /*
@@ -212,7 +213,7 @@ class Product extends DbTable {
         await getItemizedScanResults();
     List<Ingredient> unwantedPreferences = itemizedScanResults.keys.toList();
     List<Ingredient> preferredIngredients = await getPreferredIngredients();
-    _ingredients.forEach((element) {
+    ingredients.forEach((element) {
       if (!unwantedPreferences.contains(element) &&
           !preferredIngredients.contains(element))
         notPreferredIngredients.add(element.name);
@@ -230,8 +231,8 @@ class Product extends DbTable {
 
     // save each ingredients connection to the product in productingredient
     Database db = await helper.database;
-    if (_ingredients.isNotEmpty) {
-      for (Ingredient ingredient in _ingredients) {
+    if(ingredients.isNotEmpty) {
+      for (Ingredient ingredient in ingredients) {
         Map<String, dynamic> values = Map();
         values['productId'] = this.id;
         values['ingredientId'] = ingredient.id;
@@ -255,8 +256,8 @@ class Product extends DbTable {
     map['name'] = name;
     map['imageUrl'] = _imageUrl;
     map['barcode'] = _barcode;
-    map['scanDate'] = _scanDate.toIso8601String();
-    map['lastUpdated'] = _lastUpdated.toIso8601String();
+    map['scanDate'] = scanDate == null ? '' : scanDate.toIso8601String();
+    map['lastUpdated'] = _lastUpdated == null ? '' : _lastUpdated.toIso8601String();
     map['nutriScore'] = _nutriscore;
 
     map['quantity'] = _quantity;
@@ -269,14 +270,20 @@ class Product extends DbTable {
 
   static Future<Product> fromMap(Map<String, dynamic> data) async {
     int productId = data['id'];
-    DateTime scanDate = DateTime.parse(data['scanDate']);
+    String scanDateDb = data['scanDate'];
+    DateTime scanDate = scanDateDb == ''
+        ? null
+        : DateTime.parse(data['scanDate']);
     Product product = Product(
         data['name'], data['imageUrl'], data['barcode'], scanDate,
         id: productId);
     int scanResultId = data['scanResultId'];
 
     product._scanResult = ScanResult.values.elementAt(scanResultId - 1);
-    product._lastUpdated = DateTime.parse(data['lastUpdated']);
+    String lastUpdatedDb = data['lastUpdated'];
+    product._lastUpdated = lastUpdatedDb == ''
+        ? null
+        : DateTime.parse(lastUpdatedDb);
     product._nutriscore = data['nutriScore'];
     product._quantity = data['quantity'];
     product._origin = data['originCountry'];
