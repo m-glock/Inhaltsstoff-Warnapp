@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "239509622819",
+    "project_id": "textrecognitionforflutter",
+    "storage_bucket": "textrecognitionforflutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239509622819:android:8089984cc38452cb6a2196",
+        "android_client_info": {
+          "package_name": "com.example.EssBar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "239509622819-c9gqsb3f5mmpl5lr8ch8ch9ghl092bee.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYHa2Zg8GTw_tS_imudY0Ss1I_tmYe1I8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239509622819-c9gqsb3f5mmpl5lr8ch8ch9ghl092bee.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239509622819:android:2be4cf4eb98e05476a2196",
+        "android_client_info": {
+          "package_name": "com.example.EssBar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "239509622819-c9gqsb3f5mmpl5lr8ch8ch9ghl092bee.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYHa2Zg8GTw_tS_imudY0Ss1I_tmYe1I8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239509622819-c9gqsb3f5mmpl5lr8ch8ch9ghl092bee.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

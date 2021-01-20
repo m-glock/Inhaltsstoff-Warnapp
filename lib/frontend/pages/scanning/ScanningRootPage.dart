@@ -138,7 +138,9 @@ class _ScanningRootPageState extends State<ScanningRootPage> {
                         label: 'Text scannen',
                         icon: Icons.image,
                         isPrimary: false,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/camera');
+                        },
                       ),
                     ],
                   ),
