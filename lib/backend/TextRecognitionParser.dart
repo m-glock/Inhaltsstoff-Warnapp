@@ -6,18 +6,19 @@ import 'database/DatabaseHelper.dart';
 
 class TextRecognitionParser{
 
-  static final RegExp _patternStart = RegExp(r'[Zutaten]+:');
+  static final RegExp _patternStart = RegExp(r'[ten]+:');
   static final RegExp _patternEnd = RegExp(r'\D\.');
   static final List<String> _additiveNames = ['Säuerungsmittel',
-    'Verdickungsmittel', 'Emulgator', 'Stabilisator', 'Farbstoff',
-    'Geschmacksverstärker', 'Konservierungsstoff'];
+    'Verdickungsmittel', 'Emulgatoren', 'Emulgator', 'Stabilisatoren',
+    'Stabilisator', 'Farbstoffe', 'Farbstoff', 'Geschmacksverstärker',
+    'Konservierungsstoffe', 'Konservierungsstoff'];
 
   static Future<List<Ingredient>> parseIngredientNames(String text) async {
     String parsedText;
 
     // ingredients start with a specific word
     // everything before that is not needed
-    if(text.contains(_patternStart)) parsedText = text.trim().substring(text.indexOf(_patternStart) + 9);
+    if(text.contains(_patternStart)) parsedText = text.trim().substring(text.indexOf(_patternStart) + 4);
     else parsedText = text.trim();
 
     // dot normally marks the end of the ingredients list
@@ -34,10 +35,6 @@ class TextRecognitionParser{
     parsedText = parsedText.replaceAll(RegExp(r'[0-9]+%|[0-9]+.[0-9]+%'), '');
 
     // remove any special character that might be in there
-    parsedText = parsedText.replaceAll(RegExp(r'[&+=#|^\*%!:]'), '');
-
-    if(RegExp(r'\(\w+,').hasMatch(parsedText))
-      parsedText = _handleParentheses(parsedText);
 
     // if text contains colon, then only the word after the colon
     // is considered an ingredient
@@ -46,8 +43,13 @@ class TextRecognitionParser{
         parsedText = parsedText.replaceAll(element, '');
     });
 
+    parsedText = parsedText.replaceAll(RegExp(r'[&+=#|^\*%!:\-\"]'), '');
+
+    if(RegExp(r'\(\w+,').hasMatch(parsedText))
+      parsedText = _handleParentheses(parsedText);
+
     // spilt at either dot or semicolon
-    List<String> ingredientNames = parsedText.split(RegExp(r', |; '));
+    List<String> ingredientNames = parsedText.split(RegExp(r',|;'));
 
     return await _getIngredientsFromText(ingredientNames);
   }
@@ -82,12 +84,13 @@ class TextRecognitionParser{
     List<Ingredient> ingredients = List();
 
     for(int i = 0; i <= ingredientNames.length - 1; ++i){
-      String name = ingredientNames.elementAt(i).trim();
-      Ingredient ing = await helper.read(DbTableNames.ingredient, [name], whereColumn: 'name');
+      String name = ingredientNames.elementAt(i).trim().toLowerCase();
+      List<Map<String, dynamic>> data = await helper.customQuery('SELECT * FROM ingredient WHERE name LIKE \'$name\'');
+      Ingredient ing = (data != null && data.isNotEmpty)
+          ? Ingredient.fromMap(data[0])
+          : null;
       if(ing == null){
-        ing = Ingredient(name, PreferenceType.None, Type.General, null);
-        int id = await helper.add(ing);
-        ing.id = id;
+        ing = Ingredient(ingredientNames.elementAt(i).trim(), PreferenceType.None, Type.General, null);
       }
       ingredients.add(ing);
     }

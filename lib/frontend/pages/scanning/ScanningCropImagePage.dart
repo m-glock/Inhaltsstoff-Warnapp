@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:Essbar/backend/Product.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:image_crop/image_crop.dart';
 import 'package:flutter/material.dart';
 
@@ -110,10 +113,28 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
     debugPrint('FILE:         $file');
     _lastCropped = file;
 
-    Navigator.pushNamed(
-      context,
-      '/result_textrecognition', 
-      arguments:file,
-    );
+    Product product = await _textRecognition(_lastCropped);
+
+    Navigator.pushNamed(context, '/result', arguments: product);
+  }
+
+  Future<Product> _textRecognition(File path) async {
+    final FirebaseVisionImage visionImage =
+    FirebaseVisionImage.fromFile(path);
+
+    final TextRecognizer textRecognizer =
+    FirebaseVision.instance.textRecognizer();
+
+    final VisionText visionText =
+        await textRecognizer.processImage(visionImage);
+
+    String text = "";
+    for (TextBlock block in visionText.blocks) {
+      for (TextLine line in block.lines) {
+        text += line.text;
+      }
+    }
+
+    return await Product.fromTextRecognition(text);
   }
 }

@@ -78,11 +78,11 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
           : ListView(
               padding: EdgeInsets.symmetric(vertical: 20.0),
               children: <Widget>[
-                widget.scannedProduct.name == null
+                widget.scannedProduct.name.isEmpty
                     ? EditableTitle(
                         originalTitle: 'Unbenanntes Produkt',
                         onTitleChanged: (String value) {
-                          widget.scannedProduct.name = value;
+                          widget.scannedProduct.setName(value);
                         },
                       )
                     : Text(
@@ -307,7 +307,7 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
       return {};
     } else {
       return {
-        'Menge': widget.scannedProduct.quantity.toString() ?? 'keine Angabe',
+        'Menge': widget.scannedProduct.quantity ?? 'keine Angabe',
         'Herkunft': widget.scannedProduct.origin ?? 'keine Angabe',
         'Herstellungsorte':
             widget.scannedProduct.manufacturingPlaces ?? 'keine Angabe',
