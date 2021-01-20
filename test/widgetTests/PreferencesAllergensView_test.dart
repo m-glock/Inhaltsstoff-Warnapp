@@ -14,7 +14,11 @@ import 'package:Essbar/backend/Ingredient.dart';
 
 Widget buildTestableWidget(Widget widget) {
   return MediaQuery(
-      data: MediaQueryData(), child: MaterialApp(home: Scaffold(body: widget)));
+    data: MediaQueryData(),
+    child: MaterialApp(
+      home: Scaffold(body: widget),
+    ),
+  );
 }
 
 void main() {
