@@ -5,4 +5,5 @@ CREATE TABLE scanresult ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NU
 CREATE TABLE list ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL);
 CREATE TABLE product ( id INTEGER PRIMARY KEY AUTOINCREMENT, scanResultId INTEGER NOT NULL, name TEXT NOT NULL UNIQUE, imageUrl TEXT DEFAULT NULL, barcode TEXT UNIQUE, scanDate DATE NOT NULL, lastUpdated DATE DEFAULT NULL, nutriScore INTEGER DEFAULT NULL, quantity INTEGER DEFAULT NULL, originCountry TEXT DEFAULT NULL, manufactoringPlaces TEXT DEFAULT NULL, stores TEXT DEFAULT NULL, FOREIGN KEY(scanResultId) REFERENCES scanresult(id) );
 CREATE TABLE productlist ( listId INTEGER NOT NULL, productId INTEGER NOT NULL, FOREIGN KEY(listId) REFERENCES list(id), FOREIGN KEY(productId) REFERENCES product(id) );
-CREATE TABLE productingredient ( productId INTEGER NOT NULL, ingredientId INTEGER NOT NULL, FOREIGN KEY(productId) REFERENCES product(id), FOREIGN KEY(ingredientId) REFERENCES ingredient(id), PRIMARY KEY(productId, ingredientId) )
+CREATE TABLE productingredient ( productId INTEGER NOT NULL, ingredientId INTEGER NOT NULL, FOREIGN KEY(productId) REFERENCES product(id), FOREIGN KEY(ingredientId) REFERENCES ingredient(id), PRIMARY KEY(productId, ingredientId) );
+CREATE TABLE metadataFlags ( name TEXT, isInitialized INTEGER DEFAULT 0)

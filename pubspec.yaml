@@ -42,9 +42,6 @@ dependencies:
   # package for the onboarding flow
   introduction_screen: ^1.0.9
 
-  # package for platform-specific persistent storage of simple data
-  shared_preferences: ^0.5.12+4
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
