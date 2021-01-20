@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Essbar/frontend/customWidgets/CustomAlertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -42,21 +43,41 @@ class _ScanningRootPageState extends State<ScanningRootPage> {
     // setState to update our non-existent appearance.
     if (!mounted) return;
 
-    fetchProduct(barcodeScanRes);
+    _fetchProduct(barcodeScanRes);
   }
 
-  Future<void> fetchProduct(String barcode) async {
+  Future<void> _fetchProduct(String barcode) async {
     setState(() {
       _isLoading = true;
     });
-    //var product = await FoodApiAccess.scanProduct('4009077020122');
     Product product = await FoodApiAccess.instance.scanProduct(barcode);
     setState(() {
       _isLoading = false;
     });
+    if (product == null) {
+      _showBarcodeNotFoundAlert();
+      return;
+    }
     widget.onFetchedProduct != null
         ? widget.onFetchedProduct(product)
         : Navigator.pushNamed(context, '/result', arguments: product);
+  }
+
+  void _showBarcodeNotFoundAlert() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return CustomAlertDialog(
+          headline: 'Das hat leider nicht geklappt',
+          content: 'Es tut uns leid. Zu diesem Barcode konnten wir leider kein Produkt finden. '
+              'Versuche es noch einmal oder verwende alternativ die Texterkennung. ',
+          onDismiss: () {
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -99,7 +120,7 @@ class _ScanningRootPageState extends State<ScanningRootPage> {
                                 },
                                 onSubmit: (String value) {
                                   Navigator.pop(context);
-                                  fetchProduct(value);
+                                  _fetchProduct(value);
                                 },
                               );
                             },
