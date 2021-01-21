@@ -85,51 +85,42 @@ class _SettingsPreferencesSummaryPageState
   void _routeToSubPage(String pageName, BuildContext context) {
     switch (pageName) {
       case "allergens":
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (BuildContext context) => SettingsAllergenePreferencesPage(
-              onSave:
-                  (Map<Ingredient, PreferenceType> newAllergenePreferences) {
-                setState(() {
-                  PreferenceManager.changePreference(newAllergenePreferences);
-                  _allergenePreferences = newAllergenePreferences;
-                  Navigator.pop(context);
-                });
-              },
-            ),
-          ),
+        Navigator.of(context).pushNamed(
+          '/settings/preferences/allergenes',
+          arguments: (Map<Ingredient, PreferenceType> newAllergenePreferences) {
+            setState(() {
+              PreferenceManager.changePreference(newAllergenePreferences);
+              _allergenePreferences = newAllergenePreferences;
+              Navigator.pop(context);
+            });
+          },
         );
         break;
       case "nutrients":
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => SettingsNutrientPreferencesPage(
-                  onSave:
-                      (Map<Ingredient, PreferenceType> newNutrientPreferences) {
-                    setState(() {
-                      PreferenceManager.changePreference(
-                          newNutrientPreferences);
-                      _nutrientPreferences = newNutrientPreferences;
-                      Navigator.pop(context);
-                    });
-                  },
-                )));
+        Navigator.of(context).pushNamed(
+          '/settings/preferences/nutrients',
+          arguments: (Map<Ingredient, PreferenceType> newNutrientPreferences) {
+            setState(() {
+              PreferenceManager.changePreference(newNutrientPreferences);
+              _nutrientPreferences = newNutrientPreferences;
+              Navigator.pop(context);
+            });
+          },
+        );
         break;
       case "unwantedIngredients":
       case "unpreferredIngredients":
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) =>
-                SettingsOtherIngredientPreferencesPage(
-                  onSave: (Map<Ingredient, PreferenceType>
-                      newOtherIngredientPreferences) {
-                    setState(() {
-                      PreferenceManager.changePreference(
-                          newOtherIngredientPreferences);
-                      _otherIngredientPreferences =
-                          newOtherIngredientPreferences;
-                      Navigator.pop(context);
-                    });
-                  },
-                )));
+        Navigator.of(context).pushNamed(
+          '/settings/preferences/otherIngredients',
+          arguments:
+              (Map<Ingredient, PreferenceType> newOtherIngredientPreferences) {
+            setState(() {
+              PreferenceManager.changePreference(newOtherIngredientPreferences);
+              _otherIngredientPreferences = newOtherIngredientPreferences;
+              Navigator.pop(context);
+            });
+          },
+        );
         break;
       default:
         throw ('Illegal state: tried to navigate to sub page of SettingsPreferences but new Page ${pageName} does not exist');
