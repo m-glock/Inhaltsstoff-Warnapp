@@ -1,7 +1,6 @@
 import 'Enums/PreferenceType.dart';
 import'Enums/Type.dart';
 import 'Ingredient.dart';
-import 'database/DbTableNames.dart';
 import 'database/DatabaseHelper.dart';
 
 class TextRecognitionParser{
@@ -34,8 +33,6 @@ class TextRecognitionParser{
     // but do not remove other numbers such as in E150d
     parsedText = parsedText.replaceAll(RegExp(r'[0-9]+%|[0-9]+.[0-9]+%'), '');
 
-    // remove any special character that might be in there
-
     // if text contains colon, then only the word after the colon
     // is considered an ingredient
     _additiveNames.forEach((element) {
@@ -43,8 +40,10 @@ class TextRecognitionParser{
         parsedText = parsedText.replaceAll(element, '');
     });
 
+    // remove any special character that might be in there
     parsedText = parsedText.replaceAll(RegExp(r'[&+=#|^\*%!:\-\"]'), '');
 
+    // handle parentheses
     if(RegExp(r'\(\w+,').hasMatch(parsedText))
       parsedText = _handleParentheses(parsedText);
 
@@ -83,6 +82,8 @@ class TextRecognitionParser{
     DatabaseHelper helper = DatabaseHelper.instance;
     List<Ingredient> ingredients = List();
 
+    // go through list of ingredient names and either take an existing one
+    // from the database or create a new ingredient
     for(int i = 0; i <= ingredientNames.length - 1; ++i){
       String name = ingredientNames.elementAt(i).trim().toLowerCase();
       List<Map<String, dynamic>> data = await helper.customQuery('SELECT * FROM ingredient WHERE name LIKE \'$name\'');
