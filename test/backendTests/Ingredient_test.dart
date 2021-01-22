@@ -5,12 +5,12 @@ import 'package:Essbar/main.dart';
 
 
 
-import '../lib/backend/PreferenceManager.dart';
-import '../lib/backend/database/DatabaseHelper.dart';
+import '../../lib/backend/PreferenceManager.dart';
+import '../../lib/backend/database/DatabaseHelper.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'dart:async';
-import '../lib/main.dart' as app;
-import '../lib/main.dart';
+import '../../lib/main.dart' as app;
+import '../../lib/main.dart';
 //import 'package:test/test.dart';
 
 void main() {

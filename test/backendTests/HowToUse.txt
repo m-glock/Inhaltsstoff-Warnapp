@@ -1,0 +1,6 @@
+The tests in this folder can be run in this way:
+- In DatabaseHelper set a new database version (preferably from 100).
+- replace main.dart with Main_to_test.dart
+- copy the single test into main.dart
+- start the main application and check if the expected value matches the actual value
+- repeat for each individual test
