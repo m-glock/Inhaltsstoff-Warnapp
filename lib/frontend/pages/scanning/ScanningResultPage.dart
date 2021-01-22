@@ -10,6 +10,7 @@ import '../../customWidgets/CustomAppBar.dart';
 import '../../customWidgets/ResultCircle.dart';
 import '../../customWidgets/EditableTitle.dart';
 import '../../customWidgets/LabelledIconButton.dart';
+import '../comparison/ComparisonRootPage.dart';
 import './scanningCustomWidgets/ScanningInfoLine.dart';
 import './scanningCustomWidgets/ScanningProductNutrimentsInfo.dart';
 import './scanningCustomWidgets/ScanningProductDetails.dart';
@@ -44,20 +45,21 @@ class ScanningResultPage extends StatefulWidget {
 class _ScanningResultPageState extends State<ScanningResultPage> {
   ScanResult _scanResult;
   ScanResultAppearance _currentResultAppearance;
-  Map<Ingredient, ScanResult> _itemizedScanResults;
   List<ProductActionButton> _productActionButtons;
+  Map<Ingredient, ScanResult> _itemizedScanResults;
   List<String> _containedWantedIngredientNames;
   List<String> _otherIngredientNames;
 
   @override
   void initState() {
     super.initState();
+
     _getScanResultAndAppearance();
+    _getProductActionButtons(context);
+    _subscribeToFavouritesListUpdate(context);
     _getContainedWantedIngredientNames();
     _getItemizedScanResults(widget.scannedProduct);
     _getOtherIngredients();
-    _getProductActionButtons();
-    _subscribeToFavouritesListUpdate();
   }
 
   @override
@@ -68,7 +70,8 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
       body: _scanResult == null ||
               _currentResultAppearance == null ||
               _containedWantedIngredientNames == null ||
-              _productActionButtons == null
+              _productActionButtons == null ||
+              _itemizedScanResults == null
           ? Center(
               child: CircularProgressIndicator(),
             )
@@ -147,6 +150,8 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
                           _otherIngredientNames != null
                       ? ScanningProductDetails(
                           preferencesResults: _itemizedScanResults,
+                          preferredIngredientsInProduct:
+                              _containedWantedIngredientNames,
                           otherIngredients: _otherIngredientNames,
                           moreProductDetails: _getAdditionalProductDetails,
                         )
@@ -160,7 +165,7 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
   @override
   void dispose() {
     super.dispose();
-    _unsubscribeToFavouritesListUpdate();
+    _unsubscribeToFavouritesListUpdate(context);
   }
 
   _getScanResultAndAppearance() async {
@@ -172,9 +177,10 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
     });
   }
 
-  Future<ScanResultAppearance> _getScanResultAppearance(ScanResult scanResult) async {
+  Future<ScanResultAppearance> _getScanResultAppearance(
+      ScanResult scanResult) async {
     List<String> unwantedIngredientNames =
-    await _getContainedUnwantedIngredientNames();
+        await _getContainedUnwantedIngredientNames();
 
     switch (scanResult) {
       case ScanResult.Green:
@@ -221,53 +227,66 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
     });
   }
 
-  void _getProductActionButtons() async {
+  void _getProductActionButtons(BuildContext context) async {
     var favourites = await ListManager.instance.favouritesList;
-    ProductActionButton favButton = favourites
-        .getProducts()
-        .contains(widget.scannedProduct)
-        ? new ProductActionButton('Entfernen', Icons.favorite, removeFavourite)
-        : new ProductActionButton(
-        'Speichern', Icons.favorite_border, addFavourite);
+    ProductActionButton favButton =
+        favourites.getProducts().contains(widget.scannedProduct)
+            ? new ProductActionButton('Entfernen', Icons.favorite, () {
+                removeFavourite(context);
+              })
+            : new ProductActionButton('Speichern', Icons.favorite_border, () {
+                addFavourite(context);
+              });
+
+    ProductActionButton compButton =
+        ProductActionButton('Vergleichen', Icons.compare_arrows, () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) =>
+              ComparisonRootPage(productOne: widget.scannedProduct),
+        ),
+      );
+    });
 
     if (mounted) {
       setState(() {
         _productActionButtons = {
           favButton,
-          ProductActionButton('Vergleichen', Icons.compare_arrows, () {}),
+          compButton,
           ProductActionButton('Kaufen', Icons.add_shopping_cart, null),
         }.toList();
       });
     }
   }
 
-  void addFavourite() {
+  void addFavourite(BuildContext context) {
     ListManager.instance.favouritesList
         .then((value) => value.addProduct(widget.scannedProduct));
-    _getProductActionButtons();
+    _getProductActionButtons(context);
   }
 
-  void removeFavourite() {
+  void removeFavourite(BuildContext context) {
     ListManager.instance.favouritesList
         .then((value) => value.removeProduct(widget.scannedProduct));
-    _getProductActionButtons();
+    _getProductActionButtons(context);
   }
 
-  void _subscribeToFavouritesListUpdate() async {
+  void _subscribeToFavouritesListUpdate(BuildContext context) async {
     var favouritesList = await ListManager.instance.favouritesList;
     favouritesList.onUpdate.subscribe((args) {
-      _getProductActionButtons();
+      _getProductActionButtons(context);
     });
   }
 
-  void _unsubscribeToFavouritesListUpdate() async {
+  void _unsubscribeToFavouritesListUpdate(BuildContext context) async {
     var favouritesList = await ListManager.instance.favouritesList;
     favouritesList.onUpdate.unsubscribe((args) {
-      _getProductActionButtons();
+      _getProductActionButtons(context);
     });
   }
 
-  _getItemizedScanResults(Product scannedProduct) async {
+  void _getItemizedScanResults(Product scannedProduct) async {
     Map<Ingredient, ScanResult> itemizedScanResults =
         await PreferenceManager.getItemizedScanResults(scannedProduct);
     setState(() {
@@ -291,7 +310,7 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
         'Menge': widget.scannedProduct.quantity.toString() ?? 'keine Angabe',
         'Herkunft': widget.scannedProduct.origin ?? 'keine Angabe',
         'Herstellungsorte':
-        widget.scannedProduct.manufacturingPlaces ?? 'keine Angabe',
+            widget.scannedProduct.manufacturingPlaces ?? 'keine Angabe',
         'Geschäfte': widget.scannedProduct.stores ?? 'keine Angabe',
         'Nutriscore': widget.scannedProduct.nutriscore ?? 'keine Angabe',
       };

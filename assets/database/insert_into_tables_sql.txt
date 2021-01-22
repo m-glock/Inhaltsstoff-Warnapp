@@ -13,3 +13,5 @@ INSERT INTO type (name) VALUES ('General');
 
 INSERT INTO list (name) VALUES ('History');
 INSERT INTO list (name) VALUES ('Favourites');
+
+INSERT INTO metadataFlags (name) VALUES ('Onboarding');

@@ -11,7 +11,7 @@ import 'DbTableNames.dart';
 // code adapted from https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
 class DatabaseHelper {
 
-  static final _databaseName = 'FoodDatabaseTheSecond.db';
+  static final _databaseName = "FoodDatabase.db";
   static final _databaseVersion = 1;
 
   // make this a singleton class
@@ -32,7 +32,7 @@ class DatabaseHelper {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     // comment in and execute once to delete old database, the comment out again
-    //File(path).delete();
+    //deleteDatabase(path);
     return await openDatabase(path,
         version: _databaseVersion,
         onConfigure: _onConfigure,

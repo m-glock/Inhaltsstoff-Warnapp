@@ -2,7 +2,7 @@ import 'package:Essbar/backend/Enums/ScanResult.dart';
 
 import '../../../backend/ListManager.dart';
 import '../../../backend/Product.dart';
-import '../../customWidgets/ProductListItem.dart';
+import '../../customWidgets/ProductsList.dart';
 import '../../customWidgets/CustomAppBar.dart';
 
 import 'package:flutter/material.dart';
@@ -16,7 +16,6 @@ class HistoryRootPage extends StatefulWidget {
 
 class _HistoryRootPageState extends State<HistoryRootPage> {
   List<Product> _scannedProducts;
-  Map<Product, ScanResult> _productsScanResults;
 
   @override
   void initState() {
@@ -30,37 +29,16 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
     return Scaffold(
       appBar: CustomAppBar('Verlauf'),
       backgroundColor: Colors.white,
-      body: _scannedProducts == null || _productsScanResults == null
+      body: _scannedProducts == null
           ? CircularProgressIndicator()
-          : _scannedProducts.isEmpty
-              ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Center(
-                    child: Text(
-                      'Du hast noch keine Produkte eingescannt.',
-                      style: Theme.of(context).textTheme.headline2,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
-              : ListView(
-                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                  children: _scannedProducts
-                      .map((product) => ProductListItem(
-                            image: product.imageUrl != null
-                                ? NetworkImage(product.imageUrl)
-                                : null,
-                            name: product.name,
-                            scanDate: product.scanDate,
-                            scanResult: _productsScanResults[product],
-                            onProductSelected: () {
-                              Navigator.pushNamed(context, '/product',
-                                  arguments: product);
-                            },
-                            removable: false,
-                          ))
-                      .toList(),
-                ),
+          : ProductsList(
+              products: _scannedProducts,
+              listEmptyText: 'Du hast noch keine Produkte eingescannt.',
+              onProductSelected: (product) {
+                Navigator.pushNamed(context, '/product', arguments: product);
+              },
+              productsRemovable: false,
+            ),
       floatingActionButton:
           _scannedProducts != null && _scannedProducts.isNotEmpty
               ? FloatingActionButton(
@@ -85,13 +63,8 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
 
   void _getScannedProducts() async {
     var history = await ListManager.instance.history;
-    List<Product> scannedProducts = history.getProducts();
-    Map<Product, ScanResult> productsResults = {
-      for (Product p in scannedProducts) p: await p.getScanResult()
-    };
     setState(() {
       _scannedProducts = history.getProducts();
-      _productsScanResults = productsResults;
     });
   }
 
