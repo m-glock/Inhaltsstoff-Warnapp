@@ -1,6 +1,7 @@
 import 'ProductFactory.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'database/DatabaseContainer.dart';
 import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
@@ -148,7 +149,7 @@ class Product extends DbTable{
     this.id = id;
 
     // save each ingredients connection to the product in productingredient
-    Database db = await helper.database;
+    Database db = await DatabaseContainer.instance.database;
     if(ingredients.isNotEmpty) {
       for (Ingredient ingredient in ingredients) {
         Map<String, dynamic> values = Map();

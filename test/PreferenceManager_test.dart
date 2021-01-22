@@ -1,3 +1,5 @@
+import 'package:Essbar/backend/database/DatabaseContainer.dart';
+
 import '../lib/backend/Enums/PreferenceType.dart';
 import '../lib/backend/Enums/Type.dart';
 import '../lib/backend/PreferenceManager.dart';
@@ -7,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
   final dbHelper = DatabaseHelper.instance;
-  final db = await dbHelper.database;
+  final db = await DatabaseContainer.instance.database;
 
   //TODO implement
   test('create ingredient and change preference type', () async {
