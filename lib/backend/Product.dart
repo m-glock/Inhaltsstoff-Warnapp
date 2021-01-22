@@ -1,14 +1,10 @@
-import 'package:Essbar/backend/Enums/PreferenceType.dart';
+import 'ProductFactory.dart';
 import 'package:sqflite/sqflite.dart';
 
-import './TextRecognitionParser.dart';
-import './PreferenceManager.dart';
 import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
 import 'Enums/ScanResult.dart';
-import 'Enums/Type.dart';
-import 'FoodApiAccess.dart';
 import 'Ingredient.dart';
 
 class Product extends DbTable{
@@ -35,7 +31,7 @@ class Product extends DbTable{
   // async Getter and Setter for fields that are initialized asynchronously
   Future<ScanResult> getScanResult() async {
     if (_scanResult == null && scanResultPromise == null)
-      scanResultPromise = initializeScanResult(this);
+      scanResultPromise = ProductFactory.initializeScanResult(this);
     if (scanResultPromise != null) await scanResultPromise;
     return _scanResult;
   }
@@ -46,7 +42,7 @@ class Product extends DbTable{
 
   Future<Map<Ingredient, ScanResult>> getItemizedScanResults() async {
     if (_itemizedScanResults == null && scanResultPromise == null)
-      scanResultPromise = initializeScanResult(this);
+      scanResultPromise = ProductFactory.initializeScanResult(this);
     if (scanResultPromise != null) await scanResultPromise;
     return _itemizedScanResults;
   }
@@ -58,7 +54,7 @@ class Product extends DbTable{
 
   Future<List<Ingredient>> getPreferredIngredients() async {
     if (_preferredIngredients == null && preferredIngredientsPromise == null)
-      preferredIngredientsPromise = initializePreferredIngredients(this);
+      preferredIngredientsPromise = ProductFactory.initializePreferredIngredients(this);
     if (preferredIngredientsPromise != null) await preferredIngredientsPromise;
     return _preferredIngredients;
   }
@@ -84,100 +80,22 @@ class Product extends DbTable{
     ingredients = List();
   }
 
-  /*
-  * Uses the json from the Food API to create a new Product object
-  * @param json: the json that the food API returns for a barcode
-  * @return: a new Product object
-  * */
-  static Future<Product> fromApiJson(Map<String, dynamic> json) async {
-    String name = json['product_name'];
-    String imageUrl = json['image_url'];
-    String barcode = json['code'];
-    DateTime scanDate = DateTime.now();
-
-    Product newProduct = Product(name, imageUrl, barcode, scanDate);
-
-    // add other information
-    int dateTime = json['last_modified_t'] * 1000;
-    newProduct._lastUpdated = DateTime.fromMillisecondsSinceEpoch(dateTime);
-    newProduct._nutriscore = json['nutriscore_grade'];
-
-    newProduct._quantity = json['quantity'];
-    newProduct._origin = json['origins'];
-    newProduct._manufacturingPlaces = json['manufacturing_places'];
-    newProduct._stores = json['stores'];
-
-    // add Ingredients, Allergens, Vitamins, Additives and Traces
-    FoodApiAccess foodApi = FoodApiAccess.instance;
-    Set<String> translatedIngredientNames = Set();
-
-    List<dynamic> allergenNames = json['allergens_tags'];
-    if (allergenNames != null && allergenNames.isNotEmpty)
-      translatedIngredientNames.addAll(await foodApi
-          .getTranslatedValuesForTag('allergens', tagValues: allergenNames));
-
-    List<dynamic> vitaminNames = json['vitamins_tags'];
-    if (vitaminNames != null && vitaminNames.isNotEmpty)
-      translatedIngredientNames.addAll(await foodApi
-          .getTranslatedValuesForTag('vitamins', tagValues: vitaminNames));
-
-    List<dynamic> mineralNames = json['minerals_tags'];
-    if (mineralNames != null && mineralNames.isNotEmpty)
-      translatedIngredientNames.addAll(await foodApi
-          .getTranslatedValuesForTag('minerals', tagValues: mineralNames));
-
-    List<dynamic> ingredientNames = json['ingredients_tags'];
-
-    if (ingredientNames != null && ingredientNames.isNotEmpty)
-      translatedIngredientNames.addAll(await foodApi.getTranslatedValuesForTag(
-          'ingredients',
-          tagValues: ingredientNames));
-
-    for (String name in translatedIngredientNames) {
-      Ingredient ingredient = await DatabaseHelper.instance
-          .read(DbTableNames.ingredient, [name], whereColumn: 'name');
-      if (ingredient == null) {
-        ingredient = new Ingredient(name, PreferenceType.None, Type.General, null);
-        int id = await DatabaseHelper.instance.add(ingredient);
-        ingredient.id = id;
-      }
-      newProduct.ingredients.add(ingredient);
-    }
-
-    newProduct.scanResultPromise = initializeScanResult(newProduct);
-    newProduct.preferredIngredientsPromise =
-        initializePreferredIngredients(newProduct);
-
-    return newProduct;
+  Product.fullProduct(
+      this.name,
+      this._imageUrl,
+      this._barcode,
+      this.scanDate,
+      this._lastUpdated,
+      this._nutriscore,
+      this._quantity,
+      this._origin,
+      this._manufacturingPlaces,
+      this._stores,
+      {int id}
+  ) : super(id){
+    ingredients = List();
   }
 
-  static Future<void> initializeScanResult(Product product) async {
-    Map<Ingredient, ScanResult> itemizedScanResults =
-        await PreferenceManager.getItemizedScanResults(product);
-    product.setItemizedScanResults(itemizedScanResults);
-  }
-
-  static Future<void> initializePreferredIngredients(Product product) async {
-    List<Ingredient> preferredIngredients =
-        await PreferenceManager.getPreferredIngredientsIn(product);
-    product.setPreferredIngredients(preferredIngredients);
-  }
-
-  //TODO: where does name come from? Also get Image URL?
-  static Future<Product> fromTextRecognition(String ingredientsText, String productName) async {
-    if(ingredientsText?.isEmpty ?? true) return null;
-
-    List<Ingredient> ingredients = await TextRecognitionParser.parseIngredientNames(ingredientsText);
-    Product product = Product(productName, null, null, DateTime.now());
-    product.ingredients = ingredients;
-
-    product.scanResultPromise = initializeScanResult(product);
-    product.preferredIngredientsPromise =
-        initializePreferredIngredients(product);
-
-    await product.saveInDatabase();
-    return product;
-  }
 
   /*
   * get the names of ingredients that are responsible for the overall scan result.

@@ -71,7 +71,7 @@ class DatabaseHelper {
   // insert ingredients that are saved in the food api under a certain tag
   // (such as vitamins) into the DB
   Future<void> _insertIngredientsFromFoodApi(Database db, String tag, int typeId) async {
-    List<String> ingredients = await FoodApiAccess.instance.getTranslatedValuesForTag(tag);
+    List<String> ingredients = await FoodApiAccess.instance.translationManager.getTranslatedValuesForTag(tag);
     ingredients.forEach((element) async {
       if(element.isNotEmpty){
         try{
