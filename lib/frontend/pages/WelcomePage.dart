@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../backend/database/databaseHelper.dart';
+import '../../backend/database/DatabaseHelper.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key key}) : super(key: key);

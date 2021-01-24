@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/services.dart';
 
 import './frontend/pages/HomePage.dart';
 import './frontend/pages/onboarding/main.dart';
@@ -19,7 +20,7 @@ import './frontend/pages/settings/preferences/SettingsPreferencesSummaryPage.dar
 List<CameraDescription> cameras = [];
 
 Future<void> main() async {
-    try {
+  try {
     WidgetsFlutterBinding.ensureInitialized();
     // Retrieve the device cameras
     cameras = await availableCameras();
@@ -36,6 +37,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     return MaterialApp(
       title: _title,
       theme: appTheme(),

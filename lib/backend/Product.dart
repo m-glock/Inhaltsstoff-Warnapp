@@ -3,6 +3,8 @@ import 'package:sqflite/sqflite.dart';
 
 import './TextRecognitionParser.dart';
 import './PreferenceManager.dart';
+import 'ListManager.dart';
+import 'Lists/History.dart';
 import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
@@ -78,6 +80,12 @@ class Product extends DbTable{
   String get origin => _origin;
   String get manufacturingPlaces => _manufacturingPlaces;
   String get stores => _stores;
+
+  // Setter
+  void setName(String newName){
+    name = newName;
+    DatabaseHelper.instance.update(this);
+  }
 
   // constructor with minimal necessary information
   Product(this.name, this._imageUrl, this._barcode, this.scanDate, {int id}) : super(id) {
@@ -163,12 +171,11 @@ class Product extends DbTable{
     product.setPreferredIngredients(preferredIngredients);
   }
 
-  //TODO: where does name come from? Also get Image URL?
-  static Future<Product> fromTextRecognition(String ingredientsText, String productName) async {
+  static Future<Product> fromTextRecognition(String ingredientsText) async {
     if(ingredientsText?.isEmpty ?? true) return null;
 
     List<Ingredient> ingredients = await TextRecognitionParser.getIngredientsFromText(ingredientsText);
-    Product product = Product(productName, null, null, DateTime.now());
+    Product product = Product('', null, null, DateTime.now());
     product.ingredients = ingredients;
 
     product.scanResultPromise = initializeScanResult(product);
@@ -176,6 +183,9 @@ class Product extends DbTable{
         initializePreferredIngredients(product);
 
     await product.saveInDatabase();
+    History his = await ListManager.instance.history;
+    his.addProduct(product);
+
     return product;
   }
 
@@ -233,6 +243,7 @@ class Product extends DbTable{
     Database db = await helper.database;
     if(ingredients.isNotEmpty) {
       for (Ingredient ingredient in ingredients) {
+        if(ingredient.id == null) continue;
         Map<String, dynamic> values = Map();
         values['productId'] = this.id;
         values['ingredientId'] = ingredient.id;
