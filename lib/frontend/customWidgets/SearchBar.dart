@@ -41,7 +41,7 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: _filterSearchResults,
+      onSubmitted: _filterSearchResults,
       controller: _searchController,
       decoration: InputDecoration(
         labelText: "Search",

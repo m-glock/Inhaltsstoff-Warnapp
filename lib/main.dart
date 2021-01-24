@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
       theme: appTheme(),
       routes: {
         '/': (context) => HomePage(),
-        '/onboarding': (context) => OnboardingPage(),
+        '/onboarding': (context) => OnboardingPage(ingredients: ModalRoute.of(context).settings.arguments),
         '/welcome': (context) => WelcomePage(),
         // global settings page and subpages
         '/settings': (context) => SettingsRootPage(),
