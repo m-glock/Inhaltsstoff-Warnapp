@@ -9,19 +9,16 @@ import 'package:Essbar/backend/Ingredient.dart';
 import 'dart:async';
 
 /*
-How to run the tests? Please read @HowToUse.txt
+To find out how to run the tests, please read @HowToUse.txt
  */
 Future<void> main() async {
   final dbHelper = DatabaseHelper.instance;
-  final db = await dbHelper.database;
 
   test('get ingredients due to the preference type NotWanted', () async {
     List<PreferenceType> preferenceTypes = List<PreferenceType>();
     preferenceTypes.add(PreferenceType.NotWanted);
     List<Ingredient> ingredients =
         await PreferenceManager.getPreferencedIngredients(preferenceTypes);
-    //print("expected value is not null:");
-    //print(ingredients != null);
     assert(ingredients != null);
   });
 
@@ -30,24 +27,18 @@ Future<void> main() async {
     preferenceTypes.add(PreferenceType.None);
     List<Ingredient> ingredients =
         await PreferenceManager.getPreferencedIngredients(preferenceTypes);
-    //print("expected value is not null:");
-    //print(ingredients != null);
     assert(ingredients != null);
   });
 
   test('get all available ingredients without a type', () async {
     List<Ingredient> ingredients =
         await PreferenceManager.getAllAvailableIngredients();
-    //print("expected value is not null:");
-    //print(ingredients != null);
     assert(ingredients != null);
   });
 
   test('get all available ingredients with a specific type', () async {
     List<Ingredient> ingredients =
         await PreferenceManager.getAllAvailableIngredients(Type.General);
-    //print("expected value is not null:");
-    //print(ingredients != null);
     assert(ingredients != null);
   });
 
@@ -77,8 +68,6 @@ Future<void> main() async {
   test('get itemized scan results for the not existing item', () async {
     var scanResult = PreferenceManager.getItemizedScanResults(
         Product("Milch", "_imageUrl", "111111111111", DateTime.now()));
-    //print("expected value is not null:");
-    //print(scanResult != null);
     assert(scanResult != null);
   });
 
@@ -92,8 +81,6 @@ Future<void> main() async {
     });
     var scanResult = PreferenceManager.getItemizedScanResults(
         Product("Milch1", "_imageUrl", "2111111111111", DateTime.now()));
-    //print("expected value is not null:");
-    //print(scanResult != null);
     assert(scanResult != null);
   });
 }

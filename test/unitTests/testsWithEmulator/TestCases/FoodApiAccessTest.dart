@@ -4,7 +4,7 @@ import 'package:Essbar/backend/Product.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /*
-How to run the tests? Please read @HowToUse.txt
+To find out how to run the tests, please read @HowToUse.txt
  */
 void main() {
   FoodApiAccess foodApi = FoodApiAccess.instance;
