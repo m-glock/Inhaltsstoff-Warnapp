@@ -78,7 +78,7 @@ class PreferenceManager {
 
     if (type != null) {
       String typeId = type.id.toString();
-      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE typeId = $typeId LIMIT 100');
+      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE typeId = $typeId');
       results.forEach((result) {
         ingredients.add(Ingredient.fromMap(result));
       });
