@@ -1,7 +1,8 @@
 The tests in this folder can be run in this way:
 - In DatabaseHelper set a new database version (preferably from 100)
 - replace lib/frontend/main.dart with content of the test/unitTests/testsWithEmulator/testCases/MainToTest.dart
-- copy all tests from within the main method of a test file into main.dart starting at line 50
+- copy all tests from within the main method of a test file from test/unitTests/testsWithEmulator/testCases
+  into main.dart starting at line 50
 - run the main application on an emulator or a connected device and press on the button in the middle of screen
 - wait for the test to finish and check whether they have all passed
 - revert the main.dart to original file and reset the database version to the original version
