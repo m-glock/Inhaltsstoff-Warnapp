@@ -107,7 +107,8 @@ class PreferenceManager {
     ScanResult overallResult = ScanResult.Green;
     preferredIngredients.forEach((ingredient) {
       ScanResult result;
-      if(productIngredients.contains(ingredient)){
+      List<Ingredient> matchingIngredients = productIngredients.where((i) => i.name.toLowerCase().contains(ingredient.name.toLowerCase())).toList();
+      if(matchingIngredients.isNotEmpty){
         result = ingredient.preferenceType == PreferenceType.NotWanted
             ? ScanResult.Red
             : ScanResult.Yellow;
