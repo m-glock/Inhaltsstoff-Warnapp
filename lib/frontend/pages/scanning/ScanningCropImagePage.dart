@@ -66,11 +66,10 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
   }
 
   Widget _buildCroppingImageView() {
-    return Column(
+    return Stack(
+      overflow: Overflow.visible,
       children: <Widget>[
-        Expanded(
-          child: Crop.file(_sample, key: cropKey),
-        ),
+        Crop.file(_sample, key: cropKey),
         Positioned(
           bottom: 0,
           left: 0,
