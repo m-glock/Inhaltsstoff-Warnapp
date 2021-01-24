@@ -42,6 +42,8 @@ dependencies:
   # package for the onboarding flow
   introduction_screen: ^1.0.9
 
+  url_launcher: ^5.7.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
