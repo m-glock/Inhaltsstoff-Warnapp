@@ -12,7 +12,7 @@ class TextRecognitionParser{
     'Verdickungsmittel', 'Emulgator', 'Stabilisator', 'Farbstoff',
     'Geschmacksverstärker', 'Konservierungsstoff'];
 
-  static Future<List<Ingredient>> parseIngredientNames(String text) async {
+  static Future<List<String>> parseIngredientNames(String text) async {
     String parsedText;
 
     // ingredients start with a specific word
@@ -49,7 +49,12 @@ class TextRecognitionParser{
     // spilt at either dot or semicolon
     List<String> ingredientNames = parsedText.split(RegExp(r', |; '));
 
-    return await _getIngredientsFromText(ingredientNames);
+    return ingredientNames.map((e) => e.trim()).toList();
+  }
+
+  static Future<List<Ingredient>> getIngredientsFromText(String text) async {
+    List<String> parsedIngredientNames = await parseIngredientNames(text);
+    return await _getIngredientsForParsedText(parsedIngredientNames);
   }
 
   /*
@@ -77,7 +82,7 @@ class TextRecognitionParser{
     return text + ', ' + parenthesesText;
   }
 
-  static Future<List<Ingredient>> _getIngredientsFromText(List<String> ingredientNames) async {
+  static Future<List<Ingredient>> _getIngredientsForParsedText(List<String> ingredientNames) async {
     DatabaseHelper helper = DatabaseHelper.instance;
     List<Ingredient> ingredients = List();
 

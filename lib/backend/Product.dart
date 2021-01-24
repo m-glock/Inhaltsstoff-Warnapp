@@ -167,7 +167,7 @@ class Product extends DbTable{
   static Future<Product> fromTextRecognition(String ingredientsText, String productName) async {
     if(ingredientsText?.isEmpty ?? true) return null;
 
-    List<Ingredient> ingredients = await TextRecognitionParser.parseIngredientNames(ingredientsText);
+    List<Ingredient> ingredients = await TextRecognitionParser.getIngredientsFromText(ingredientsText);
     Product product = Product(productName, null, null, DateTime.now());
     product.ingredients = ingredients;
 
