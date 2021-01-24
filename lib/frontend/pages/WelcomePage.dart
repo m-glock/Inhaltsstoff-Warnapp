@@ -1,3 +1,5 @@
+import 'package:Essbar/backend/Ingredient.dart';
+import 'package:Essbar/backend/PreferenceManager.dart';
 import 'package:flutter/material.dart';
 
 import '../../backend/database/DatabaseHelper.dart';
@@ -17,6 +19,7 @@ class _WelcomePageState extends State<WelcomePage> {
     if (isOnboardingDone == 0) {
       await DatabaseHelper.instance.customQuery(
           'UPDATE metadataFlags SET isInitialized=1 WHERE name = \'Onboarding\'');
+
       Navigator.of(context).pushReplacementNamed('/onboarding');
     } else {
       Navigator.of(context).pushReplacementNamed('/');

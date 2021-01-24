@@ -44,8 +44,8 @@ class _SearchBarState extends State<SearchBar> {
       onChanged: _filterSearchResults,
       controller: _searchController,
       decoration: InputDecoration(
-        labelText: "Search",
-        hintText: "Search",
+        labelText: "Suche",
+        hintText: "Suche",
         prefixIcon: Icon(Icons.search),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(

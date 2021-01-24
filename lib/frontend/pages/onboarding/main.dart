@@ -218,7 +218,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       onDone: () => _onFinishOnboarding(context),
       showSkipButton: true,
       dotsFlex: 0,
-      skip: Text('Skip', style: TextStyle(fontWeight: FontWeight.w600)),
+      skip: Text('Überspringen', style: TextStyle(fontWeight: FontWeight.w600)),
       next: Icon(Icons.arrow_forward),
       done: Text('Starten', style: TextStyle(fontWeight: FontWeight.w600)),
       dotsDecorator: DotsDecorator(
