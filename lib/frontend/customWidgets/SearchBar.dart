@@ -41,11 +41,11 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onSubmitted: _filterSearchResults,
+      onChanged: _filterSearchResults,
       controller: _searchController,
       decoration: InputDecoration(
-        labelText: "Search",
-        hintText: "Search",
+        labelText: "Suche",
+        hintText: "Suche",
         prefixIcon: Icon(Icons.search),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(

@@ -20,9 +20,7 @@ class _WelcomePageState extends State<WelcomePage> {
       await DatabaseHelper.instance.customQuery(
           'UPDATE metadataFlags SET isInitialized=1 WHERE name = \'Onboarding\'');
 
-      List<Ingredient> allIngredients = await PreferenceManager.getAllAvailableIngredients();
-
-      Navigator.of(context).pushReplacementNamed('/onboarding', arguments: allIngredients);
+      Navigator.of(context).pushReplacementNamed('/onboarding');
     } else {
       Navigator.of(context).pushReplacementNamed('/');
     }
