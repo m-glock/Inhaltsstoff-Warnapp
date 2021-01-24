@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import './ScanningTextrecognitionPage.dart';
 import './ScanningCropImagePage.dart';
 import './ScanningCameraPage.dart';
 import './ScanningResultPage.dart';
@@ -28,9 +27,7 @@ class _ScanningPageState extends State<ScanningPage> {
               case '/camera':
                 return ScanningCamera();  
               case '/crop_image':
-                return ScanningCropImage(settings.arguments);    
-              case '/result_textrecognition':
-                return ScanningTextrecognition(settings.arguments);      
+                return ScanningCropImage(settings.arguments);
               case '/result':
                 return ScanningResultPage(settings.arguments);
               default: return ScanningRootPage();
