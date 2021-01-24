@@ -1,5 +1,4 @@
-import 'package:Essbar/backend/Enums/ScanResult.dart';
-
+import '../../../backend/Enums/ScanResult.dart';
 import '../../../backend/ListManager.dart';
 import '../../../backend/Product.dart';
 import '../../customWidgets/ProductsList.dart';
@@ -15,12 +14,12 @@ class HistoryRootPage extends StatefulWidget {
 }
 
 class _HistoryRootPageState extends State<HistoryRootPage> {
-  List<Product> _scannedProducts;
+  Map<Product, ScanResult> _scannedProductsAndResults;
 
   @override
   void initState() {
     super.initState();
-    _getScannedProducts();
+    _getScannedProductsAndResults();
     _addOnListUpdateListener();
   }
 
@@ -29,10 +28,10 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
     return Scaffold(
       appBar: CustomAppBar('Verlauf'),
       backgroundColor: Colors.white,
-      body: _scannedProducts == null
+      body: _scannedProductsAndResults == null
           ? CircularProgressIndicator()
           : ProductsList(
-              products: _scannedProducts,
+              productsAndResults: _scannedProductsAndResults,
               listEmptyText: 'Du hast noch keine Produkte eingescannt.',
               onProductSelected: (product) {
                 Navigator.pushNamed(context, '/product', arguments: product);
@@ -40,7 +39,7 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
               productsRemovable: false,
             ),
       floatingActionButton:
-          _scannedProducts != null && _scannedProducts.isNotEmpty
+          _scannedProductsAndResults != null && _scannedProductsAndResults.isNotEmpty
               ? FloatingActionButton(
                   backgroundColor: Colors.red,
                   child: Icon(
@@ -61,24 +60,28 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
     _removeOnListUpdateListener();
   }
 
-  void _getScannedProducts() async {
+  void _getScannedProductsAndResults() async {
     var history = await ListManager.instance.history;
+    List<Product> scannedProducts = history.getProducts();
+    Map<Product, ScanResult> productsResults = {
+      for (Product p in scannedProducts) p: await p.getScanResult()
+    };
     setState(() {
-      _scannedProducts = history.getProducts();
+      _scannedProductsAndResults = productsResults;
     });
   }
 
   void _addOnListUpdateListener() async {
     var history = await ListManager.instance.history;
     history.onUpdate.subscribe((args) {
-      _getScannedProducts();
+      _getScannedProductsAndResults();
     });
   }
 
   void _removeOnListUpdateListener() async {
     var history = await ListManager.instance.history;
     history.onUpdate.unsubscribe((args) {
-      _getScannedProducts();
+      _getScannedProductsAndResults();
     });
   }
 
@@ -86,7 +89,7 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
     var history = await ListManager.instance.history;
     history.clearHistory();
     setState(() {
-      _scannedProducts.clear();
+      _scannedProductsAndResults.clear();
     });
   }
 }

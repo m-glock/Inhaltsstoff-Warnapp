@@ -4,78 +4,56 @@ import '../../backend/Enums/ScanResult.dart';
 import '../../backend/Product.dart';
 import './ProductListItem.dart';
 
-class ProductsList extends StatefulWidget {
+class ProductsList extends StatelessWidget {
   const ProductsList(
       {Key key,
-      this.products,
+      this.productsAndResults,
       this.listEmptyText,
       this.onProductSelected,
       this.productsRemovable,
       this.onProductRemove})
       : super(key: key);
 
-  final List<Product> products;
+  final Map<Product, ScanResult> productsAndResults;
   final String listEmptyText;
   final Function(Product) onProductSelected;
   final bool productsRemovable;
   final Function(Product) onProductRemove;
 
   @override
-  _ProductsListState createState() => _ProductsListState();
-}
-
-class _ProductsListState extends State<ProductsList> {
-  Map<Product, ScanResult> _productsScanResults;
-
-  @override
-  void initState() {
-    super.initState();
-    _getProductsScanResults();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return widget.products.isEmpty
+    return productsAndResults.isEmpty
         ? Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.0),
             child: Center(
               child: Text(
-                widget.listEmptyText,
+                listEmptyText,
                 style: Theme.of(context).textTheme.headline2,
                 textAlign: TextAlign.center,
               ),
             ),
           )
-        : _productsScanResults == null
-            ? CircularProgressIndicator()
-            : ListView(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
-                children: widget.products
-                    .map((product) => ProductListItem(
-                          image: product.imageUrl != null
-                              ? NetworkImage(product.imageUrl)
-                              : null,
-                          name: product.name,
-                          scanDate: product.scanDate,
-                          scanResult: _productsScanResults[product],
-                          onProductSelected: () {
-                            widget.onProductSelected(product);
-                          },
-                          removable: widget.productsRemovable,
-                          onRemove: () {
-                            widget.onProductRemove(product);
-                          },
-                        ))
-                    .toList(),
+        : ListView(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            children: productsAndResults.entries.map((productAndResult) {
+              Product product = productAndResult.key;
+              ScanResult result = productAndResult.value;
+              return ProductListItem(
+                image: product.imageUrl != null
+                    ? NetworkImage(product.imageUrl)
+                    : null,
+                name: product.name,
+                scanDate: product.scanDate,
+                scanResult: result,
+                onProductSelected: () {
+                  onProductSelected(product);
+                },
+                removable: productsRemovable,
+                onRemove: () {
+                  onProductRemove(product);
+                },
               );
-  }
-
-  _getProductsScanResults() async {
-    Map<Product, ScanResult> productsResults = {
-      for (Product p in widget.products) p: await p.getScanResult()
-    };
-    setState(() {
-      _productsScanResults = productsResults;
-    });
+            }).toList(),
+          );
   }
 }
