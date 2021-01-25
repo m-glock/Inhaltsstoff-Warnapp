@@ -5,7 +5,7 @@ import '../Product.dart';
 import '../database/DbTableNames.dart';
 import '../database/DbTable.dart';
 
-abstract class ProductList extends DbTable{
+abstract class DbList extends DbTable{
 
   // Fields
   String _name;
@@ -14,9 +14,15 @@ abstract class ProductList extends DbTable{
   get name => _name;
 
   // Constructor
-  ProductList(int id, this._name) : super(id);
+  DbList(int id, this._name) : super(id);
 
-  // Methods
+  /*
+  * Method for sub classes to implement.
+  * @return a list of all products contained in the list
+  * */
+  List<Product> getProducts();
+
+  // Methods from the super class
   @override
   String getTableName() {
     return DbTableNames.list.name;
@@ -36,7 +42,4 @@ abstract class ProductList extends DbTable{
     if(data['name'] == 'History') return History(id: data['id']);
     else return FavouritesList(data['name'], id: data['id']);
   }
-
-  List<Product> getProducts();
-
 }

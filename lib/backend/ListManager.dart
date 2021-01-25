@@ -15,6 +15,7 @@ class ListManager{
 
   // Getter
   Future<History> get history async {
+    // check if lists have been initialized before accessing them
     if (_initialisedPromise != null) {
       await _initialisedPromise;
     }
@@ -23,6 +24,7 @@ class ListManager{
   }
 
   Future<FavouritesList> get favouritesList async {
+    // check if lists have been initialized before accessing them
     if (_initialisedPromise != null) {
       await _initialisedPromise;
     }
@@ -37,6 +39,10 @@ class ListManager{
   }
   static final ListManager instance = ListManager._privateConstructor();
 
+  /*
+  * Initialize the favourites lists and the history
+  * and add all related elements from the database
+  * */
   Future<void> init() async {
     DatabaseHelper helper = DatabaseHelper.instance;
 
@@ -50,5 +56,4 @@ class ListManager{
     List<Product> favouriteProducts = favouriteResults.map((e) => e = e as Product).toList();
     _favouritesList.addAllProducts(favouriteProducts);
   }
-
 }

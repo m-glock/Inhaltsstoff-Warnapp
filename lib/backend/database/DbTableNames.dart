@@ -1,4 +1,4 @@
-import '../Lists/ProductList.dart';
+import '../Lists/DbList.dart';
 
 import '../Ingredient.dart';
 import '../Product.dart';
@@ -47,7 +47,7 @@ extension DbTablesExtension on DbTableNames {
       case DbTableNames.product:
         return await Product.fromMap(data);
       case DbTableNames.list:
-        return ProductList.fromMap(data);
+        return DbList.fromMap(data);
       default:
         return null;
     }
