@@ -10,7 +10,7 @@ class ListManager{
 
   // Fields
   FavouritesList _favouritesList;
-  History _history; //= new History();
+  History _history;
   Future<void> _initialisedPromise;
 
   // Getter
@@ -41,12 +41,12 @@ class ListManager{
     DatabaseHelper helper = DatabaseHelper.instance;
 
     _history = await helper.read(DbTableNames.list, ['History'], whereColumn: 'name');
-    List<DbTable> historyResults = await helper.readAll(DbTableNames.productList, whereColumn: 'listId', whereArgs: [_history.id]);
+    List<DbTable> historyResults = await helper.readAll(DbTableNames.productList, 'listId', [_history.id]);
     List<Product> historyProducts = historyResults.map((e) => e = e as Product).toList();
     _history.addAllProducts(historyProducts);
 
     _favouritesList = await helper.read(DbTableNames.list, ['Favourites'], whereColumn: 'name');
-    List<DbTable> favouriteResults = await helper.readAll(DbTableNames.productList, whereColumn: 'listId', whereArgs: [_favouritesList.id]);
+    List<DbTable> favouriteResults = await helper.readAll(DbTableNames.productList, 'listId', [_favouritesList.id]);
     List<Product> favouriteProducts = favouriteResults.map((e) => e = e as Product).toList();
     _favouritesList.addAllProducts(favouriteProducts);
   }

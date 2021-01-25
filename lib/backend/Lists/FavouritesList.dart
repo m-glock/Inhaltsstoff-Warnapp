@@ -29,7 +29,7 @@ class FavouritesList extends ProductList{
     Map<String, dynamic> row = Map();
     row['productId'] = product.id;
     row['listId'] = id;
-    DatabaseHelper.instance.add(product, to: DbTableNames.productList, values: row);
+    DatabaseHelper.instance.add(product, DbTableNames.productList, row);
 
     onUpdate.broadcast();
 

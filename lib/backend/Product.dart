@@ -212,8 +212,8 @@ class Product extends DbTable{
     // get all Ingredients associated with this product from the database
     List<DbTable> ingredients = await DatabaseHelper.instance.readAll(
         DbTableNames.productIngredient,
-        whereColumn: 'productId',
-        whereArgs: [productId]);
+        'productId',
+        [productId]);
     ingredients.forEach((element) {
       product.ingredients.add(element as Ingredient);
     });
