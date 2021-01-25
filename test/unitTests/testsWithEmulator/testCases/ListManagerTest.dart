@@ -11,7 +11,7 @@ Future<void> main() async {
   //before start this test, please start at first FoodApiAccess and PreferenceManagerTest
   test('get history', () async {
     var history = await listManager.history;
-    assert(history.historyOfScannedProducts != null);
+    assert(history.getProducts() != null);
   });
 
   test('no favourites configured, get nothing', () async {
@@ -22,6 +22,6 @@ Future<void> main() async {
   test('clear history and get empty history', () async {
     var history = await listManager.history;
     history.clearHistory();
-    assert(history.historyOfScannedProducts.isEmpty);
+    assert(history.getProducts().isEmpty);
   });
 }

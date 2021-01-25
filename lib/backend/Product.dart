@@ -2,10 +2,7 @@ import 'PreferenceManager.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'database/DatabaseContainer.dart';
-import './TextRecognitionParser.dart';
 import './PreferenceManager.dart';
-import 'ListManager.dart';
-import 'Lists/History.dart';
 import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
@@ -44,6 +41,11 @@ class Product extends DbTable{
   String get origin => _origin;
   String get manufacturingPlaces => _manufacturingPlaces;
   String get stores => _stores;
+
+  void setName(String newName){
+    name = newName;
+    DatabaseHelper.instance.update(this);
+  }
 
   // async Getter and Setter for fields that are initialized asynchronously
   Future<ScanResult> getScanResult() async {

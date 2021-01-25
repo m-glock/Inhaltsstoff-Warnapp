@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:Essbar/backend/Product.dart';
+import 'package:Essbar/backend/ProductFactory.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:image_crop/image_crop.dart';
 import 'package:flutter/material.dart';
@@ -134,6 +135,6 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
       }
     }
 
-    return await Product.fromTextRecognition(text);
+    return await ProductFactory.fromTextRecognition(text);
   }
 }

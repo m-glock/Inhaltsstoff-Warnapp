@@ -41,9 +41,7 @@ class MyApp extends StatelessWidget {
         child: RaisedButton(
           child: Text('Button'),
           onPressed: () async {
-            //vars
             final dbHelper = DatabaseHelper.instance;
-            final db = await dbHelper.database;
             FoodApiAccess foodApi = FoodApiAccess.instance;
 
             // add the test at this position

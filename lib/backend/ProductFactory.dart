@@ -3,6 +3,8 @@ import 'Enums/PreferenceType.dart';
 import 'Enums/Type.dart';
 import 'FoodApiAccess.dart';
 import 'Ingredient.dart';
+import 'ListManager.dart';
+import 'Lists/History.dart';
 import 'Product.dart';
 import 'TextRecognitionParser.dart';
 import 'database/DatabaseHelper.dart';
@@ -71,7 +73,7 @@ class ProductFactory{
     if(ingredientsText?.isEmpty ?? true) return null;
 
     // parse ingredients from text and create a product onbject
-    List<Ingredient> ingredients = await TextRecognitionParser.parseIngredientNames(ingredientsText);
+    List<Ingredient> ingredients = await TextRecognitionParser.getIngredientsFromText(ingredientsText);
     Product product = Product('', null, null, DateTime.now());
     product.ingredients = ingredients;
 
@@ -81,8 +83,10 @@ class ProductFactory{
         product.initializePreferredIngredients();
 
     // save and return product
-    int id = await product.saveInDatabase();
-    product.id = id;
+    await product.saveInDatabase();
+    History his = await ListManager.instance.history;
+    his.addProduct(product);
+
     return product;
   }
 
