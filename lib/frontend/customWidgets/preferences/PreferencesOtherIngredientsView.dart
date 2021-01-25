@@ -1,4 +1,3 @@
-import 'package:Essbar/backend/database/DatabaseHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -91,17 +90,17 @@ class _PreferencesOtherIngredientsViewState
               .map((ingredient, preference) => MapEntry(
                   ingredient.name,
                   preference == PreferenceType.None
-                      ? "egal"
+                      ? 'egal'
                       : preference == PreferenceType.NotWanted
-                          ? "nichts"
-                          : "wenig")),
-          options: ["nichts", "egal", "wenig"],
+                          ? 'nichts'
+                          : 'wenig')),
+          options: ['nichts', 'egal', 'wenig'],
           onChange: (int index, String newPreferenceValue) {
             Ingredient changedIngredient =
                 _shownOtherIngredientPreferences.keys.toList()[index];
-            PreferenceType newPreference = newPreferenceValue == "wenig"
+            PreferenceType newPreference = newPreferenceValue == 'wenig'
                 ? PreferenceType.NotPreferred
-                : newPreferenceValue == "nichts"
+                : newPreferenceValue == 'nichts'
                     ? PreferenceType.NotWanted
                     : PreferenceType.None;
             widget.onChange(changedIngredient, newPreference);

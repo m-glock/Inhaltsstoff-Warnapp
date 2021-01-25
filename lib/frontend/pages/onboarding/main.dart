@@ -53,9 +53,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _animateToPage(String pageName) {
-    int pageIndex = pageName == "allergens"
+    int pageIndex = pageName == 'allergens'
         ? 1
-        : pageName == "nutrients"
+        : pageName == 'nutrients'
             ? 2
             : 3;
     _introKey.currentState.animateScroll(pageIndex);
@@ -108,17 +108,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
       key: _introKey,
       pages: [
         PageViewModel(
-          title: "Willkommen",
+          title: 'Willkommen',
           bodyWidget: Column(
             children: [
               Text(
-                "Mit der Inhaltsstoff Warnapp kannst du beim Einkaufen schnell und unkompliziert erkennen, ob du ein Produkt aufgrund seiner Inhaltsstoffe essen kannst.",
+                'Mit der Inhaltsstoff Warnapp kannst du beim Einkaufen schnell und unkompliziert erkennen, ob du ein Produkt aufgrund seiner Inhaltsstoffe essen kannst.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               Padding(
                 child: Text(
-                  "Bevor es losgehen kann, erzähl uns ein bisschen über deine Lebensmittelverträglichkeiten und Ernährungspräferenzen.",
+                  'Bevor es losgehen kann, erzähl uns ein bisschen über deine Lebensmittelverträglichkeiten und Ernährungspräferenzen.',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
@@ -126,13 +126,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
             ],
           ),
-          image: _buildImage("healthy_options"),
+          image: _buildImage('healthy_options'),
           decoration: imagePageDecoration,
         ),
         PageViewModel(
           titleWidget: OnboardingTitleWidget(
-            title: "Allergien",
-            subTitle: "Hast du irgendwelche Allergien?",
+            title: 'Allergien',
+            subTitle: 'Hast du irgendwelche Allergien?',
           ),
           bodyWidget: PreferencesAllergensView(
             allergenePreferences: _allergenePreferences,
