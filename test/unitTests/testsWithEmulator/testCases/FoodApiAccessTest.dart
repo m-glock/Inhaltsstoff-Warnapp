@@ -1,6 +1,6 @@
 import 'package:Essbar/backend/database/DatabaseHelper.dart';
 import 'package:Essbar/backend/FoodApiAccess.dart';
-import 'package:Essbar/backend/Product.dart';
+import 'package:Essbar/backend/databaseEntities/Product.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /*

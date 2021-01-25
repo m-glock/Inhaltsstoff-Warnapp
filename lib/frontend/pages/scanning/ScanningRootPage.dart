@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import '../../../backend/FoodApiAccess.dart';
-import '../../../backend/Product.dart';
+import '../../../backend/databaseEntities/Product.dart';
 import '../../customWidgets/CustomAlertDialog.dart';
 import '../../customWidgets/CustomAppBar.dart';
 import '../../customWidgets/LabelledIconButton.dart';

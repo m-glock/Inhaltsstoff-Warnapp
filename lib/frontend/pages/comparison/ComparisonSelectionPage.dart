@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../backend/Product.dart';
+import '../../../backend/databaseEntities/Product.dart';
 import './comparisonCustomWidgets/ComparisonSelectProductButtons.dart';
 import './comparisonCustomWidgets/ComparisonSelectedProductCard.dart';
 import '../scanning/ScanningResultPage.dart';

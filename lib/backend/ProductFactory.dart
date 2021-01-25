@@ -2,13 +2,13 @@
 import 'Enums/PreferenceType.dart';
 import 'Enums/Type.dart';
 import 'FoodApiAccess.dart';
-import 'Ingredient.dart';
+import 'databaseEntities/Ingredient.dart';
 import 'ListManager.dart';
-import 'Lists/History.dart';
-import 'Product.dart';
+import 'databaseEntities/History.dart';
+import 'databaseEntities/Product.dart';
 import 'TextRecognitionParser.dart';
 import 'database/DatabaseHelper.dart';
-import 'database/DbTableNames.dart';
+import 'enums/DbTableNames.dart';
 
 class ProductFactory{
 

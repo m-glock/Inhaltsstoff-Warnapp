@@ -7,7 +7,7 @@ import '../../customWidgets/preferences/PreferencesNutrientsView.dart';
 import '../../customWidgets/preferences/PreferencesOtherIngredientsView.dart';
 import '../../customWidgets/preferences/PreferencesSummary.dart';
 import '../../../backend/PreferenceManager.dart';
-import '../../../backend/Ingredient.dart';
+import '../../../backend/databaseEntities/Ingredient.dart';
 import '../../../backend/Enums/Type.dart';
 import '../../../backend/Enums/PreferenceType.dart';
 

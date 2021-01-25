@@ -1,10 +1,10 @@
-import 'Product.dart';
-import 'database/DbTable.dart';
-import 'database/DbTableNames.dart';
+import 'databaseEntities/Product.dart';
+import 'databaseEntities/superClasses/DbTable.dart';
+import 'enums/DbTableNames.dart';
 import 'database/DatabaseHelper.dart';
 
-import 'Lists/FavouritesList.dart';
-import 'Lists/History.dart';
+import 'databaseEntities/FavouritesList.dart';
+import 'databaseEntities/History.dart';
 
 class ListManager{
 

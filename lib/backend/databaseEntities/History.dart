@@ -1,7 +1,7 @@
-import '../database/DbTableNames.dart';
+import '../enums/DbTableNames.dart';
 import '../database/DatabaseHelper.dart';
-import '../Product.dart';
-import './DbList.dart';
+import 'Product.dart';
+import 'superClasses/DbList.dart';
 
 import 'package:sortedmap/sortedmap.dart';
 import 'package:event/event.dart';

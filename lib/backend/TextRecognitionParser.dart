@@ -1,6 +1,6 @@
 import 'Enums/PreferenceType.dart';
 import 'Enums/Type.dart';
-import 'Ingredient.dart';
+import 'databaseEntities/Ingredient.dart';
 import 'database/DatabaseHelper.dart';
 
 class TextRecognitionParser {

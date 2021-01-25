@@ -10,7 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:Essbar/frontend/customWidgets/preferences/PreferencesAllergensView.dart';
 import 'package:Essbar/backend/Enums/PreferenceType.dart';
 import 'package:Essbar/backend/Enums/Type.dart';
-import 'package:Essbar/backend/Ingredient.dart';
+import 'package:Essbar/backend/databaseEntities/Ingredient.dart';
 
 Widget buildTestableWidget(Widget widget) {
   return MediaQuery(

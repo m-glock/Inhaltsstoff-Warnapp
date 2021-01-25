@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../backend/Enums/ScanResult.dart';
-import '../../backend/Product.dart';
+import '../../backend/databaseEntities/Product.dart';
 import './ProductListItem.dart';
 
 class ProductsList extends StatelessWidget {

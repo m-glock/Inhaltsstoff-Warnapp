@@ -1,7 +1,7 @@
-import 'Enums/PreferenceType.dart';
-import 'Enums/Type.dart';
-import 'database/DbTable.dart';
-import 'database/DbTableNames.dart';
+import '../Enums/PreferenceType.dart';
+import '../Enums/Type.dart';
+import 'superClasses/DbTable.dart';
+import '../enums/DbTableNames.dart';
 
 class Ingredient extends DbTable {
 

@@ -1,11 +1,11 @@
 import 'package:Essbar/backend/PreferenceManager.dart';
-import 'package:Essbar/backend/Product.dart';
-import 'package:Essbar/backend/database/DbTableNames.dart';
+import 'package:Essbar/backend/databaseEntities/Product.dart';
+import 'package:Essbar/backend/enums/DbTableNames.dart';
 import 'package:Essbar/backend/database/DatabaseHelper.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:Essbar/backend/Enums/PreferenceType.dart';
 import 'package:Essbar/backend/Enums/Type.dart';
-import 'package:Essbar/backend/Ingredient.dart';
+import 'package:Essbar/backend/databaseEntities/Ingredient.dart';
 import 'dart:async';
 
 /*

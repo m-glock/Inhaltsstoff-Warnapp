@@ -1,12 +1,11 @@
-import 'PreferenceManager.dart';
+import '../PreferenceManager.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'database/DatabaseContainer.dart';
-import './PreferenceManager.dart';
-import 'database/DatabaseHelper.dart';
-import 'database/DbTable.dart';
-import 'database/DbTableNames.dart';
-import 'Enums/ScanResult.dart';
+import '../database/DatabaseContainer.dart';
+import '../database/DatabaseHelper.dart';
+import 'superClasses/DbTable.dart';
+import '../enums/DbTableNames.dart';
+import '../Enums/ScanResult.dart';
 import 'Ingredient.dart';
 
 class Product extends DbTable{

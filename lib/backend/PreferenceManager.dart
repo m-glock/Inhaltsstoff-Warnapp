@@ -1,12 +1,12 @@
 import 'dart:core';
 
-import './database/DbTableNames.dart';
+import 'enums/DbTableNames.dart';
 import 'Enums/ScanResult.dart';
-import 'Ingredient.dart';
+import 'databaseEntities/Ingredient.dart';
 import 'Enums/PreferenceType.dart';
 import 'Enums/Type.dart';
 
-import 'Product.dart';
+import 'databaseEntities/Product.dart';
 import 'database/DatabaseHelper.dart';
 
 class PreferenceManager {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../backend/Enums/PreferenceType.dart';
-import '../../../../backend/Ingredient.dart';
+import '../../../../backend/databaseEntities/Ingredient.dart';
 import '../../../../backend/PreferenceManager.dart';
 import '../../../../backend/Enums/Type.dart';
 import '../../../customWidgets/preferences/PreferencesAllergensView.dart';

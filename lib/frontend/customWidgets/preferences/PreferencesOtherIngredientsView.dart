@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 
 import '../RadioButtonTable.dart';
 import '../../../backend/Enums/PreferenceType.dart';
-import '../../../backend/Ingredient.dart';
+import '../../../backend/databaseEntities/Ingredient.dart';
 import '../../customWidgets/RadioButtonTable.dart';
 import '../../customWidgets/SearchBar.dart';
 

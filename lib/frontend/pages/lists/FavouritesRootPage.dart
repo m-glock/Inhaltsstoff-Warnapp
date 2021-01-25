@@ -1,6 +1,6 @@
 import '../../../backend/Enums/ScanResult.dart';
 import '../../../backend/ListManager.dart';
-import '../../../backend/Product.dart';
+import '../../../backend/databaseEntities/Product.dart';
 import '../../customWidgets/ProductsList.dart';
 import '../../customWidgets/CustomAppBar.dart';
 

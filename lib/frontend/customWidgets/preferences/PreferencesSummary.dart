@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../backend/Ingredient.dart';
+import '../../../backend/databaseEntities/Ingredient.dart';
 import '../../../backend/Enums/PreferenceType.dart';
 import '../EditableChipsList.dart';
 

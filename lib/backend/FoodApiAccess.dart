@@ -1,11 +1,11 @@
 import 'package:Essbar/backend/IngredientTranslationManager.dart';
 
 import './ListManager.dart';
-import 'Lists/History.dart';
-import 'database/DbTableNames.dart';
+import 'databaseEntities/History.dart';
+import 'enums/DbTableNames.dart';
 import 'database/DatabaseHelper.dart';
-import 'database/DbTable.dart';
-import 'Product.dart';
+import 'databaseEntities/superClasses/DbTable.dart';
+import 'databaseEntities/Product.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';

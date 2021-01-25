@@ -1,6 +1,6 @@
-import '../../../backend/Product.dart';
+import '../../../backend/databaseEntities/Product.dart';
 import '../../../backend/Enums/ScanResult.dart';
-import '../../../backend/Ingredient.dart';
+import '../../../backend/databaseEntities/Ingredient.dart';
 import '../../../backend/PreferenceManager.dart';
 import '../../../backend/Enums/PreferenceType.dart';
 import '../../../frontend/customWidgets/CustomAppBar.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../customWidgets/CustomAppBar.dart';
-import '../../../backend/Product.dart';
+import '../../../backend/databaseEntities/Product.dart';
 import './ComparisonViewPage.dart';
 import './ComparisonSelectionPage.dart';
 
