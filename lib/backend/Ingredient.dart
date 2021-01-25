@@ -19,8 +19,19 @@ class Ingredient extends DbTable {
   Ingredient(this._name, this.preferenceType, this._type, this.preferenceAddDate,
       {int id}) : super(id);
 
-  // Methods
-  // DB methods
+
+  // compare two ingredients on the basis of their id
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+            other is Ingredient &&
+            runtimeType == other.runtimeType &&
+            id == other.id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
+  // methods from super class
   @override
   String getTableName() {
     return DbTableNames.ingredient.name;
@@ -29,11 +40,12 @@ class Ingredient extends DbTable {
   @override
   Future<Map<String, dynamic>> toMap({bool withId: true}) async {
     final map = new Map<String, dynamic>();
+    String convertedDate = preferenceAddDate?.toIso8601String();
+
     map['name'] = _name;
     map['preferenceTypeId'] = preferenceType.id;
     map['typeId'] = _type.id;
-    String test = preferenceAddDate?.toIso8601String();
-    map['preferenceAddDate'] = test;
+    map['preferenceAddDate'] = convertedDate;
     if (withId) map['id'] = super.id;
     return map;
   }
@@ -49,14 +61,4 @@ class Ingredient extends DbTable {
     return new Ingredient(data['name'], prefType, type, preferenceAddDate,
         id: data['id']);
   }
-
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-            other is Ingredient &&
-            runtimeType == other.runtimeType &&
-            id == other.id;
-  }
-
-  @override
-  int get hashCode => id.hashCode;
 }

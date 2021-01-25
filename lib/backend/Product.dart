@@ -1,4 +1,4 @@
-import 'ProductFactory.dart';
+import 'PreferenceManager.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'database/DatabaseContainer.dart';
@@ -10,6 +10,7 @@ import 'Ingredient.dart';
 
 class Product extends DbTable{
 
+  // Fields
   String name;
   ScanResult _scanResult;
   String _imageUrl;
@@ -29,10 +30,21 @@ class Product extends DbTable{
   Future<void> scanResultPromise;
   Future<void> preferredIngredientsPromise;
 
+  // Getter and Setter
+  String get imageUrl => _imageUrl;
+  String get barcode => _barcode;
+  DateTime get lastUpdated => _lastUpdated;
+
+  String get nutriscore => _nutriscore;
+  String get quantity => _quantity;
+  String get origin => _origin;
+  String get manufacturingPlaces => _manufacturingPlaces;
+  String get stores => _stores;
+
   // async Getter and Setter for fields that are initialized asynchronously
   Future<ScanResult> getScanResult() async {
     if (_scanResult == null && scanResultPromise == null)
-      scanResultPromise = ProductFactory.initializeScanResult(this);
+      scanResultPromise = initializeScanResult();
     if (scanResultPromise != null) await scanResultPromise;
     return _scanResult;
   }
@@ -43,7 +55,7 @@ class Product extends DbTable{
 
   Future<Map<Ingredient, ScanResult>> getItemizedScanResults() async {
     if (_itemizedScanResults == null && scanResultPromise == null)
-      scanResultPromise = ProductFactory.initializeScanResult(this);
+      scanResultPromise = initializeScanResult();
     if (scanResultPromise != null) await scanResultPromise;
     return _itemizedScanResults;
   }
@@ -55,7 +67,7 @@ class Product extends DbTable{
 
   Future<List<Ingredient>> getPreferredIngredients() async {
     if (_preferredIngredients == null && preferredIngredientsPromise == null)
-      preferredIngredientsPromise = ProductFactory.initializePreferredIngredients(this);
+      preferredIngredientsPromise = initializePreferredIngredients();
     if (preferredIngredientsPromise != null) await preferredIngredientsPromise;
     return _preferredIngredients;
   }
@@ -65,18 +77,7 @@ class Product extends DbTable{
     preferredIngredientsPromise = null;
   }
 
-  // Getter
-  String get imageUrl => _imageUrl;
-  String get barcode => _barcode;
-  DateTime get lastUpdated => _lastUpdated;
-
-  String get nutriscore => _nutriscore;
-  String get quantity => _quantity;
-  String get origin => _origin;
-  String get manufacturingPlaces => _manufacturingPlaces;
-  String get stores => _stores;
-
-  // constructor with minimal necessary information
+  // constructor
   Product(this.name, this._imageUrl, this._barcode, this.scanDate, {int id}) : super(id) {
     ingredients = List();
   }
@@ -97,13 +98,13 @@ class Product extends DbTable{
     ingredients = List();
   }
 
+  // Methods
 
   /*
-  * get the names of ingredients that are responsible for the overall scan result.
-  * Either return the names of responsible ingredients that are not wanted or those that are explicitly wanted
+  * Get the names of ingredients that are responsible for the overall scan result.
   * @param unwantedIngredients: determines whether to return the ingredients that cause a negative scan result (unwanted)
   *                             or those that are explicitly wanted by the user and contained in the product
-  * @return: a list of ingredient names
+  * @return: a list of ingredient names that are not wanted or those that are explicitly wanted
   * */
   Future<List<String>> getDecisiveIngredientNames(
       {bool getUnwantedIngredients = true}) async {
@@ -123,7 +124,7 @@ class Product extends DbTable{
   }
 
   /*
-  * get the names of ingredients that are not preferenced by the user and are contained in the product.
+  * Get the names of ingredients that are not preferenced by the user and are contained in the product.
   * @return: a list of ingredient names
   * */
   Future<List<String>> getNotPreferredIngredientNames() async {
@@ -141,6 +142,11 @@ class Product extends DbTable{
     return notPreferredIngredients;
   }
 
+
+  /*
+  * Saves the product and all its relations in the database.
+  * @return the new row id of the product
+  * */
   Future<int> saveInDatabase() async {
     DatabaseHelper helper = DatabaseHelper.instance;
 
@@ -162,7 +168,31 @@ class Product extends DbTable{
     return id;
   }
 
-  // DB methods
+  /*
+  *
+  * */
+  Future<void> initializeScanResult() async {
+    Map<Ingredient, ScanResult> itemizedScanResults =
+        await PreferenceManager.getItemizedScanResults(this);
+    setItemizedScanResults(itemizedScanResults);
+  }
+
+  Future<void> initializePreferredIngredients() async {
+    List<Ingredient> preferredIngredients =
+        await PreferenceManager.getPreferredIngredientsIn(this);
+    setPreferredIngredients(preferredIngredients);
+  }
+
+  // compare two products on the basis of their id
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is Product && runtimeType == other.runtimeType && id == other.id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
+  // Methods from super class
   @override
   String getTableName() {
     return DbTableNames.product.name;
@@ -193,16 +223,18 @@ class Product extends DbTable{
     DateTime scanDate = scanDateDb == ''
         ? null
         : DateTime.parse(data['scanDate']);
+
     Product product = Product(
         data['name'], data['imageUrl'], data['barcode'], scanDate,
         id: productId);
-    int scanResultId = data['scanResultId'];
 
+    int scanResultId = data['scanResultId'];
     product._scanResult = ScanResult.values.elementAt(scanResultId - 1);
     String lastUpdatedDb = data['lastUpdated'];
     product._lastUpdated = lastUpdatedDb == ''
         ? null
         : DateTime.parse(lastUpdatedDb);
+
     product._nutriscore = data['nutriScore'];
     product._quantity = data['quantity'];
     product._origin = data['originCountry'];
@@ -220,12 +252,4 @@ class Product extends DbTable{
 
     return product;
   }
-
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        other is Product && runtimeType == other.runtimeType && id == other.id;
-  }
-
-  @override
-  int get hashCode => id.hashCode;
 }

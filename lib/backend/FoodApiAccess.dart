@@ -92,9 +92,9 @@ class FoodApiAccess{
       // (which might have changed since last time)
       productFromDb.scanDate = DateTime.now();
       productFromDb.scanResultPromise =
-          ProductFactory.initializeScanResult(productFromDb);
+          productFromDb.initializeScanResult();
       productFromDb.preferredIngredientsPromise =
-          ProductFactory.initializePreferredIngredients(productFromDb);
+          productFromDb.initializePreferredIngredients();
 
       // update product in database and add to history
       await helper.update(productFromDb);

@@ -1,11 +1,8 @@
 
 import 'Enums/PreferenceType.dart';
-import 'Enums/ScanResult.dart';
 import 'Enums/Type.dart';
 import 'FoodApiAccess.dart';
 import 'Ingredient.dart';
-import 'ListManager.dart';
-import 'PreferenceManager.dart';
 import 'Product.dart';
 import 'TextRecognitionParser.dart';
 import 'database/DatabaseHelper.dart';
@@ -19,6 +16,7 @@ class ProductFactory{
   * @return: a new Product object
   * */
   static Future<Product> fromApiJson(Map<String, dynamic> json) async {
+    // read and save content directly from json
     String name = json['product_name'];
     String imageUrl = json['image_url'];
     String barcode = json['code'];
@@ -36,31 +34,15 @@ class ProductFactory{
     Product newProduct = Product.fullProduct(name, imageUrl, barcode, scanDate,
         lastUpdated, nutriscore, quantity, origin, manufacturingPlaces, stores);
 
-    // add Ingredients, Allergens, Vitamins, Additives and Traces
-    FoodApiAccess foodApi = FoodApiAccess.instance;
+    // translate Ingredients, Allergens and Vitamins
     Set<String> translatedIngredientNames = Set();
+    translatedIngredientNames.addAll(await translateIngredients(json['allergens_tags'], 'allergens'));
+    translatedIngredientNames.addAll(await translateIngredients(json['vitamins_tags'], 'vitamins'));
+    translatedIngredientNames.addAll(await translateIngredients(json['minerals_tags'], 'minerals'));
+    translatedIngredientNames.addAll(await translateIngredients(json['ingredients_tags'], 'ingredients'));
 
-    List<dynamic> allergenNames = json['allergens_tags'];
-    if (allergenNames != null && allergenNames.isNotEmpty)
-      translatedIngredientNames.addAll(await foodApi.translationManager
-          .getTranslatedValuesForTag('allergens', tagValues: allergenNames));
-
-    List<dynamic> vitaminNames = json['vitamins_tags'];
-    if (vitaminNames != null && vitaminNames.isNotEmpty)
-      translatedIngredientNames.addAll(await foodApi.translationManager
-          .getTranslatedValuesForTag('vitamins', tagValues: vitaminNames));
-
-    List<dynamic> mineralNames = json['minerals_tags'];
-    if (mineralNames != null && mineralNames.isNotEmpty)
-      translatedIngredientNames.addAll(await foodApi.translationManager
-          .getTranslatedValuesForTag('minerals', tagValues: mineralNames));
-
-    List<dynamic> ingredientNames = json['ingredients_tags'];
-
-    if (ingredientNames != null && ingredientNames.isNotEmpty)
-      translatedIngredientNames.addAll(await foodApi.translationManager
-          .getTranslatedValuesForTag('ingredients', tagValues: ingredientNames));
-
+    // get Ingredient objects for translated names
+    // either from the database or by creating a new one
     for (String name in translatedIngredientNames) {
       Ingredient ingredient = await DatabaseHelper.instance
           .read(DbTableNames.ingredient, [name], whereColumn: 'name');
@@ -72,37 +54,47 @@ class ProductFactory{
       newProduct.ingredients.add(ingredient);
     }
 
-    newProduct.scanResultPromise = initializeScanResult(newProduct);
+    // evaluate the scan result
+    newProduct.scanResultPromise = newProduct.initializeScanResult();
     newProduct.preferredIngredientsPromise =
-        initializePreferredIngredients(newProduct);
+        newProduct.initializePreferredIngredients();
 
     return newProduct;
   }
 
-  static Future<Product> fromTextRecognition(String ingredientsText, String productName) async {
+  /*
+  * Uses the text from the text recognition to create a new Product object
+  * @param ingredientsText: the text from the text recognition
+  * @return: a new Product object
+  * */
+  static Future<Product> fromTextRecognition(String ingredientsText) async {
     if(ingredientsText?.isEmpty ?? true) return null;
 
+    // parse ingredients from text and create a product onbject
     List<Ingredient> ingredients = await TextRecognitionParser.parseIngredientNames(ingredientsText);
-    Product product = Product(productName, null, null, DateTime.now());
+    Product product = Product('', null, null, DateTime.now());
     product.ingredients = ingredients;
 
-    product.scanResultPromise = initializeScanResult(product);
+    // evaluate the scan result
+    product.scanResultPromise = product.initializeScanResult();
     product.preferredIngredientsPromise =
-        initializePreferredIngredients(product);
+        product.initializePreferredIngredients();
 
-    await product.saveInDatabase();
+    // save and return product
+    int id = await product.saveInDatabase();
+    product.id = id;
     return product;
   }
 
-  static Future<void> initializeScanResult(Product product) async {
-    Map<Ingredient, ScanResult> itemizedScanResults =
-    await PreferenceManager.getItemizedScanResults(product);
-    product.setItemizedScanResults(itemizedScanResults);
-  }
+  /*
+  * Translate ingredientNames into a specific language.
+  * @param ingredientNames: all ingredient names that should be translated
+  * @return a list of translated ingredient names
+  * */
+  static Future<List<String>> translateIngredients(List<dynamic> ingredientNames, String tag) async {
+    if(ingredientNames == null || ingredientNames.isEmpty) return new List<String>();
 
-  static Future<void> initializePreferredIngredients(Product product) async {
-    List<Ingredient> preferredIngredients =
-    await PreferenceManager.getPreferredIngredientsIn(product);
-    product.setPreferredIngredients(preferredIngredients);
+    return await FoodApiAccess.instance.translationManager
+        .getTranslatedValuesForTag(tag, tagValues: ingredientNames);
   }
 }
