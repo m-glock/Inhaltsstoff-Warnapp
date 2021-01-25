@@ -12,9 +12,9 @@ import 'database/DatabaseHelper.dart';
 class PreferenceManager {
 
   /*
-  * When the user changes the preference of one or multiple Ingredients, this method is called and
-  * saves the information in the database
-  * @param preferenceChanges: a map of ingredients and the preference types they should change to
+  * Save new/changed preferences of the user in the database.
+  * @param preferenceChanges: a map of ingredients
+  *                           and the preference types they should change to
   * */
   static void changePreference(
       Map<Ingredient, PreferenceType> preferenceChanges) async {
@@ -30,9 +30,10 @@ class PreferenceManager {
   }
 
   /*
-  * get all Ingredients that are saved in the DB that have a preferenceType other than NONE
-  * @param preferenceTypes: if only ingredients with a specific preference type are requested
-  * @return: a list of all ingredients that the user has preferred
+  * Get all preferenced ingredients from the database
+  * or just ones with specific preferenceTypes.
+  * @param preferenceTypes: specific preferenceTypes for filtering
+  * @return: a list of all matching ingredients that the user has preferred
   * */
   static Future<List<Ingredient>> getPreferencedIngredients(
       [List<PreferenceType> preferenceTypes]) async {
@@ -41,12 +42,14 @@ class PreferenceManager {
     String tableName = DbTableNames.ingredient.name;
 
     if (preferenceTypes?.isEmpty ?? true) {
+      // get all ingredients that have a preferenceType other than NONE
       int prefTypeId = PreferenceType.None.id;
       List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE preferenceTypeId IS NOT $prefTypeId');
       results.forEach((result) {
         ingredients.add(Ingredient.fromMap(result));
       });
     } else {
+      // filter for one or more specific preferenceType
       List<String> preferenceTypeIds = preferenceTypes.map((preferenceType) => preferenceType.id.toString()).toList();
       String ids = preferenceTypeIds.reduce((value, element) => value + ', ' + element);
 
@@ -60,9 +63,9 @@ class PreferenceManager {
   }
 
   /*
-  * Get all Ingredients from the DB independent of whether they have a set preference type or not
-  * @param type: if only the ingredients of a specific type are relevant (i.e. vitamins, allergens)
-  * @return: all Ingredients that are available in the database
+  * Get all Ingredients from the DB or ones with a specific type.
+  * @param type: specific types for filtering
+  * @return: a list of all matching ingredients that match
   * */
   static Future<List<Ingredient>> getAllAvailableIngredients([Type type]) async {
     final dbHelper = DatabaseHelper.instance;
@@ -70,6 +73,7 @@ class PreferenceManager {
     String tableName = DbTableNames.ingredient.name;
 
     if (type == null) {
+      // get all ingredients from the database
       List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName');
       results.forEach((result) {
         ingredients.add(Ingredient.fromMap(result));
@@ -77,6 +81,7 @@ class PreferenceManager {
     }
 
     if (type != null) {
+      //get only the ingredients of the specified type from the database
       String typeId = type.id.toString();
       List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE typeId = $typeId');
       results.forEach((result) {
@@ -92,21 +97,28 @@ class PreferenceManager {
   * Get all preferred ingredients and assign them a ScanResult on whether they are in the product or not.
   * Red = Ingredient is not wanted, but is contained in the product
   * Yellow = Ingredient is not preferred, but is contained in the product
-  * Green = Ingredient is preferred or none and is contained in the product, or there is no match in the database
-  *
-  * @param product: the product whose ingredient should be compared to the preferred ingredients
-  * @return: a Map for each preferred Ingredient and its respective ScanResult to the product
+  * Green = Ingredient is either not preferred or not wanted
+  *         but is not contained in the product
+  * @param product: the product whose ingredients should be compared to the preferred ingredients
+  * @return: a Map for each preferred Ingredient and its respective ScanResult for the product
   * */
   static Future<Map<Ingredient, ScanResult>> getItemizedScanResults(
       Product product) async {
     Map<Ingredient, ScanResult> itemizedScanResults = Map();
-    List<PreferenceType> options = [PreferenceType.NotWanted, PreferenceType.NotPreferred];
-    List<Ingredient> preferredIngredients = await getPreferencedIngredients(options);
     List<Ingredient> productIngredients = product.ingredients;
 
+    // get all ingredients the user has preferenced
+    List<PreferenceType> options = [PreferenceType.NotWanted, PreferenceType.NotPreferred];
+    List<Ingredient> preferredIngredients = await getPreferencedIngredients(options);
+
+    // determine the itemized scan results and the overall scan result
+    // by checking for each preferred ingredient whether it is in the product
     ScanResult overallResult = ScanResult.Green;
     preferredIngredients.forEach((ingredient) {
       ScanResult result;
+
+      // check if there is an ingredient in the product whose name is similar
+      // to the preferred ingredient
       List<Ingredient> matchingIngredients = productIngredients.where((i) => i.name.toLowerCase().contains(ingredient.name.toLowerCase())).toList();
       if(matchingIngredients.isNotEmpty){
         result = ingredient.preferenceType == PreferenceType.NotWanted
@@ -120,11 +132,17 @@ class PreferenceManager {
       itemizedScanResults[ingredient] = result;
     });
 
+    // set the overall scan result of the product
     product.setScanResult(overallResult);
 
     return itemizedScanResults;
   }
 
+  /*
+  * Find all preferenced ingredients in a product.
+  * @param product: the product to check the ingredients of
+  * @return a list of all preferenced in a product
+  * */
   static Future<List<Ingredient>> getPreferredIngredientsIn(Product product) async {
     List<Ingredient> ingredients = product.ingredients;
     return (await getPreferencedIngredients([PreferenceType.Preferred]))
