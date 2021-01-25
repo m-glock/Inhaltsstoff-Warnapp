@@ -1,4 +1,6 @@
+import 'package:Essbar/backend/database/DatabaseHelper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import '../RadioButtonTable.dart';
 import '../../../backend/Enums/PreferenceType.dart';
@@ -23,11 +25,14 @@ class PreferencesOtherIngredientsView extends StatefulWidget {
 class _PreferencesOtherIngredientsViewState
     extends State<PreferencesOtherIngredientsView> {
   List<Ingredient> _filteredIngredients;
+  List<Ingredient> _shownIngredients;
+  int _itemsToBeLoaded = 50;
 
   @override
   void initState() {
     super.initState();
     _filteredIngredients = widget.otherIngredientPreferences.keys.toList();
+    _shownIngredients = _filteredIngredients.getRange(0, _itemsToBeLoaded).toList();
   }
 
   void _onFilterList(List<String> newFilteredList) {
@@ -36,16 +41,36 @@ class _PreferencesOtherIngredientsViewState
           .toList()
           .where((ingredient) => newFilteredList.contains(ingredient.name))
           .toList();
+      _shownIngredients = _filteredIngredients.length < _itemsToBeLoaded
+          ? _filteredIngredients
+          : _filteredIngredients.getRange(0, _itemsToBeLoaded).toList();
     });
   }
 
-  Map<Ingredient, PreferenceType> get _filteredOtherIngredientPreferences {
+  Map<Ingredient, PreferenceType> get _shownOtherIngredientPreferences {
     Map<Ingredient, PreferenceType> newOtherIngredientPreferences = {};
-    _filteredIngredients.forEach((ingredient) {
+    _shownIngredients.forEach((ingredient) {
       newOtherIngredientPreferences[ingredient] =
           widget.otherIngredientPreferences[ingredient];
     });
     return newOtherIngredientPreferences;
+  }
+
+  void _loadMoreItems() async {
+    final totalItems = _filteredIngredients.length;
+    int listLength = _shownIngredients.length;
+    List<Ingredient> ingredientsToAdd = new List();
+
+    for (var i = 0; i < _itemsToBeLoaded; i++) {
+      int index = listLength + i;
+      if (index >= totalItems) continue;
+      Ingredient ing = _filteredIngredients.elementAt(index);
+      ingredientsToAdd.add(ing);
+    }
+
+    setState(() {
+      _shownIngredients.addAll(ingredientsToAdd);
+    });
   }
 
   @override
@@ -62,7 +87,7 @@ class _PreferencesOtherIngredientsViewState
           ),
         ),
         RadioButtonTable(
-          items: _filteredOtherIngredientPreferences
+          items: _shownOtherIngredientPreferences
               .map((ingredient, preference) => MapEntry(
                   ingredient.name,
                   preference == PreferenceType.None
@@ -73,7 +98,7 @@ class _PreferencesOtherIngredientsViewState
           options: ["nichts", "egal", "wenig"],
           onChange: (int index, String newPreferenceValue) {
             Ingredient changedIngredient =
-                _filteredOtherIngredientPreferences.keys.toList()[index];
+                _shownOtherIngredientPreferences.keys.toList()[index];
             PreferenceType newPreference = newPreferenceValue == "wenig"
                 ? PreferenceType.NotPreferred
                 : newPreferenceValue == "nichts"
@@ -81,6 +106,23 @@ class _PreferencesOtherIngredientsViewState
                     : PreferenceType.None;
             widget.onChange(changedIngredient, newPreference);
           },
+        ),
+        if(_shownIngredients.length != _filteredIngredients.length) RaisedButton(
+          color: Theme.of(context).primaryColor,
+          padding: EdgeInsets.all(12),
+          child: Text(
+            'Mehr laden',
+            style: Theme.of(context).textTheme.button.merge(
+                  new TextStyle(
+                    color: Theme.of(context).primaryColorLight,
+                  ),
+                ),
+            textAlign: TextAlign.center,
+          ),
+          onPressed: () => _loadMoreItems(),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
         ),
       ],
     );

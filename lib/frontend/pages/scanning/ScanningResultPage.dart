@@ -76,13 +76,26 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
               child: CircularProgressIndicator(),
             )
           : ListView(
-              padding: EdgeInsets.symmetric(vertical: 20.0),
+              padding: EdgeInsets.only(bottom: 20.0),
               children: <Widget>[
-                widget.scannedProduct.name == null
+                widget.scannedProduct.barcode == null
+                    ? Padding(
+                        padding: EdgeInsets.only(bottom: 10.0),
+                        child: ScanningInfoLine(
+                          backgroundColor: Colors.red,
+                          textColor: Colors.red[100],
+                          icon: Icons.warning_amber_sharp,
+                          text:
+                              'Es konnten nicht alle Inhaltsstoffe mit den Präferenzen abgeglichen werden.',
+                        ))
+                    : Padding(
+                        padding: EdgeInsets.only(top: 20.0),
+                      ),
+                widget.scannedProduct.name.isEmpty
                     ? EditableTitle(
                         originalTitle: 'Unbenanntes Produkt',
                         onTitleChanged: (String value) {
-                          widget.scannedProduct.name = value;
+                          widget.scannedProduct.setName(value);
                         },
                       )
                     : Text(

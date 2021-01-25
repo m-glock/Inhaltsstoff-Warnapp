@@ -1,3 +1,4 @@
+import '../../../backend/Enums/ScanResult.dart';
 import '../../../backend/ListManager.dart';
 import '../../../backend/Product.dart';
 import '../../customWidgets/ProductsList.dart';
@@ -20,12 +21,12 @@ class ComparisonFavouritesListPage extends StatefulWidget {
 
 class _ComparisonFavouritesListPageState
     extends State<ComparisonFavouritesListPage> {
-  List<Product> _favouriteProducts;
+  Map<Product, ScanResult> _favouriteProductsAndResults;
 
   @override
   void initState() {
     super.initState();
-    _getFavouriteProducts();
+    _getFavouriteProductsAndResults();
   }
 
   @override
@@ -33,10 +34,10 @@ class _ComparisonFavouritesListPageState
     return Scaffold(
       appBar: CustomAppBar('Wähle ein Produkt'),
       backgroundColor: Colors.white,
-      body: _favouriteProducts == null
+      body: _favouriteProductsAndResults == null
           ? CircularProgressIndicator()
           : ProductsList(
-              products: _favouriteProducts,
+              productsAndResults: _favouriteProductsAndResults,
               listEmptyText: 'Du hast keine Favoriten gespeichert.',
               onProductSelected: widget.onProductSelected,
               productsRemovable: false,
@@ -44,10 +45,14 @@ class _ComparisonFavouritesListPageState
     );
   }
 
-  void _getFavouriteProducts() async {
+  void _getFavouriteProductsAndResults() async {
     var favouritesList = await ListManager.instance.favouritesList;
+    List<Product> favouriteProducts = favouritesList.getProducts();
+    Map<Product, ScanResult> productsResults = {
+      for (Product p in favouriteProducts) p: await p.getScanResult()
+    };
     setState(() {
-      _favouriteProducts = favouritesList.getProducts();
+      _favouriteProductsAndResults = productsResults;
     });
   }
 }

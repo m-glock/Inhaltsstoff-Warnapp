@@ -78,7 +78,7 @@ class PreferenceManager {
 
     if (type != null) {
       String typeId = type.id.toString();
-      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE typeId = $typeId LIMIT 100');
+      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE typeId = $typeId');
       results.forEach((result) {
         ingredients.add(Ingredient.fromMap(result));
       });
@@ -107,7 +107,8 @@ class PreferenceManager {
     ScanResult overallResult = ScanResult.Green;
     preferredIngredients.forEach((ingredient) {
       ScanResult result;
-      if(productIngredients.contains(ingredient)){
+      List<Ingredient> matchingIngredients = productIngredients.where((i) => i.name.toLowerCase().contains(ingredient.name.toLowerCase())).toList();
+      if(matchingIngredients.isNotEmpty){
         result = ingredient.preferenceType == PreferenceType.NotWanted
             ? ScanResult.Red
             : ScanResult.Yellow;

@@ -2,6 +2,10 @@ import 'PreferenceManager.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'database/DatabaseContainer.dart';
+import './TextRecognitionParser.dart';
+import './PreferenceManager.dart';
+import 'ListManager.dart';
+import 'Lists/History.dart';
 import 'database/DatabaseHelper.dart';
 import 'database/DbTable.dart';
 import 'database/DbTableNames.dart';
@@ -158,6 +162,7 @@ class Product extends DbTable{
     Database db = await DatabaseContainer.instance.database;
     if(ingredients.isNotEmpty) {
       for (Ingredient ingredient in ingredients) {
+        if(ingredient.id == null) continue;
         Map<String, dynamic> values = Map();
         values['productId'] = this.id;
         values['ingredientId'] = ingredient.id;

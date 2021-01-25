@@ -1,5 +1,4 @@
-import 'package:Essbar/backend/Enums/ScanResult.dart';
-
+import '../../../backend/Enums/ScanResult.dart';
 import '../../../backend/ListManager.dart';
 import '../../../backend/Product.dart';
 import '../../customWidgets/ProductsList.dart';
@@ -15,12 +14,12 @@ class FavouritesRootPage extends StatefulWidget {
 }
 
 class _FavouritesRootPageState extends State<FavouritesRootPage> {
-  List<Product> _favouriteProducts;
+  Map<Product, ScanResult> _favouriteProductsAndResults;
 
   @override
   void initState() {
     super.initState();
-    _getFavouriteProducts();
+    _getFavouriteProductsAndResults();
     _addOnListUpdateListener();
   }
 
@@ -29,10 +28,10 @@ class _FavouritesRootPageState extends State<FavouritesRootPage> {
     return Scaffold(
       appBar: CustomAppBar('Favoriten'),
       backgroundColor: Colors.white,
-      body: _favouriteProducts == null
+      body: _favouriteProductsAndResults == null
           ? CircularProgressIndicator()
           : ProductsList(
-              products: _favouriteProducts,
+              productsAndResults: _favouriteProductsAndResults,
               listEmptyText: 'Du hast keine Favoriten gespeichert.',
               onProductSelected: (product) {
                 Navigator.pushNamed(context, '/product', arguments: product);
@@ -51,24 +50,28 @@ class _FavouritesRootPageState extends State<FavouritesRootPage> {
     _removeOnListUpdateListener();
   }
 
-  void _getFavouriteProducts() async {
+  void _getFavouriteProductsAndResults() async {
     var favouritesList = await ListManager.instance.favouritesList;
+    List<Product> favouriteProducts = favouritesList.getProducts();
+    Map<Product, ScanResult> productsResults = {
+      for (Product p in favouriteProducts) p: await p.getScanResult()
+    };
     setState(() {
-      _favouriteProducts = favouritesList.getProducts();
+      _favouriteProductsAndResults = productsResults;
     });
   }
 
   void _addOnListUpdateListener() async {
     var favouritesList = await ListManager.instance.favouritesList;
     favouritesList.onUpdate.subscribe((args) {
-      _getFavouriteProducts();
+      _getFavouriteProductsAndResults();
     });
   }
 
   void _removeOnListUpdateListener() async {
     var favouritesList = await ListManager.instance.favouritesList;
     favouritesList.onUpdate.unsubscribe((args) {
-      _getFavouriteProducts();
+      _getFavouriteProductsAndResults();
     });
   }
 
@@ -76,7 +79,7 @@ class _FavouritesRootPageState extends State<FavouritesRootPage> {
     var favouritesList = await ListManager.instance.favouritesList;
     favouritesList.removeProduct(product);
     setState(() {
-      _favouriteProducts.remove(product);
+      _favouriteProductsAndResults.remove(product);
     });
   }
 }
