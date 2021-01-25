@@ -5,12 +5,19 @@ import 'package:Essbar/backend/FoodApiAccess.dart';
 
 class IngredientTranslationManager{
 
-  Map _allergens;
-  Map _vitamins;
-  Map _minerals;
-  Map _ingredients;
+  Map<String, dynamic> _allergens;
+  Map<String, dynamic> _vitamins;
+  Map<String, dynamic> _minerals;
+  Map<String, dynamic> _ingredients;
 
-  Future<Map> _getCorrespondingMap(String tag) async {
+  /*
+  * Return the saved map of all possible values for a tag in the food API.
+  * @param tag: the corresponding tag for the map to be accessed
+  * @return a key-value json format of all values
+  * */
+  Future<Map<String, dynamic>> _getCorrespondingMap(String tag) async {
+    // if the maps have not been initialized yet
+    // get the corresponding maps from the food API first
     if(_allergens == null) _allergens =
         await FoodApiAccess.instance.getAllValuesForTag('allergens');
     if(_vitamins == null) _vitamins =
@@ -35,28 +42,37 @@ class IngredientTranslationManager{
   }
 
   /*
-  * get the translated names of values for a tag in a product json
+  * Get the translated names of values for a key tag in a product json.
   * @param tag: the tag name from the product json
   * @param: tagValues: a list of specific values from this tag that should be translated
-  * @param: languageCode: code for the target language of the translation
+  * @param: languageCode: preferred language to translate the values into
   * @return a List of all possible values that exist in the API for this specific tag
   *         or null if tag was not found
   * */
   Future<List<String>> getTranslatedValuesForTag(
       String tag,
       {List<dynamic> tagValues,
-        String languageCode:'de'}
-      ) async {
-    Map<dynamic, dynamic> allTagValues = await _getCorrespondingMap(tag);
+      String languageCode:'de'}
+  ) async {
 
+    // get all possible values for this tag
+    Map<dynamic, dynamic> allValues = await _getCorrespondingMap(tag);
+
+    // either translate all values or just specific ones
     if(tagValues == null){
-      return translateAllExistingValues(allTagValues, tag, languageCode);
+      return translateAllExistingValues(allValues, tag, languageCode);
     } else {
-      return translateSpecificTagNames(allTagValues, tagValues, tag, languageCode);
+      return translateSpecificKeyValues(allValues, tagValues, tag, languageCode);
     }
-
   }
 
+  /*
+  * Translate all tag values from the food API for a specific tag key.
+  * @param allTagValues: map of all tag values and their translations from the API
+  * @param tag: the tag of the values to be translated (allergen, vitamin etc.)
+  * @param languageCode: preferred language to translate the values into
+  * @return a list of all translated value names
+  * */
   List<String> translateAllExistingValues(
       Map<dynamic, dynamic> allTagValues,
       String tag,
@@ -65,11 +81,13 @@ class IngredientTranslationManager{
     List<String> translatedTagValues = new List();
 
     for(final keyValuePair in allTagValues.entries){
+
       // only use vitamins and minerals that are parents
       if((tag == 'vitamins' || tag == 'minerals')
           && keyValuePair.value['children'] == null)
         continue;
 
+      // translate the value into the specified language or into english
       String tagValue = keyValuePair.value['name'][languageCode];
       if(tagValue == null){
         String tagValueEn = keyValuePair.value['name']['en'];
@@ -78,6 +96,9 @@ class IngredientTranslationManager{
             : keyValuePair.key;
       }
 
+      // if it is still null because there was no translation
+      // into the specified language or english found
+      // use the untranslated value and remove the language code (fr:)
       if(tagValue != 'None'){
         tagValue = tagValue.substring(tagValue.indexOf(':') + 1);
         translatedTagValues.add(tagValue);
@@ -87,12 +108,20 @@ class IngredientTranslationManager{
     return translatedTagValues;
   }
 
-  List<String> translateSpecificTagNames(
+  /*
+  * Translate a specified list of tag values from the food API for a specific tag key.
+  * @param allTagValues: map of all tag values and their translations from the API
+  * @param tagValues: list of specified tag values to be translated
+  * @param tag: the tag of the values to be translated (allergen, vitamin etc.)
+  * @param languageCode: preferred language to translate the values into
+  * @return a list of all translated value names
+  * */
+  List<String> translateSpecificKeyValues(
       Map<dynamic, dynamic> allTagValues,
       List<dynamic> tagValues,
       String tag,
       String languageCode
-      ){
+  ){
     List<String> translatedTagValues = new List();
 
     tagValues.forEach((element) {
@@ -128,5 +157,4 @@ class IngredientTranslationManager{
 
     return translatedTagValues;
   }
-
 }
