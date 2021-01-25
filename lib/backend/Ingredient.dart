@@ -22,8 +22,8 @@ class Ingredient extends DbTable {
   // Methods
   // DB methods
   @override
-  DbTableNames getTableName() {
-    return DbTableNames.ingredient;
+  String getTableName() {
+    return DbTableNames.ingredient.name;
   }
 
   @override

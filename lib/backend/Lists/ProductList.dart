@@ -18,8 +18,8 @@ abstract class ProductList extends DbTable{
 
   // Methods
   @override
-  DbTableNames getTableName() {
-    return DbTableNames.list;
+  String getTableName() {
+    return DbTableNames.list.name;
   }
 
   @override

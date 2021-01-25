@@ -164,8 +164,8 @@ class Product extends DbTable{
 
   // DB methods
   @override
-  DbTableNames getTableName() {
-    return DbTableNames.product;
+  String getTableName() {
+    return DbTableNames.product.name;
   }
 
   @override
