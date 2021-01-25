@@ -6,9 +6,9 @@ import './DatabaseContainer.dart';
 
 // code adapted from https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
 class DatabaseHelper {
-
   // make this a Singleton class
   DatabaseHelper._privateConstructor();
+
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
   /*
@@ -19,12 +19,13 @@ class DatabaseHelper {
   * @param values: row values to be inserted into the table
   * @return the id of the inserted row
   * */
-  Future<int> add(DbTable object, [DbTableNames to, Map<String, dynamic> values]) async {
+  Future<int> add(DbTable object,
+      [DbTableNames to, Map<String, dynamic> values]) async {
     Database db = await DatabaseContainer.instance.database;
 
     // if to and value are given, insert into specified other table
     // else insert into table of object
-    if(to != null && values != null){
+    if (to != null && values != null) {
       return await db.insert(to.name, values);
     } else {
       values = await object.toMap(withId: false);
@@ -58,13 +59,17 @@ class DatabaseHelper {
   * @param whereColumn: name of the column for the where clause
   * @return the database object
   * */
-  Future<DbTable> read(DbTableNames tableName, List<dynamic> whereArgs, {String whereColumn = 'id'}) async {
+  Future<DbTable> read(DbTableNames tableName, List<dynamic> whereArgs,
+      {String whereColumn = 'id'}) async {
     Database db = await DatabaseContainer.instance.database;
-    if(whereArgs.length != 1)
-      throw Exception('Wrong number of arguments. If you want to get more than one element, please use the readAll method.');
+    if (whereArgs.length != 1)
+      throw Exception(
+          'Wrong number of arguments. If you want to get more than one element, '
+          'please use the readAll method.');
 
     // check of at least one element was found and return the first one
-    List<Map<String, dynamic>> list = await db.query(tableName.name, where: '$whereColumn = ?', whereArgs: whereArgs);
+    List<Map<String, dynamic>> list = await db.query(tableName.name,
+        where: '$whereColumn = ?', whereArgs: whereArgs);
     return list.length > 0 ? await tableName.fromMap(list[0]) : null;
   }
 
@@ -75,25 +80,28 @@ class DatabaseHelper {
   * @param whereArgs: list of arguments for a where clause
   * @return a list of database objects
   * */
-  Future<List<DbTable>> readAll(DbTableNames tableName, [String whereColumn, List<dynamic> whereArgs]) async {
+  Future<List<DbTable>> readAll(DbTableNames tableName,
+      [String whereColumn, List<dynamic> whereArgs]) async {
     Database db = await DatabaseContainer.instance.database;
-    if(whereArgs != null && whereArgs.length != 1)
+    if (whereArgs != null && whereArgs.length != 1)
       throw Exception('Wrong number of arguments.');
 
     // if no where clause is defined get all elements from the table
     // else only get the matching ones
     List<Map<String, dynamic>> rowsFromDb;
-    if(whereColumn == null)
+    if (whereColumn == null)
       rowsFromDb = await db.query(tableName.name);
     else
-      rowsFromDb = await db.query(tableName.name, where: '$whereColumn = ?', whereArgs: whereArgs);
+      rowsFromDb = await db.query(tableName.name,
+          where: '$whereColumn = ?', whereArgs: whereArgs);
 
     // handle if the table to select from is a join table
-    if(tableName == DbTableNames.productIngredient || tableName == DbTableNames.productList)
+    if (tableName == DbTableNames.productIngredient ||
+        tableName == DbTableNames.productList)
       return await _fromJoinTable(rowsFromDb, whereColumn, tableName);
 
     List<DbTable> objectList = new List();
-    for(Map<String, dynamic> row in rowsFromDb){
+    for (Map<String, dynamic> row in rowsFromDb) {
       objectList.add(await tableName.fromMap(row));
     }
     return objectList;
@@ -107,7 +115,8 @@ class DatabaseHelper {
   Future<int> update(DbTable object) async {
     Database db = await DatabaseContainer.instance.database;
     Map<String, dynamic> objectRows = await object.toMap();
-    return await db.update(object.getTableName(), objectRows, where: 'id = ?', whereArgs: [object.id]);
+    return await db.update(object.getTableName(), objectRows,
+        where: 'id = ?', whereArgs: [object.id]);
   }
 
   /*
@@ -121,7 +130,8 @@ class DatabaseHelper {
 
     objects.forEach((element) async {
       Map<String, dynamic> objectRows = await element.toMap();
-      int rowId = await db.update(element.getTableName(), objectRows, where: 'id = ?', whereArgs: [element.id]);
+      int rowId = await db.update(element.getTableName(), objectRows,
+          where: 'id = ?', whereArgs: [element.id]);
       updatedRowIds.add(rowId);
     });
 
@@ -135,7 +145,8 @@ class DatabaseHelper {
   * */
   Future<int> delete(DbTable object) async {
     Database db = await DatabaseContainer.instance.database;
-    return await db.delete(object.getTableName(), where: 'id = ?', whereArgs: [object.id]);
+    return await db
+        .delete(object.getTableName(), where: 'id = ?', whereArgs: [object.id]);
   }
 
   /*
@@ -148,7 +159,8 @@ class DatabaseHelper {
     List<int> deletedRowIds = new List();
 
     objects.forEach((element) async {
-      int rowId = await db.delete(element.getTableName(), where: 'id = ?', whereArgs: [element.id]);
+      int rowId = await db.delete(element.getTableName(),
+          where: 'id = ?', whereArgs: [element.id]);
       deletedRowIds.add(rowId);
     });
 
@@ -165,7 +177,6 @@ class DatabaseHelper {
     return await db.rawQuery(query);
   }
 
-
   /*
   * Create objects from elements from a join table.
   * @param rowsFromDb: the rows from the first table of the join
@@ -173,23 +184,25 @@ class DatabaseHelper {
   * @param joinTableName: name of the join table
   * @return a list of database objects
   * */
-  Future<List<DbTable>> _fromJoinTable(List<Map<String, dynamic>> rowsFromDb, String whereColumn, DbTableNames joinTableName) async {
+  Future<List<DbTable>> _fromJoinTable(List<Map<String, dynamic>> rowsFromDb,
+      String whereColumn, DbTableNames joinTableName) async {
     List<DbTable> objectList = new List();
     String columnToQuery;
     DbTableNames tableName;
 
     // check whether the products or the ingredients/lists are queried from the join table
-    if(whereColumn == 'productId'){
+    if (whereColumn == 'productId') {
       bool queryOnIngredient = joinTableName == DbTableNames.productIngredient;
       columnToQuery = queryOnIngredient ? 'ingredientId' : 'listId';
-      tableName = queryOnIngredient ? DbTableNames.ingredient : DbTableNames.list;
+      tableName =
+          queryOnIngredient ? DbTableNames.ingredient : DbTableNames.list;
     } else {
       columnToQuery = 'productId';
       tableName = DbTableNames.product;
     }
 
     // get corresponding object for each row in join table
-    for(Map<String, dynamic> element in rowsFromDb){
+    for (Map<String, dynamic> element in rowsFromDb) {
       int objectId = element[columnToQuery];
       DbTable object = await read(tableName, [objectId]);
       objectList.add(object);

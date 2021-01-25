@@ -6,8 +6,7 @@ import '../PreferenceManager.dart';
 import './superClasses/DbTable.dart';
 import './Ingredient.dart';
 
-class Product extends DbTable{
-
+class Product extends DbTable {
   String name;
   ScanResult _scanResult;
   String _imageUrl;
@@ -28,16 +27,22 @@ class Product extends DbTable{
   Future<void> preferredIngredientsPromise;
 
   String get imageUrl => _imageUrl;
+
   String get barcode => _barcode;
+
   DateTime get lastUpdated => _lastUpdated;
 
   String get nutriscore => _nutriscore;
+
   String get quantity => _quantity;
+
   String get origin => _origin;
+
   String get manufacturingPlaces => _manufacturingPlaces;
+
   String get stores => _stores;
 
-  void setName(String newName){
+  void setName(String newName) {
     name = newName;
     DatabaseHelper.instance.update(this);
   }
@@ -79,7 +84,8 @@ class Product extends DbTable{
   }
 
   // simple constructor
-  Product(this.name, this._imageUrl, this._barcode, this.scanDate, {int id}) : super(id) {
+  Product(this.name, this._imageUrl, this._barcode, this.scanDate, {int id})
+      : super(id) {
     ingredients = List();
   }
 
@@ -95,8 +101,8 @@ class Product extends DbTable{
       this._origin,
       this._manufacturingPlaces,
       this._stores,
-      {int id}
-  ) : super(id){
+      {int id})
+      : super(id) {
     ingredients = List();
   }
 
@@ -142,7 +148,6 @@ class Product extends DbTable{
     return notPreferredIngredients;
   }
 
-
   /*
   * Saves the product and all its relations in the database.
   * @return the new row id of the product
@@ -155,9 +160,9 @@ class Product extends DbTable{
     this.id = id;
 
     // save each ingredients connection to the product in productingredient
-    if(ingredients.isNotEmpty) {
+    if (ingredients.isNotEmpty) {
       for (Ingredient ingredient in ingredients) {
-        if(ingredient.id == null) continue;
+        if (ingredient.id == null) continue;
         Map<String, dynamic> values = Map();
         values['productId'] = this.id;
         values['ingredientId'] = ingredient.id;
@@ -211,7 +216,8 @@ class Product extends DbTable{
     map['imageUrl'] = _imageUrl;
     map['barcode'] = _barcode;
     map['scanDate'] = scanDate == null ? '' : scanDate.toIso8601String();
-    map['lastUpdated'] = _lastUpdated == null ? '' : _lastUpdated.toIso8601String();
+    map['lastUpdated'] =
+        _lastUpdated == null ? '' : _lastUpdated.toIso8601String();
     map['nutriScore'] = _nutriscore;
 
     map['quantity'] = _quantity;

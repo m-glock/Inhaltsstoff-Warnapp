@@ -1,4 +1,4 @@
-enum Type { Allergen, Nutriment, General}
+enum Type { Allergen, Nutriment, General }
 
 extension TypeExtension on Type {
   /*

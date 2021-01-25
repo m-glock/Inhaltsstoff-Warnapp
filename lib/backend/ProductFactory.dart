@@ -9,8 +9,7 @@ import './FoodApiAccess.dart';
 import './ListManager.dart';
 import './TextRecognitionParser.dart';
 
-class ProductFactory{
-
+class ProductFactory {
   /*
   * Uses the json from the Food API to create a new Product object
   * @param json: the json that the food API returns for a barcode
@@ -37,10 +36,14 @@ class ProductFactory{
 
     // translate Ingredients, Allergens and Vitamins
     Set<String> translatedIngredientNames = Set();
-    translatedIngredientNames.addAll(await translateIngredients(json['allergens_tags'], 'allergens'));
-    translatedIngredientNames.addAll(await translateIngredients(json['vitamins_tags'], 'vitamins'));
-    translatedIngredientNames.addAll(await translateIngredients(json['minerals_tags'], 'minerals'));
-    translatedIngredientNames.addAll(await translateIngredients(json['ingredients_tags'], 'ingredients'));
+    translatedIngredientNames.addAll(
+        await translateIngredients(json['allergens_tags'], 'allergens'));
+    translatedIngredientNames
+        .addAll(await translateIngredients(json['vitamins_tags'], 'vitamins'));
+    translatedIngredientNames
+        .addAll(await translateIngredients(json['minerals_tags'], 'minerals'));
+    translatedIngredientNames.addAll(
+        await translateIngredients(json['ingredients_tags'], 'ingredients'));
 
     // get Ingredient objects for translated names
     // either from the database or by creating a new one
@@ -48,7 +51,8 @@ class ProductFactory{
       Ingredient ingredient = await DatabaseHelper.instance
           .read(DbTableNames.ingredient, [name], whereColumn: 'name');
       if (ingredient == null) {
-        ingredient = new Ingredient(name, PreferenceType.None, Type.General, null);
+        ingredient =
+            new Ingredient(name, PreferenceType.None, Type.General, null);
         int id = await DatabaseHelper.instance.add(ingredient);
         ingredient.id = id;
       }
@@ -69,10 +73,11 @@ class ProductFactory{
   * @return: a new Product object
   * */
   static Future<Product> fromTextRecognition(String ingredientsText) async {
-    if(ingredientsText?.isEmpty ?? true) return null;
+    if (ingredientsText?.isEmpty ?? true) return null;
 
     // parse ingredients from text and create a product onbject
-    List<Ingredient> ingredients = await TextRecognitionParser.getIngredientsFromText(ingredientsText);
+    List<Ingredient> ingredients =
+        await TextRecognitionParser.getIngredientsFromText(ingredientsText);
     Product product = Product('', null, null, DateTime.now());
     product.ingredients = ingredients;
 
@@ -94,8 +99,10 @@ class ProductFactory{
   * @param ingredientNames: all ingredient names that should be translated
   * @return a list of translated ingredient names
   * */
-  static Future<List<String>> translateIngredients(List<dynamic> ingredientNames, String tag) async {
-    if(ingredientNames == null || ingredientNames.isEmpty) return new List<String>();
+  static Future<List<String>> translateIngredients(
+      List<dynamic> ingredientNames, String tag) async {
+    if (ingredientNames == null || ingredientNames.isEmpty)
+      return new List<String>();
 
     return await FoodApiAccess.instance.translationManager
         .getTranslatedValuesForTag(tag, tagValues: ingredientNames);

@@ -3,7 +3,7 @@ import '../databaseEntities/superClasses/DbTable.dart';
 import '../databaseEntities/Ingredient.dart';
 import '../databaseEntities/Product.dart';
 
-enum DbTableNames{
+enum DbTableNames {
   ingredient,
   type,
   preferenceType,
@@ -15,7 +15,6 @@ enum DbTableNames{
 }
 
 extension DbTablesExtension on DbTableNames {
-
   String get name {
     switch (this) {
       case DbTableNames.ingredient:
@@ -40,7 +39,7 @@ extension DbTablesExtension on DbTableNames {
   }
 
   Future<DbTable> fromMap(Map<String, dynamic> data) async {
-    switch(this){
+    switch (this) {
       case DbTableNames.ingredient:
         return Ingredient.fromMap(data);
       case DbTableNames.product:

@@ -5,12 +5,11 @@ import '../enums/DbTableNames.dart';
 import './superClasses/DbList.dart';
 import './Product.dart';
 
-class FavouritesList extends DbList{
-
+class FavouritesList extends DbList {
   List<Product> _favouriteProducts = new List<Product>();
   Event onUpdate = new Event();
 
-  FavouritesList(String name, {int id}) : super(id, name){
+  FavouritesList(String name, {int id}) : super(id, name) {
     _favouriteProducts = List();
   }
 
@@ -20,9 +19,9 @@ class FavouritesList extends DbList{
   * @return true if the product has been added
   *         or false if it was already in the list and has not been added
   * */
-  bool addProduct(Product product){
+  bool addProduct(Product product) {
     // check if product is already in the list
-    if(_favouriteProducts.contains(product)) {
+    if (_favouriteProducts.contains(product)) {
       return false;
     }
     _favouriteProducts.add(product);
@@ -43,7 +42,7 @@ class FavouritesList extends DbList{
   * Add multiple products to the favourites lists.
   * @param products: list of products to be added
   * */
-  void addAllProducts(List<Product> products){
+  void addAllProducts(List<Product> products) {
     products.forEach((product) {
       addProduct(product);
     });
@@ -56,14 +55,16 @@ class FavouritesList extends DbList{
   * Remove a product from the list.
   * @param product: the product to be removed
   * */
-  void removeProduct(Product product){
+  void removeProduct(Product product) {
     // remove product from the database
     String tableName = DbTableNames.productList.name;
     int productId = product.id;
-    DatabaseHelper.instance.customQuery('DELETE FROM $tableName WHERE productId = $productId AND listId = $id');
+    DatabaseHelper.instance.customQuery(
+        'DELETE FROM $tableName WHERE productId = $productId AND listId = $id');
 
     // remove the product from the list
-    _favouriteProducts.removeWhere((element) => element.compareTo(product) == 0);
+    _favouriteProducts
+        .removeWhere((element) => element.compareTo(product) == 0);
 
     // notify the FE of the change
     onUpdate.broadcast();

@@ -31,7 +31,8 @@ class _PreferencesOtherIngredientsViewState
   void initState() {
     super.initState();
     _filteredIngredients = widget.otherIngredientPreferences.keys.toList();
-    _shownIngredients = _filteredIngredients.getRange(0, _itemsToBeLoaded).toList();
+    _shownIngredients =
+        _filteredIngredients.getRange(0, _itemsToBeLoaded).toList();
   }
 
   void _onFilterList(List<String> newFilteredList) {
@@ -106,23 +107,24 @@ class _PreferencesOtherIngredientsViewState
             widget.onChange(changedIngredient, newPreference);
           },
         ),
-        if(_shownIngredients.length != _filteredIngredients.length) RaisedButton(
-          color: Theme.of(context).primaryColor,
-          padding: EdgeInsets.all(12),
-          child: Text(
-            'Mehr laden',
-            style: Theme.of(context).textTheme.button.merge(
-                  new TextStyle(
-                    color: Theme.of(context).primaryColorLight,
+        if (_shownIngredients.length != _filteredIngredients.length)
+          RaisedButton(
+            color: Theme.of(context).primaryColor,
+            padding: EdgeInsets.all(12),
+            child: Text(
+              'Mehr laden',
+              style: Theme.of(context).textTheme.button.merge(
+                    new TextStyle(
+                      color: Theme.of(context).primaryColorLight,
+                    ),
                   ),
-                ),
-            textAlign: TextAlign.center,
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () => _loadMoreItems(),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4.0),
+            ),
           ),
-          onPressed: () => _loadMoreItems(),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-        ),
       ],
     );
   }

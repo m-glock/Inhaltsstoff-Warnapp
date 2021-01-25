@@ -8,8 +8,7 @@ import 'package:sqflite/sqflite.dart';
 import '../Enums/Type.dart';
 import '../FoodApiAccess.dart';
 
-class DatabaseContainer{
-
+class DatabaseContainer {
   static final String _databaseName = 'TheOneDatabaseToRuleThemAll.db';
   static final int _databaseVersion = 1;
   static Database _database;
@@ -23,7 +22,9 @@ class DatabaseContainer{
 
   // make this a Singleton class
   DatabaseContainer._privateConstructor();
-  static final DatabaseContainer instance = DatabaseContainer._privateConstructor();
+
+  static final DatabaseContainer instance =
+      DatabaseContainer._privateConstructor();
 
   /*
   * Open the database or creates it if it doesn't exist.
@@ -76,8 +77,7 @@ class DatabaseContainer{
     List<String> queries = fileText.split(';');
     queries.forEach((element) async {
       String query = element.replaceAll('\n', '').replaceAll('\r', '');
-      if(element.isNotEmpty)
-        await db.execute(query);
+      if (element.isNotEmpty) await db.execute(query);
     });
   }
 
@@ -88,21 +88,25 @@ class DatabaseContainer{
   * @param tag: tag name for the food API taxonomy (i.e. allergen)
   * @param typeId: id of the type the accessed ingredient should have
   * */
-  Future<void> _insertIngredientsFromFoodApi(Database db, String tag, int typeId) async {
+  Future<void> _insertIngredientsFromFoodApi(
+      Database db, String tag, int typeId) async {
     // get translated ingredientNames from the Food API
-    List<String> ingredientNames = await FoodApiAccess.instance.translationManager.getTranslatedValuesForTag(tag);
+    List<String> ingredientNames = await FoodApiAccess
+        .instance.translationManager
+        .getTranslatedValuesForTag(tag);
     ingredientNames.forEach((name) async {
-      if(name.isNotEmpty){
-        try{
+      if (name.isNotEmpty) {
+        try {
           name = name.replaceAll('\'', '\'\'');
           await db.execute(
               'INSERT INTO ingredient (preferenceTypeId, name, preferenceAddDate, typeId) VALUES (1, \'$name\', null, $typeId)');
-        } catch(exception) {
+        } catch (exception) {
           // some ingredients have already been added as allergens or vitamins
           // and should not be added as a general ingredient again
           DatabaseException ex = exception as DatabaseException;
-          if(!ex.isUniqueConstraintError())
-            print('Database Error when inserting the ingredients into the database.');
+          if (!ex.isUniqueConstraintError())
+            print(
+                'Database Error when inserting the ingredients into the database.');
         }
       }
     });

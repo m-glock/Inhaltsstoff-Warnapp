@@ -68,7 +68,8 @@ class _ScanningCameraState extends State {
   void initState() {
     super.initState();
 
-    _controller = CameraController(cameras[0], ResolutionPreset.veryHigh, enableAudio: false);
+    _controller = CameraController(cameras[0], ResolutionPreset.veryHigh,
+        enableAudio: false);
     _controller.initialize().then((_) {
       if (!mounted) {
         return;

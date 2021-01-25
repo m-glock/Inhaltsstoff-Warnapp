@@ -21,10 +21,10 @@ class _ComparisonPageState extends State<ComparisonPage> {
               case '/':
                 return ComparisonRootPage();
               // for every other comparison page not named routes have to be used
-            // in order that the comparison navigation also works in case
-            // it was started by the comparison button on the scanning result page
-            // which is reachable not only from the scanning section,
-            // but also from the lists history and favourites
+              // in order that the comparison navigation also works in case
+              // it was started by the comparison button on the scanning result page
+              // which is reachable not only from the scanning section,
+              // but also from the lists history and favourites
             }
           },
         );

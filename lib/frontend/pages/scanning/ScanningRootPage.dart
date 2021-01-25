@@ -71,7 +71,8 @@ class _ScanningRootPageState extends State<ScanningRootPage> {
       builder: (BuildContext context) {
         return CustomAlertDialog(
           headline: 'Das hat leider nicht geklappt',
-          content: 'Es tut uns leid. Zu diesem Barcode konnten wir leider kein Produkt finden. '
+          content:
+              'Es tut uns leid. Zu diesem Barcode konnten wir leider kein Produkt finden. '
               'Versuche es noch einmal oder verwende alternativ die Texterkennung. ',
           onDismiss: () {
             Navigator.of(context).pop();

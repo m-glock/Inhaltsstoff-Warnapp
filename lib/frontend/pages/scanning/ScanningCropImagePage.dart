@@ -120,11 +120,10 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
   }
 
   Future<Product> _textRecognition(File path) async {
-    final FirebaseVisionImage visionImage =
-    FirebaseVisionImage.fromFile(path);
+    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(path);
 
     final TextRecognizer textRecognizer =
-    FirebaseVision.instance.textRecognizer();
+        FirebaseVision.instance.textRecognizer();
 
     final VisionText visionText =
         await textRecognizer.processImage(visionImage);

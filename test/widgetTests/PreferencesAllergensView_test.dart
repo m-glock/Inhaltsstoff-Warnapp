@@ -12,7 +12,6 @@ import 'package:Essbar/backend/databaseEntities/Ingredient.dart';
 import 'package:Essbar/backend/enums/PreferenceType.dart';
 import 'package:Essbar/backend/enums/Type.dart';
 
-
 Widget buildTestableWidget(Widget widget) {
   return MediaQuery(
     data: MediaQueryData(),

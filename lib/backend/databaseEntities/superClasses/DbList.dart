@@ -4,8 +4,7 @@ import '../History.dart';
 import '../Product.dart';
 import './DbTable.dart';
 
-abstract class DbList extends DbTable{
-
+abstract class DbList extends DbTable {
   String _name;
 
   get name => _name;
@@ -35,7 +34,9 @@ abstract class DbList extends DbTable{
   }
 
   static DbTable fromMap(Map<String, dynamic> data) {
-    if(data['name'] == 'History') return History(id: data['id']);
-    else return FavouritesList(data['name'], id: data['id']);
+    if (data['name'] == 'History')
+      return History(id: data['id']);
+    else
+      return FavouritesList(data['name'], id: data['id']);
   }
 }

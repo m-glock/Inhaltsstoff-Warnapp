@@ -4,7 +4,7 @@ import '../scanning/ScanningResultPage.dart';
 import './FavouritesRootPage.dart';
 
 class FavouritesPage extends StatefulWidget {
-  const FavouritesPage({ Key key }) : super(key: key);
+  const FavouritesPage({Key key}) : super(key: key);
 
   @override
   _FavouritesPageState createState() => _FavouritesPageState();
@@ -18,7 +18,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            switch(settings.name) {
+            switch (settings.name) {
               case '/':
                 return FavouritesRootPage();
               case '/product':

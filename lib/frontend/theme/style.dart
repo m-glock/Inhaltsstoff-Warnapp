@@ -6,7 +6,8 @@ ThemeData appTheme() {
     accentColor: Colors.indigo[50],
     disabledColor: Colors.grey[400],
     backgroundColor: Colors.white,
-    primaryColorLight: Colors.white, // On dark backgrounds
+    primaryColorLight: Colors.white,
+    // On dark backgrounds
     textTheme: TextTheme(
       headline1: TextStyle(
         fontSize: 36.0,

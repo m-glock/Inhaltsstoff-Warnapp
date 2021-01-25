@@ -4,7 +4,6 @@ import './enums/PreferenceType.dart';
 import './enums/Type.dart';
 
 class TextRecognitionParser {
-
   static final RegExp _patternStart = RegExp(r'[ten]+:');
   static final RegExp _patternEnd = RegExp(r'\D\.');
   static final List<String> _additiveNames = [
@@ -94,7 +93,7 @@ class TextRecognitionParser {
     // remove this kind of pattern and handle separately
     RegExp parenthesesPattern =
         RegExp(r'[a-zA-ZäöüÄÖÜß]+\s*?\(((?:\w+,\s*)+\w+)\)');
-    String newText = text;    
+    String newText = text;
     newText = newText.replaceAll(RegExp(r'\-'), '');
 
     // find pattern in text and extract it
@@ -114,7 +113,7 @@ class TextRecognitionParser {
 
       // return original text with parsed text from parentheses
       return newText + ', ' + parenthesesText;
-    }else{
+    } else {
       return text;
     }
   }
@@ -125,7 +124,8 @@ class TextRecognitionParser {
   * @return a list of ingredient objects either from the database if found
   *         or new ones if not
   * */
-  static Future<List<Ingredient>> _getIngredientsForParsedText(List<String> ingredientNames) async {
+  static Future<List<Ingredient>> _getIngredientsForParsedText(
+      List<String> ingredientNames) async {
     DatabaseHelper helper = DatabaseHelper.instance;
     List<Ingredient> ingredients = List();
 

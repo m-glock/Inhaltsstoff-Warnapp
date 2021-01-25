@@ -4,22 +4,24 @@ import '../enums/Type.dart';
 import './superClasses/DbTable.dart';
 
 class Ingredient extends DbTable {
-
   String _name;
   PreferenceType preferenceType;
   DateTime preferenceAddDate;
   Type _type;
 
   String get name => _name;
+
   Type get type => _type;
 
-  Ingredient(this._name, this.preferenceType, this._type, this.preferenceAddDate,
-      {int id}) : super(id);
+  Ingredient(
+      this._name, this.preferenceType, this._type, this.preferenceAddDate,
+      {int id})
+      : super(id);
 
   // compare two ingredients on the basis of their id
   bool operator ==(Object other) {
     return identical(this, other) ||
-            other is Ingredient &&
+        other is Ingredient &&
             runtimeType == other.runtimeType &&
             id == other.id;
   }
@@ -53,7 +55,9 @@ class Ingredient extends DbTable {
     int typeId = data['typeId'];
     Type type = Type.values.elementAt(typeId - 1);
 
-    DateTime preferenceAddDate = data['preferenceAddDate'] != null ? DateTime.parse(data['preferenceAddDate']) : null;
+    DateTime preferenceAddDate = data['preferenceAddDate'] != null
+        ? DateTime.parse(data['preferenceAddDate'])
+        : null;
     return new Ingredient(data['name'], prefType, type, preferenceAddDate,
         id: data['id']);
   }

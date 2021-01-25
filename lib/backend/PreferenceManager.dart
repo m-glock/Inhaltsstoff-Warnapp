@@ -9,7 +9,6 @@ import './enums/ScanResult.dart';
 import './enums/Type.dart';
 
 class PreferenceManager {
-
   /*
   * Save new/changed preferences of the user in the database.
   * @param preferenceChanges: a map of ingredients
@@ -21,8 +20,9 @@ class PreferenceManager {
 
     if (preferenceChanges?.isNotEmpty ?? true) {
       preferenceChanges.forEach((ingredient, preferenceType) async {
-        ingredient.preferenceType  = preferenceType;
-        if(preferenceType != PreferenceType.None) ingredient.preferenceAddDate = DateTime.now();
+        ingredient.preferenceType = preferenceType;
+        if (preferenceType != PreferenceType.None)
+          ingredient.preferenceAddDate = DateTime.now();
         await dbHelper.update(ingredient);
       });
     }
@@ -43,16 +43,21 @@ class PreferenceManager {
     if (preferenceTypes?.isEmpty ?? true) {
       // get all ingredients that have a preferenceType other than NONE
       int prefTypeId = PreferenceType.None.id;
-      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE preferenceTypeId IS NOT $prefTypeId');
+      List<Map<String, dynamic>> results = await dbHelper.customQuery(
+          'SELECT * FROM $tableName WHERE preferenceTypeId IS NOT $prefTypeId');
       results.forEach((result) {
         ingredients.add(Ingredient.fromMap(result));
       });
     } else {
       // filter for one or more specific preferenceType
-      List<String> preferenceTypeIds = preferenceTypes.map((preferenceType) => preferenceType.id.toString()).toList();
-      String ids = preferenceTypeIds.reduce((value, element) => value + ', ' + element);
+      List<String> preferenceTypeIds = preferenceTypes
+          .map((preferenceType) => preferenceType.id.toString())
+          .toList();
+      String ids =
+          preferenceTypeIds.reduce((value, element) => value + ', ' + element);
 
-      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE preferenceTypeId IN ($ids)');
+      List<Map<String, dynamic>> results = await dbHelper.customQuery(
+          'SELECT * FROM $tableName WHERE preferenceTypeId IN ($ids)');
       results.forEach((result) {
         ingredients.add(Ingredient.fromMap(result));
       });
@@ -66,14 +71,16 @@ class PreferenceManager {
   * @param type: specific types for filtering
   * @return: a list of all matching ingredients that match
   * */
-  static Future<List<Ingredient>> getAllAvailableIngredients([Type type]) async {
+  static Future<List<Ingredient>> getAllAvailableIngredients(
+      [Type type]) async {
     final dbHelper = DatabaseHelper.instance;
     List<Ingredient> ingredients = List();
     String tableName = DbTableNames.ingredient.name;
 
     if (type == null) {
       // get all ingredients from the database
-      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName');
+      List<Map<String, dynamic>> results =
+          await dbHelper.customQuery('SELECT * FROM $tableName');
       results.forEach((result) {
         ingredients.add(Ingredient.fromMap(result));
       });
@@ -82,11 +89,11 @@ class PreferenceManager {
     if (type != null) {
       //get only the ingredients of the specified type from the database
       String typeId = type.id.toString();
-      List<Map<String, dynamic>> results = await dbHelper.customQuery('SELECT * FROM $tableName WHERE typeId = $typeId');
+      List<Map<String, dynamic>> results = await dbHelper
+          .customQuery('SELECT * FROM $tableName WHERE typeId = $typeId');
       results.forEach((result) {
         ingredients.add(Ingredient.fromMap(result));
       });
-
     }
 
     return ingredients;
@@ -107,8 +114,12 @@ class PreferenceManager {
     List<Ingredient> productIngredients = product.ingredients;
 
     // get all ingredients the user has preferenced
-    List<PreferenceType> options = [PreferenceType.NotWanted, PreferenceType.NotPreferred];
-    List<Ingredient> preferredIngredients = await getPreferencedIngredients(options);
+    List<PreferenceType> options = [
+      PreferenceType.NotWanted,
+      PreferenceType.NotPreferred
+    ];
+    List<Ingredient> preferredIngredients =
+        await getPreferencedIngredients(options);
 
     // determine the itemized scan results and the overall scan result
     // by checking for each preferred ingredient whether it is in the product
@@ -118,13 +129,16 @@ class PreferenceManager {
 
       // check if there is an ingredient in the product whose name is similar
       // to the preferred ingredient
-      List<Ingredient> matchingIngredients = productIngredients.where((i) => i.name.toLowerCase().contains(ingredient.name.toLowerCase())).toList();
-      if(matchingIngredients.isNotEmpty){
+      List<Ingredient> matchingIngredients = productIngredients
+          .where((i) =>
+              i.name.toLowerCase().contains(ingredient.name.toLowerCase()))
+          .toList();
+      if (matchingIngredients.isNotEmpty) {
         result = ingredient.preferenceType == PreferenceType.NotWanted
             ? ScanResult.Red
             : ScanResult.Yellow;
 
-        if(overallResult != ScanResult.Red) overallResult = result;
+        if (overallResult != ScanResult.Red) overallResult = result;
       } else {
         result = ScanResult.Green;
       }
@@ -142,7 +156,8 @@ class PreferenceManager {
   * @param product: the product to check the ingredients of
   * @return a list of all preferenced in a product
   * */
-  static Future<List<Ingredient>> getPreferredIngredientsIn(Product product) async {
+  static Future<List<Ingredient>> getPreferredIngredientsIn(
+      Product product) async {
     List<Ingredient> ingredients = product.ingredients;
     return (await getPreferencedIngredients([PreferenceType.Preferred]))
         .where((prefIngredient) => ingredients.contains(prefIngredient))

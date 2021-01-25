@@ -39,19 +39,19 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
               },
               productsRemovable: false,
             ),
-      floatingActionButton:
-          _scannedProductsAndResults != null && _scannedProductsAndResults.isNotEmpty
-              ? FloatingActionButton(
-                  backgroundColor: Colors.red,
-                  child: Icon(
-                    Icons.delete_forever,
-                    color: Theme.of(context).primaryColorLight,
-                  ),
-                  onPressed: () {
-                    _clearHistory();
-                  },
-                )
-              : null,
+      floatingActionButton: _scannedProductsAndResults != null &&
+              _scannedProductsAndResults.isNotEmpty
+          ? FloatingActionButton(
+              backgroundColor: Colors.red,
+              child: Icon(
+                Icons.delete_forever,
+                color: Theme.of(context).primaryColorLight,
+              ),
+              onPressed: () {
+                _clearHistory();
+              },
+            )
+          : null,
     );
   }
 

@@ -2,8 +2,7 @@ import 'dart:collection';
 
 import './FoodApiAccess.dart';
 
-class IngredientTranslationManager{
-
+class IngredientTranslationManager {
   Map<String, dynamic> _allergens;
   Map<String, dynamic> _vitamins;
   Map<String, dynamic> _minerals;
@@ -17,16 +16,17 @@ class IngredientTranslationManager{
   Future<Map<String, dynamic>> _getCorrespondingMap(String tag) async {
     // if the maps have not been initialized yet
     // get the corresponding maps from the food API first
-    if(_allergens == null) _allergens =
-        await FoodApiAccess.instance.getAllValuesForTag('allergens');
-    if(_vitamins == null) _vitamins =
-        await FoodApiAccess.instance.getAllValuesForTag('vitamins');
-    if(_minerals == null) _minerals =
-        await FoodApiAccess.instance.getAllValuesForTag('minerals');
-    if(_ingredients == null) _ingredients =
-        await FoodApiAccess.instance.getAllValuesForTag('ingredients');
+    if (_allergens == null)
+      _allergens = await FoodApiAccess.instance.getAllValuesForTag('allergens');
+    if (_vitamins == null)
+      _vitamins = await FoodApiAccess.instance.getAllValuesForTag('vitamins');
+    if (_minerals == null)
+      _minerals = await FoodApiAccess.instance.getAllValuesForTag('minerals');
+    if (_ingredients == null)
+      _ingredients =
+          await FoodApiAccess.instance.getAllValuesForTag('ingredients');
 
-    switch(tag){
+    switch (tag) {
       case 'vitamins':
         return _vitamins;
       case 'allergens':
@@ -48,20 +48,17 @@ class IngredientTranslationManager{
   * @return a List of all possible values that exist in the API for this specific tag
   *         or null if tag was not found
   * */
-  Future<List<String>> getTranslatedValuesForTag(
-      String tag,
-      {List<dynamic> tagValues,
-      String languageCode:'de'}
-  ) async {
-
+  Future<List<String>> getTranslatedValuesForTag(String tag,
+      {List<dynamic> tagValues, String languageCode: 'de'}) async {
     // get all possible values for this tag
     Map<dynamic, dynamic> allValues = await _getCorrespondingMap(tag);
 
     // either translate all values or just specific ones
-    if(tagValues == null){
+    if (tagValues == null) {
       return translateAllExistingValues(allValues, tag, languageCode);
     } else {
-      return translateSpecificKeyValues(allValues, tagValues, tag, languageCode);
+      return translateSpecificKeyValues(
+          allValues, tagValues, tag, languageCode);
     }
   }
 
@@ -73,32 +70,25 @@ class IngredientTranslationManager{
   * @return a list of all translated value names
   * */
   List<String> translateAllExistingValues(
-      Map<dynamic, dynamic> allTagValues,
-      String tag,
-      String languageCode
-      ){
+      Map<dynamic, dynamic> allTagValues, String tag, String languageCode) {
     List<String> translatedTagValues = new List();
 
-    for(final keyValuePair in allTagValues.entries){
-
+    for (final keyValuePair in allTagValues.entries) {
       // only use vitamins and minerals that are parents
-      if((tag == 'vitamins' || tag == 'minerals')
-          && keyValuePair.value['children'] == null)
-        continue;
+      if ((tag == 'vitamins' || tag == 'minerals') &&
+          keyValuePair.value['children'] == null) continue;
 
       // translate the value into the specified language or into english
       String tagValue = keyValuePair.value['name'][languageCode];
-      if(tagValue == null){
+      if (tagValue == null) {
         String tagValueEn = keyValuePair.value['name']['en'];
-        tagValue = tagValueEn != null
-            ? tagValueEn
-            : keyValuePair.key;
+        tagValue = tagValueEn != null ? tagValueEn : keyValuePair.key;
       }
 
       // if it is still null because there was no translation
       // into the specified language or english found
       // use the untranslated value and remove the language code (fr:)
-      if(tagValue != 'None'){
+      if (tagValue != 'None') {
         tagValue = tagValue.substring(tagValue.indexOf(':') + 1);
         translatedTagValues.add(tagValue);
       }
@@ -115,22 +105,18 @@ class IngredientTranslationManager{
   * @param languageCode: preferred language to translate the values into
   * @return a list of all translated value names
   * */
-  List<String> translateSpecificKeyValues(
-      Map<dynamic, dynamic> allTagValues,
-      List<dynamic> tagValues,
-      String tag,
-      String languageCode
-  ){
+  List<String> translateSpecificKeyValues(Map<dynamic, dynamic> allTagValues,
+      List<dynamic> tagValues, String tag, String languageCode) {
     List<String> translatedTagValues = new List();
 
     tagValues.forEach((element) {
       String translatedName;
-      if(allTagValues.containsKey(element)){
+      if (allTagValues.containsKey(element)) {
         LinkedHashMap tagValueTranslations = allTagValues[element]['name'];
 
         // get either the translation for the specified language
         // or the english translation
-        if(languageCode == null){
+        if (languageCode == null) {
           translatedName = tagValueTranslations['en'];
         } else {
           translatedName = tagValueTranslations.containsKey(languageCode)
@@ -140,16 +126,14 @@ class IngredientTranslationManager{
 
         // if translatedName is still null, take the original name and
         // remove the language code and colon (i.e. 'fr:')
-        if(translatedName == null){
-          translatedName = element
-              .substring(element.indexOf(':') + 1)
-              .replaceAll('-', ' ');
+        if (translatedName == null) {
+          translatedName =
+              element.substring(element.indexOf(':') + 1).replaceAll('-', ' ');
         }
       } else {
         String name = element.toString();
-        translatedName = name
-            .substring(name.indexOf(':') + 1)
-            .replaceAll('-', ' ');
+        translatedName =
+            name.substring(name.indexOf(':') + 1).replaceAll('-', ' ');
       }
       translatedTagValues.add(translatedName);
     });

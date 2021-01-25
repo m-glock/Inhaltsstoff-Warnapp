@@ -6,24 +6,25 @@ class ResultCircle extends StatelessWidget {
   ScanResult result;
   bool small = true;
 
-  ResultCircle(
-      {
-        Key key,
-        this.result,
-        this.small,
-      }
-  )  : super(key: key);
+  ResultCircle({
+    Key key,
+    this.result,
+    this.small,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (small){
+    if (small) {
       return Icon(Icons.circle, color: getCircleColor());
-    }
-    else {
+    } else {
       return Container(
         width: 200,
         height: 200,
-        child: Icon(getCircleIcon(), size: 100, color: Colors.white,),
+        child: Icon(
+          getCircleIcon(),
+          size: 100,
+          color: Colors.white,
+        ),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: getCircleColor(),
@@ -40,8 +41,8 @@ class ResultCircle extends StatelessWidget {
     }
   }
 
-  Color getCircleColor(){
-    switch(result){
+  Color getCircleColor() {
+    switch (result) {
       case ScanResult.Green:
         return Colors.green;
         break;
@@ -54,8 +55,8 @@ class ResultCircle extends StatelessWidget {
     }
   }
 
-  IconData getCircleIcon(){
-    switch(result){
+  IconData getCircleIcon() {
+    switch (result) {
       case ScanResult.Green:
         return Icons.done;
         break;

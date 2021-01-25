@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class SettingsPage {
   const SettingsPage(this.icon, this.title, this.route);
+
   final IconData icon;
   final String title;
   final String route;

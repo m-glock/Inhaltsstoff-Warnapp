@@ -17,12 +17,12 @@ class SettingsAgbPage extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 20.0),
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.0),
-            child: Text(
-            'Geschäftsbedingungen',
-            style: Theme.of(context).textTheme.headline1,
-            textAlign: TextAlign.center,
-          )),
+              padding: EdgeInsets.symmetric(vertical: 20.0),
+              child: Text(
+                'Geschäftsbedingungen',
+                style: Theme.of(context).textTheme.headline1,
+                textAlign: TextAlign.center,
+              )),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.0),
             child: Text(
@@ -38,7 +38,7 @@ class SettingsAgbPage extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyText1,
               textAlign: TextAlign.left,
             ),
-          ),          
+          ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
             child: Text(
@@ -55,7 +55,7 @@ class SettingsAgbPage extends StatelessWidget {
               textAlign: TextAlign.left,
             ),
           ),
-                    Padding(
+          Padding(
             padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
             child: Text(
               '§ 2 Externe Links',
@@ -71,7 +71,7 @@ class SettingsAgbPage extends StatelessWidget {
               textAlign: TextAlign.left,
             ),
           ),
-                              Padding(
+          Padding(
             padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
             child: Text(
               '§ 3 Urheber- und Leistungsschutzrechte',
@@ -87,7 +87,7 @@ class SettingsAgbPage extends StatelessWidget {
               textAlign: TextAlign.left,
             ),
           ),
-                                        Padding(
+          Padding(
             padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
             child: Text(
               '§ 4 Besondere Nutzungsbedingungen',

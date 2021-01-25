@@ -8,6 +8,7 @@ import './history/main.dart';
 
 class Destination {
   const Destination(this.title, this.icon, this.page);
+
   final String title;
   final IconData icon;
   final StatefulWidget page;

@@ -13,7 +13,6 @@ class ScanningPage extends StatefulWidget {
 }
 
 class _ScanningPageState extends State<ScanningPage> {
-
   @override
   Widget build(BuildContext context) {
     return Navigator(
@@ -25,12 +24,13 @@ class _ScanningPageState extends State<ScanningPage> {
               case '/':
                 return ScanningRootPage();
               case '/camera':
-                return ScanningCamera();  
+                return ScanningCamera();
               case '/crop_image':
                 return ScanningCropImage(settings.arguments);
               case '/result':
                 return ScanningResultPage(settings.arguments);
-              default: return ScanningRootPage();
+              default:
+                return ScanningRootPage();
             }
           },
         );

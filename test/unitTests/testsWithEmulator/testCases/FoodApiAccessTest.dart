@@ -35,7 +35,8 @@ void main() {
   });
 
   test('translate a list of ingredients to german and get allergens', () async {
-    var allergens = await foodApi.translationManager.getTranslatedValuesForTag('allergens');
+    var allergens =
+        await foodApi.translationManager.getTranslatedValuesForTag('allergens');
     assert(allergens.contains("Schwefeldioxid und Sulfite"));
   });
 }
