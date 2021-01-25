@@ -56,11 +56,11 @@ class _PreferencesOtherIngredientsViewState
   }
 
   void _loadMoreItems() async {
-    final totalItems = _filteredIngredients.length;
+    final int totalItems = _filteredIngredients.length;
     int listLength = _shownIngredients.length;
     List<Ingredient> ingredientsToAdd = new List();
 
-    for (var i = 0; i < _itemsToBeLoaded; i++) {
+    for (int i = 0; i < _itemsToBeLoaded; i++) {
       int index = listLength + i;
       if (index >= totalItems) continue;
       Ingredient ing = _filteredIngredients.elementAt(index);

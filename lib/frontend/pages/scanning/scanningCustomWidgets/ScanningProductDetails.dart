@@ -38,7 +38,7 @@ class _ScanningProductDetailsState extends State<ScanningProductDetails> {
   }
 
   void _getPreferredIngredients() async {
-    var preferredIngredients =
+    List<Ingredient> preferredIngredients =
         await PreferenceManager.getPreferencedIngredients(
             [PreferenceType.Preferred]);
     setState(() {

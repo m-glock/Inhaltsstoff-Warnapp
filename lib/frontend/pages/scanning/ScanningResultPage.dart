@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../backend/databaseEntities/Product.dart';
+import '../../../backend/databaseEntities/FavouritesList.dart';
 import '../../../backend/databaseEntities/Ingredient.dart';
+import '../../../backend/databaseEntities/Product.dart';
 import '../../../backend/enums/ScanResult.dart';
 import '../../../backend/ListManager.dart';
 import '../../../backend/PreferenceManager.dart';
@@ -241,7 +242,7 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
   }
 
   void _getProductActionButtons(BuildContext context) async {
-    var favourites = await ListManager.instance.favouritesList;
+    FavouritesList favourites = await ListManager.instance.favouritesList;
     ProductActionButton favButton =
         favourites.getProducts().contains(widget.scannedProduct)
             ? new ProductActionButton('Entfernen', Icons.favorite, () {
@@ -286,14 +287,14 @@ class _ScanningResultPageState extends State<ScanningResultPage> {
   }
 
   void _subscribeToFavouritesListUpdate(BuildContext context) async {
-    var favouritesList = await ListManager.instance.favouritesList;
+    FavouritesList favouritesList = await ListManager.instance.favouritesList;
     favouritesList.onUpdate.subscribe((args) {
       _getProductActionButtons(context);
     });
   }
 
   void _unsubscribeToFavouritesListUpdate(BuildContext context) async {
-    var favouritesList = await ListManager.instance.favouritesList;
+    FavouritesList favouritesList = await ListManager.instance.favouritesList;
     favouritesList.onUpdate.unsubscribe((args) {
       _getProductActionButtons(context);
     });

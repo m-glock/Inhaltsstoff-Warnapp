@@ -55,7 +55,7 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
   }
 
   Future<void> _setSample() async {
-    var file = await _getImageFile(widget.imgPath);
+    File file = await _getImageFile(widget.imgPath);
 
     setState(() {
       _sample = file;
@@ -63,7 +63,7 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
   }
 
   Future<File> _getImageFile(String path) async {
-    final file = File('$path');
+    final File file = File('$path');
     return file;
   }
 
@@ -91,8 +91,8 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
   }
 
   Future<void> _cropImage() async {
-    final scale = cropKey.currentState.scale;
-    final area = cropKey.currentState.area;
+    final double scale = cropKey.currentState.scale;
+    final Rect area = cropKey.currentState.area;
     if (area == null) {
       return;
     }

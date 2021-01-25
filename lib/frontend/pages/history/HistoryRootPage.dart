@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../backend/databaseEntities/Product.dart';
+import '../../../backend/databaseEntities/History.dart';
 import '../../../backend/enums/ScanResult.dart';
 import '../../../backend/ListManager.dart';
 import '../../customWidgets/CustomAppBar.dart';
@@ -61,7 +62,7 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
   }
 
   void _getScannedProductsAndResults() async {
-    var history = await ListManager.instance.history;
+    History history = await ListManager.instance.history;
     List<Product> scannedProducts = history.getProducts();
     Map<Product, ScanResult> productsResults = {
       for (Product p in scannedProducts) p: await p.getScanResult()
@@ -72,21 +73,21 @@ class _HistoryRootPageState extends State<HistoryRootPage> {
   }
 
   void _addOnListUpdateListener() async {
-    var history = await ListManager.instance.history;
+    History history = await ListManager.instance.history;
     history.onUpdate.subscribe((args) {
       _getScannedProductsAndResults();
     });
   }
 
   void _removeOnListUpdateListener() async {
-    var history = await ListManager.instance.history;
+    History history = await ListManager.instance.history;
     history.onUpdate.unsubscribe((args) {
       _getScannedProductsAndResults();
     });
   }
 
   void _clearHistory() async {
-    var history = await ListManager.instance.history;
+    History history = await ListManager.instance.history;
     history.clearHistory();
     setState(() {
       _scannedProductsAndResults.clear();
