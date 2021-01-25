@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './HistoryRootPage.dart';
 import '../scanning/ScanningResultPage.dart';
+import './HistoryRootPage.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({ Key key }) : super(key: key);

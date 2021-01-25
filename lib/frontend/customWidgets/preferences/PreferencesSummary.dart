@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../backend/databaseEntities/Ingredient.dart';
-import '../../../backend/Enums/PreferenceType.dart';
+import '../../../backend/enums/PreferenceType.dart';
 import '../EditableChipsList.dart';
 
 class PreferencesSummary extends StatelessWidget {

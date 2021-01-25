@@ -1,5 +1,6 @@
-import 'package:Essbar/frontend/customWidgets/ComingSoonView.dart';
 import 'package:flutter/material.dart';
+
+import '../../customWidgets/ComingSoonView.dart';
 
 class SettingsGeneralPage extends StatelessWidget {
   const SettingsGeneralPage({

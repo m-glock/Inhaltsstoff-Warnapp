@@ -1,8 +1,7 @@
 import '../databaseEntities/superClasses/DbList.dart';
-
+import '../databaseEntities/superClasses/DbTable.dart';
 import '../databaseEntities/Ingredient.dart';
 import '../databaseEntities/Product.dart';
-import '../databaseEntities/superClasses/DbTable.dart';
 
 enum DbTableNames{
   ingredient,

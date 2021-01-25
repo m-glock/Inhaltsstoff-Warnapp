@@ -5,12 +5,12 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../FoodApiAccess.dart';
 import '../Enums/Type.dart';
+import '../FoodApiAccess.dart';
 
 class DatabaseContainer{
 
-  static final String _databaseName = "FoodDatabase.db";
+  static final String _databaseName = 'TheOneDatabaseToRuleThemAll.db';
   static final int _databaseVersion = 1;
   static Database _database;
 

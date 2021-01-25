@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../backend/Enums/PreferenceType.dart';
 import '../../../../backend/databaseEntities/Ingredient.dart';
+import '../../../../backend/enums/PreferenceType.dart';
+import '../../../../backend/enums/Type.dart';
 import '../../../../backend/PreferenceManager.dart';
-import '../../../../backend/Enums/Type.dart';
 import '../../../customWidgets/preferences/PreferencesOtherIngredientsView.dart';
 
 class SettingsOtherIngredientPreferencesPage extends StatefulWidget {

@@ -1,10 +1,10 @@
-import '../../../backend/Enums/ScanResult.dart';
-import '../../../backend/ListManager.dart';
-import '../../../backend/databaseEntities/Product.dart';
-import '../../customWidgets/ProductsList.dart';
-import '../../customWidgets/CustomAppBar.dart';
-
 import 'package:flutter/material.dart';
+
+import '../../../backend/databaseEntities/Product.dart';
+import '../../../backend/enums/ScanResult.dart';
+import '../../../backend/ListManager.dart';
+import '../../customWidgets/CustomAppBar.dart';
+import '../../customWidgets/ProductsList.dart';
 
 class HistoryRootPage extends StatefulWidget {
   HistoryRootPage({Key key}) : super(key: key);

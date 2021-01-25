@@ -1,7 +1,8 @@
-import 'package:Essbar/backend/database/DatabaseHelper.dart';
-import 'package:Essbar/backend/FoodApiAccess.dart';
-import 'package:Essbar/backend/databaseEntities/Product.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:Essbar/backend/database/DatabaseHelper.dart';
+import 'package:Essbar/backend/databaseEntities/Product.dart';
+import 'package:Essbar/backend/FoodApiAccess.dart';
 
 /*
 To find out how to run the tests, please read @HowToUse.txt

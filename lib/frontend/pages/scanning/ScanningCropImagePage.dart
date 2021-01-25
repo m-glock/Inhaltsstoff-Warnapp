@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:io';
-import '../../../backend/databaseEntities/Product.dart';
-import 'package:Essbar/backend/ProductFactory.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
-import 'package:image_crop/image_crop.dart';
-import 'package:flutter/material.dart';
 
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:flutter/material.dart';
+import 'package:image_crop/image_crop.dart';
+
+import '../../../backend/databaseEntities/Product.dart';
+import '../../../backend/ProductFactory.dart';
 import '../../customWidgets/LabelledIconButton.dart';
 
 class ScanningCropImage extends StatefulWidget {

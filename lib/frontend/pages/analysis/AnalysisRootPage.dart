@@ -1,5 +1,6 @@
-import 'package:Essbar/frontend/customWidgets/ComingSoonView.dart';
 import 'package:flutter/material.dart';
+
+import '../../customWidgets/ComingSoonView.dart';
 import '../../customWidgets/CustomAppBar.dart';
 
 class AnalysisRootPage extends StatelessWidget {

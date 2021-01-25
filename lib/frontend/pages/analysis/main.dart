@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'AnalysisRootPage.dart';
+
+import './AnalysisRootPage.dart';
 
 class AnalysisPage extends StatefulWidget {
   const AnalysisPage({ Key key }) : super(key: key);

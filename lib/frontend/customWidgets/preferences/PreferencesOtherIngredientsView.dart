@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../RadioButtonTable.dart';
-import '../../../backend/Enums/PreferenceType.dart';
 import '../../../backend/databaseEntities/Ingredient.dart';
+import '../../../backend/enums/PreferenceType.dart';
 import '../../customWidgets/RadioButtonTable.dart';
 import '../../customWidgets/SearchBar.dart';
+import '../RadioButtonTable.dart';
 
 class PreferencesOtherIngredientsView extends StatefulWidget {
   PreferencesOtherIngredientsView({

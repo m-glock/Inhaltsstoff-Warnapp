@@ -1,7 +1,6 @@
-
 import 'dart:collection';
 
-import 'package:Essbar/backend/FoodApiAccess.dart';
+import './FoodApiAccess.dart';
 
 class IngredientTranslationManager{
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../customWidgets/CustomAppBar.dart';
 import '../../../backend/databaseEntities/Product.dart';
-import './ComparisonViewPage.dart';
+import '../../customWidgets/CustomAppBar.dart';
 import './ComparisonSelectionPage.dart';
+import './ComparisonViewPage.dart';
 
 class ComparisonRootPage extends StatelessWidget {
   const ComparisonRootPage({Key key, this.productOne}) : super(key: key);

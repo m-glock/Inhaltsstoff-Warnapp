@@ -1,9 +1,8 @@
+import '../../enums/DbTableNames.dart';
 import '../FavouritesList.dart';
 import '../History.dart';
-
 import '../Product.dart';
-import '../../enums/DbTableNames.dart';
-import 'DbTable.dart';
+import './DbTable.dart';
 
 abstract class DbList extends DbTable{
 

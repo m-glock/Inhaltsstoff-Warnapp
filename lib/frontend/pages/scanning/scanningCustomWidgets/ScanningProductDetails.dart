@@ -1,10 +1,11 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
-import '../../../../backend/PreferenceManager.dart';
-import '../../../../backend/Enums/PreferenceType.dart';
 import '../../../../backend/databaseEntities/Ingredient.dart';
-import '../../../../backend/Enums/ScanResult.dart';
+import '../../../../backend/enums/PreferenceType.dart';
+import '../../../../backend/enums/ScanResult.dart';
+import '../../../../backend/PreferenceManager.dart';
 import '../../../customWidgets/ResultCircle.dart';
 
 class ScanningProductDetails extends StatefulWidget {

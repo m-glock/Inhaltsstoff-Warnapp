@@ -1,14 +1,15 @@
 import 'dart:async';
+
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
-import '../../../backend/FoodApiAccess.dart';
 import '../../../backend/databaseEntities/Product.dart';
+import '../../../backend/FoodApiAccess.dart';
 import '../../customWidgets/CustomAlertDialog.dart';
 import '../../customWidgets/CustomAppBar.dart';
 import '../../customWidgets/LabelledIconButton.dart';
-import 'scanningCustomWidgets/ScanningBarcodeDialog.dart';
+import './scanningCustomWidgets/ScanningBarcodeDialog.dart';
 
 class ScanningRootPage extends StatefulWidget {
   ScanningRootPage({Key key, this.onFetchedProduct}) : super(key: key);

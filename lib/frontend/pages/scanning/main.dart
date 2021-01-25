@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './ScanningCropImagePage.dart';
 import './ScanningCameraPage.dart';
+import './ScanningCropImagePage.dart';
 import './ScanningResultPage.dart';
 import './ScanningRootPage.dart';
 

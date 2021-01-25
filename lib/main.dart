@@ -1,20 +1,21 @@
-import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import './frontend/pages/HomePage.dart';
-import './frontend/pages/onboarding/main.dart';
-import './frontend/pages/WelcomePage.dart';
-import './frontend/theme/style.dart';
-import './frontend/pages/settings/SettingsRootPage.dart';
-import './frontend/pages/settings/SettingsAgbPage.dart';
-import './frontend/pages/settings/SettingsGeneralPage.dart';
-import './frontend/pages/settings/SettingsHelpPage.dart';
-import './frontend/pages/settings/SettingsImpressumPage.dart';
 import './frontend/pages/settings/preferences/SettingsAllergenePreferencesPage.dart';
 import './frontend/pages/settings/preferences/SettingsNutrientPreferencesPage.dart';
 import './frontend/pages/settings/preferences/SettingsOtherIngredientPreferencesPage.dart';
 import './frontend/pages/settings/preferences/SettingsPreferencesSummaryPage.dart';
+import './frontend/pages/settings/SettingsAgbPage.dart';
+import './frontend/pages/settings/SettingsGeneralPage.dart';
+import './frontend/pages/settings/SettingsHelpPage.dart';
+import './frontend/pages/settings/SettingsImpressumPage.dart';
+import './frontend/pages/settings/SettingsRootPage.dart';
+import './frontend/pages/onboarding/main.dart';
+import './frontend/pages/HomePage.dart';
+import './frontend/pages/WelcomePage.dart';
+import './frontend/theme/style.dart';
+
 // Global variable for storing the list of
 // cameras available
 List<CameraDescription> cameras = [];

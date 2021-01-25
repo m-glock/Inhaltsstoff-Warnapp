@@ -1,7 +1,8 @@
-import 'DatabaseContainer.dart';
 import 'package:sqflite/sqflite.dart';
+
 import '../databaseEntities/superClasses/DbTable.dart';
 import '../enums/DbTableNames.dart';
+import './DatabaseContainer.dart';
 
 // code adapted from https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
 class DatabaseHelper {

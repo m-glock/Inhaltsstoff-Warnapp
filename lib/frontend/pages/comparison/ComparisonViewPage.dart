@@ -1,13 +1,13 @@
-import '../../../backend/databaseEntities/Product.dart';
-import '../../../backend/Enums/ScanResult.dart';
-import '../../../backend/databaseEntities/Ingredient.dart';
-import '../../../backend/PreferenceManager.dart';
-import '../../../backend/Enums/PreferenceType.dart';
-import '../../../frontend/customWidgets/CustomAppBar.dart';
-import '../../../frontend/customWidgets/ResultCircle.dart';
-import './comparisonCustomWidgets/ComparisonSelectedProductCard.dart';
-
 import 'package:flutter/material.dart';
+
+import '../../../backend/databaseEntities/Ingredient.dart';
+import '../../../backend/databaseEntities/Product.dart';
+import '../../../backend/enums/PreferenceType.dart';
+import '../../../backend/enums/ScanResult.dart';
+import '../../../backend/PreferenceManager.dart';
+import '../../customWidgets/CustomAppBar.dart';
+import '../../customWidgets/ResultCircle.dart';
+import './comparisonCustomWidgets/ComparisonSelectedProductCard.dart';
 
 class ComparisonViewPage extends StatefulWidget {
   const ComparisonViewPage({

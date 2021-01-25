@@ -1,17 +1,16 @@
-import 'package:Essbar/backend/IngredientTranslationManager.dart';
-
-import './ListManager.dart';
-import 'databaseEntities/History.dart';
-import 'enums/DbTableNames.dart';
-import 'database/DatabaseHelper.dart';
-import 'databaseEntities/superClasses/DbTable.dart';
-import 'databaseEntities/Product.dart';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:developer';
-import 'dart:io';
-import 'ProductFactory.dart';
+
+import './database/DatabaseHelper.dart';
+import './databaseEntities/superClasses/DbTable.dart';
+import './databaseEntities/History.dart';
+import './databaseEntities/Product.dart';
+import './enums/DbTableNames.dart';
+import './IngredientTranslationManager.dart';
+import './ListManager.dart';
+import './ProductFactory.dart';
 
 class FoodApiAccess{
 
@@ -54,7 +53,7 @@ class FoodApiAccess{
 
     // handle if product does not exist in the food API database
     if(decodedJson['status'] == 0){
-      log('Product with Barcode $barcode does not exist in the database.');
+      print('Product with Barcode $barcode does not exist in the database.');
       return null;
     }
 

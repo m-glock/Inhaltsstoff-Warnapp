@@ -1,12 +1,10 @@
-import '../PreferenceManager.dart';
-import 'package:sqflite/sqflite.dart';
-
 import '../database/DatabaseContainer.dart';
 import '../database/DatabaseHelper.dart';
-import 'superClasses/DbTable.dart';
 import '../enums/DbTableNames.dart';
-import '../Enums/ScanResult.dart';
-import 'Ingredient.dart';
+import '../enums/ScanResult.dart';
+import '../PreferenceManager.dart';
+import './superClasses/DbTable.dart';
+import './Ingredient.dart';
 
 class Product extends DbTable{
 
@@ -160,14 +158,15 @@ class Product extends DbTable{
     this.id = id;
 
     // save each ingredients connection to the product in productingredient
-    Database db = await DatabaseContainer.instance.database;
     if(ingredients.isNotEmpty) {
       for (Ingredient ingredient in ingredients) {
         if(ingredient.id == null) continue;
         Map<String, dynamic> values = Map();
         values['productId'] = this.id;
         values['ingredientId'] = ingredient.id;
-        db.insert(DbTableNames.productIngredient.name, values);
+
+        (await DatabaseContainer.instance.database)
+            .insert(DbTableNames.productIngredient.name, values);
       }
     }
 

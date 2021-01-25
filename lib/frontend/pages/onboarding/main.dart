@@ -1,15 +1,15 @@
-import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 
-import './onboardingCustomWidgets/OnboardingTitleWidget.dart';
+import '../../../backend/databaseEntities/Ingredient.dart';
+import '../../../backend/enums/PreferenceType.dart';
+import '../../../backend/enums/Type.dart';
+import '../../../backend/PreferenceManager.dart';
 import '../../customWidgets/preferences/PreferencesAllergensView.dart';
 import '../../customWidgets/preferences/PreferencesNutrientsView.dart';
 import '../../customWidgets/preferences/PreferencesOtherIngredientsView.dart';
 import '../../customWidgets/preferences/PreferencesSummary.dart';
-import '../../../backend/PreferenceManager.dart';
-import '../../../backend/databaseEntities/Ingredient.dart';
-import '../../../backend/Enums/Type.dart';
-import '../../../backend/Enums/PreferenceType.dart';
+import './onboardingCustomWidgets/OnboardingTitleWidget.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key key}) : super(key: key);

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../backend/ListManager.dart';
-import '../../../backend/Enums/ScanResult.dart';
-import '../../../backend/PreferenceManager.dart';
 import '../../../backend/databaseEntities/Product.dart';
 import '../../../backend/databaseEntities/Ingredient.dart';
+import '../../../backend/enums/ScanResult.dart';
+import '../../../backend/ListManager.dart';
+import '../../../backend/PreferenceManager.dart';
 import '../../customWidgets/CustomAppBar.dart';
-import '../../customWidgets/ResultCircle.dart';
 import '../../customWidgets/EditableTitle.dart';
 import '../../customWidgets/LabelledIconButton.dart';
+import '../../customWidgets/ResultCircle.dart';
 import '../comparison/ComparisonRootPage.dart';
 import './scanningCustomWidgets/ScanningInfoLine.dart';
-import './scanningCustomWidgets/ScanningProductNutrimentsInfo.dart';
 import './scanningCustomWidgets/ScanningProductDetails.dart';
+import './scanningCustomWidgets/ScanningProductNutrimentsInfo.dart';
 
 class ProductActionButton {
   ProductActionButton(this.title, this.icon, this.onPressed);
