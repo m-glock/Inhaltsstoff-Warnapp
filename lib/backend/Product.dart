@@ -218,7 +218,7 @@ class Product extends DbTable{
 
     map['quantity'] = _quantity;
     map['originCountry'] = _origin;
-    map['manufactoringPlaces'] = _manufacturingPlaces;
+    map['manufacturingPlaces'] = _manufacturingPlaces;
     map['stores'] = _stores;
 
     return map;
@@ -245,7 +245,7 @@ class Product extends DbTable{
     product._nutriscore = data['nutriScore'];
     product._quantity = data['quantity'];
     product._origin = data['originCountry'];
-    product._manufacturingPlaces = data['manufactoringPlaces'];
+    product._manufacturingPlaces = data['manufacturingPlaces'];
     product._stores = data['stores'];
 
     // get all Ingredients associated with this product from the database
