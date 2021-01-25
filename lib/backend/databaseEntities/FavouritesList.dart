@@ -7,11 +7,9 @@ import './Product.dart';
 
 class FavouritesList extends DbList{
 
-  // Fields
   List<Product> _favouriteProducts = new List<Product>();
   Event onUpdate = new Event();
 
-  // Constructor
   FavouritesList(String name, {int id}) : super(id, name){
     _favouriteProducts = List();
   }

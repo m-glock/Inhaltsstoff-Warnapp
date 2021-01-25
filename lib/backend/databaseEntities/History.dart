@@ -8,11 +8,9 @@ import './Product.dart';
 
 class History extends DbList{
 
-  // Fields
   SortedMap<Product, DateTime> _historyOfScannedProducts = new SortedMap<Product, DateTime>();
   Event onUpdate = new Event();
 
-  // Constructor
   History({int id}) : super(id, 'History'){
     _historyOfScannedProducts = SortedMap(Ordering.byValue());
   }

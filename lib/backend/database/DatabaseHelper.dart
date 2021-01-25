@@ -100,38 +100,6 @@ class DatabaseHelper {
   }
 
   /*
-  * Create objects from elements from a join table.
-  * @param rowsFromDb: the rows from the first table of the join
-  * @param whereColumn: name of the column for the where clause
-  * @param joinTableName: name of the join table
-  * @return a list of database objects
-  * */
-  Future<List<DbTable>> _fromJoinTable(List<Map<String, dynamic>> rowsFromDb, String whereColumn, DbTableNames joinTableName) async {
-    List<DbTable> objectList = new List();
-    String columnToQuery;
-    DbTableNames tableName;
-
-    // check whether the products or the ingredients/lists are queried from the join table
-    if(whereColumn == 'productId'){
-      bool queryOnIngredient = joinTableName == DbTableNames.productIngredient;
-      columnToQuery = queryOnIngredient ? 'ingredientId' : 'listId';
-      tableName = queryOnIngredient ? DbTableNames.ingredient : DbTableNames.list;
-    } else {
-      columnToQuery = 'productId';
-      tableName = DbTableNames.product;
-    }
-
-    // get corresponding object for each row in join table
-    for(Map<String, dynamic> element in rowsFromDb){
-      int objectId = element[columnToQuery];
-      DbTable object = await read(tableName, [objectId]);
-      objectList.add(object);
-    }
-
-    return objectList;
-  }
-
-  /*
   * Update a specific row in a table.
   * @param object: the database object to update
   * @return the id of the updated row
@@ -195,5 +163,38 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> customQuery(String query) async {
     Database db = await DatabaseContainer.instance.database;
     return await db.rawQuery(query);
+  }
+
+
+  /*
+  * Create objects from elements from a join table.
+  * @param rowsFromDb: the rows from the first table of the join
+  * @param whereColumn: name of the column for the where clause
+  * @param joinTableName: name of the join table
+  * @return a list of database objects
+  * */
+  Future<List<DbTable>> _fromJoinTable(List<Map<String, dynamic>> rowsFromDb, String whereColumn, DbTableNames joinTableName) async {
+    List<DbTable> objectList = new List();
+    String columnToQuery;
+    DbTableNames tableName;
+
+    // check whether the products or the ingredients/lists are queried from the join table
+    if(whereColumn == 'productId'){
+      bool queryOnIngredient = joinTableName == DbTableNames.productIngredient;
+      columnToQuery = queryOnIngredient ? 'ingredientId' : 'listId';
+      tableName = queryOnIngredient ? DbTableNames.ingredient : DbTableNames.list;
+    } else {
+      columnToQuery = 'productId';
+      tableName = DbTableNames.product;
+    }
+
+    // get corresponding object for each row in join table
+    for(Map<String, dynamic> element in rowsFromDb){
+      int objectId = element[columnToQuery];
+      DbTable object = await read(tableName, [objectId]);
+      objectList.add(object);
+    }
+
+    return objectList;
   }
 }

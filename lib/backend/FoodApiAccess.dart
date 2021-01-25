@@ -102,7 +102,7 @@ class FoodApiAccess{
       return productFromDb;
     }
 
-    //product was not found in the database
+    // product was not found in the database
     return null;
   }
 

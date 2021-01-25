@@ -7,12 +7,10 @@ import './enums/DbTableNames.dart';
 
 class ListManager{
 
-  // Fields
   FavouritesList _favouritesList;
   History _history;
   Future<void> _initialisedPromise;
 
-  // Getter
   Future<History> get history async {
     // check if lists have been initialized before accessing them
     if (_initialisedPromise != null) {

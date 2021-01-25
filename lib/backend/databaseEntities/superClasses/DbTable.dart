@@ -4,13 +4,10 @@
 * */
 abstract class DbTable extends Comparable{
 
-  // Fields
   int id;
 
-  // Constructor
   DbTable(int id) : id = id;
 
-  // Methods
   String getTableName();
   Future<Map<String, dynamic>> toMap({bool withId: true});
   static DbTable fromMap(Map<String, dynamic> data) {}

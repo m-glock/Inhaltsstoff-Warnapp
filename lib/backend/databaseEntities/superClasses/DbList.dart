@@ -6,13 +6,10 @@ import './DbTable.dart';
 
 abstract class DbList extends DbTable{
 
-  // Fields
   String _name;
 
-  // Getter
   get name => _name;
 
-  // Constructor
   DbList(int id, this._name) : super(id);
 
   /*

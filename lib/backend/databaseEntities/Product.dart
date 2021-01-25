@@ -8,7 +8,6 @@ import './Ingredient.dart';
 
 class Product extends DbTable{
 
-  // Fields
   String name;
   ScanResult _scanResult;
   String _imageUrl;
@@ -28,7 +27,6 @@ class Product extends DbTable{
   Future<void> scanResultPromise;
   Future<void> preferredIngredientsPromise;
 
-  // Getter and Setter
   String get imageUrl => _imageUrl;
   String get barcode => _barcode;
   DateTime get lastUpdated => _lastUpdated;
@@ -80,11 +78,12 @@ class Product extends DbTable{
     preferredIngredientsPromise = null;
   }
 
-  // constructor
+  // simple constructor
   Product(this.name, this._imageUrl, this._barcode, this.scanDate, {int id}) : super(id) {
     ingredients = List();
   }
 
+  // full constructor
   Product.fullProduct(
       this.name,
       this._imageUrl,
@@ -100,8 +99,6 @@ class Product extends DbTable{
   ) : super(id){
     ingredients = List();
   }
-
-  // Methods
 
   /*
   * Get the names of ingredients that are responsible for the overall scan result.
@@ -174,7 +171,7 @@ class Product extends DbTable{
   }
 
   /*
-  *
+  * Set the scanResult for this product async because of the database access.
   * */
   Future<void> initializeScanResult() async {
     Map<Ingredient, ScanResult> itemizedScanResults =
@@ -182,6 +179,9 @@ class Product extends DbTable{
     setItemizedScanResults(itemizedScanResults);
   }
 
+  /*
+  * Set the preferred ingredients for this product async because of the database access.
+  * */
   Future<void> initializePreferredIngredients() async {
     List<Ingredient> preferredIngredients =
         await PreferenceManager.getPreferredIngredientsIn(this);

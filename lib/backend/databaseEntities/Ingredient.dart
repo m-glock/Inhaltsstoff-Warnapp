@@ -5,20 +5,16 @@ import './superClasses/DbTable.dart';
 
 class Ingredient extends DbTable {
 
-  // Fields
   String _name;
   PreferenceType preferenceType;
   DateTime preferenceAddDate;
   Type _type;
 
-  // Getter and Setter
   String get name => _name;
   Type get type => _type;
 
-  // Constructor
   Ingredient(this._name, this.preferenceType, this._type, this.preferenceAddDate,
       {int id}) : super(id);
-
 
   // compare two ingredients on the basis of their id
   bool operator ==(Object other) {

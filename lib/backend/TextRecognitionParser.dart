@@ -5,7 +5,6 @@ import './enums/Type.dart';
 
 class TextRecognitionParser {
 
-  // Fields
   static final RegExp _patternStart = RegExp(r'[ten]+:');
   static final RegExp _patternEnd = RegExp(r'\D\.');
   static final List<String> _additiveNames = [
