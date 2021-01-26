@@ -1,5 +1,3 @@
-import 'package:Essbar/backend/Ingredient.dart';
-import 'package:Essbar/backend/PreferenceManager.dart';
 import 'package:flutter/material.dart';
 
 import '../../backend/database/DatabaseHelper.dart';
@@ -36,7 +34,7 @@ class _WelcomePageState extends State<WelcomePage> {
         children: [
           Padding(
             child: Text(
-              "Essbar",
+              'Essbar',
               style: Theme.of(context).textTheme.headline1.merge(
                     TextStyle(
                       fontSize: 44.0,
@@ -56,7 +54,7 @@ class _WelcomePageState extends State<WelcomePage> {
           ),
           Padding(
             child: Text(
-                "Wir bereiten alles für dich vor. Bitte habe einen Moment Geduld!",
+                'Wir bereiten alles für dich vor. Bitte habe einen Moment Geduld!',
                 style: Theme.of(context).textTheme.bodyText1,
                 textAlign: TextAlign.center),
             padding: EdgeInsets.symmetric(vertical: 24.0, horizontal: 60.0),

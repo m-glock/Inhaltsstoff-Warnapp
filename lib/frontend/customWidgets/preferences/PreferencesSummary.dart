@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../backend/Ingredient.dart';
-import '../../../backend/Enums/PreferenceType.dart';
+import '../../../backend/databaseEntities/Ingredient.dart';
+import '../../../backend/enums/PreferenceType.dart';
 import '../EditableChipsList.dart';
 
 class PreferencesSummary extends StatelessWidget {
@@ -59,34 +59,34 @@ class PreferencesSummary extends StatelessWidget {
       children: [
         EditableChipsList(
           icon: Icons.medical_services_outlined,
-          title: "Allergien",
+          title: 'Allergien',
           items: _allergens,
           onEdit: () {
-            onEditPreference("allergens");
+            onEditPreference('allergens');
           },
         ),
         EditableChipsList(
           icon: Icons.insights,
-          title: "Erwünschte Nährstoffe",
+          title: 'Erwünschte Nährstoffe',
           items: _nutrients,
           onEdit: () {
-            onEditPreference("nutrients");
+            onEditPreference('nutrients');
           },
         ),
         EditableChipsList(
           icon: Icons.remove_circle_outline,
-          title: "Verbotene Inhaltsstoffe",
+          title: 'Verbotene Inhaltsstoffe',
           items: _unWantedOtherIngredients,
           onEdit: () {
-            onEditPreference("unwantedIngredients");
+            onEditPreference('unwantedIngredients');
           },
         ),
         EditableChipsList(
           icon: Icons.trending_down,
-          title: "Zu reduzierende Inhaltsstoffe",
+          title: 'Zu reduzierende Inhaltsstoffe',
           items: _unPreferredOtherIngredients,
           onEdit: () {
-            onEditPreference("unpreferredIngredients");
+            onEditPreference('unpreferredIngredients');
           },
         )
       ],

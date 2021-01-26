@@ -1,14 +1,15 @@
 import 'dart:async';
+
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
+import '../../../backend/databaseEntities/Product.dart';
 import '../../../backend/FoodApiAccess.dart';
-import '../../../backend/Product.dart';
 import '../../customWidgets/CustomAlertDialog.dart';
 import '../../customWidgets/CustomAppBar.dart';
 import '../../customWidgets/LabelledIconButton.dart';
-import 'scanningCustomWidgets/ScanningBarcodeDialog.dart';
+import './scanningCustomWidgets/ScanningBarcodeDialog.dart';
 
 class ScanningRootPage extends StatefulWidget {
   ScanningRootPage({Key key, this.onFetchedProduct}) : super(key: key);
@@ -70,7 +71,8 @@ class _ScanningRootPageState extends State<ScanningRootPage> {
       builder: (BuildContext context) {
         return CustomAlertDialog(
           headline: 'Das hat leider nicht geklappt',
-          content: 'Es tut uns leid. Zu diesem Barcode konnten wir leider kein Produkt finden. '
+          content:
+              'Es tut uns leid. Zu diesem Barcode konnten wir leider kein Produkt finden. '
               'Versuche es noch einmal oder verwende alternativ die Texterkennung. ',
           onDismiss: () {
             Navigator.of(context).pop();

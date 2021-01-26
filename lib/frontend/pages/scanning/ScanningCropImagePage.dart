@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:Essbar/backend/Product.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
-import 'package:image_crop/image_crop.dart';
-import 'package:flutter/material.dart';
 
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:flutter/material.dart';
+import 'package:image_crop/image_crop.dart';
+
+import '../../../backend/databaseEntities/Product.dart';
+import '../../../backend/ProductFactory.dart';
 import '../../customWidgets/LabelledIconButton.dart';
 
 class ScanningCropImage extends StatefulWidget {
@@ -53,7 +55,7 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
   }
 
   Future<void> _setSample() async {
-    var file = await _getImageFile(widget.imgPath);
+    File file = await _getImageFile(widget.imgPath);
 
     setState(() {
       _sample = file;
@@ -61,7 +63,7 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
   }
 
   Future<File> _getImageFile(String path) async {
-    final file = File('$path');
+    final File file = File('$path');
     return file;
   }
 
@@ -89,8 +91,8 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
   }
 
   Future<void> _cropImage() async {
-    final scale = cropKey.currentState.scale;
-    final area = cropKey.currentState.area;
+    final double scale = cropKey.currentState.scale;
+    final Rect area = cropKey.currentState.area;
     if (area == null) {
       return;
     }
@@ -118,11 +120,10 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
   }
 
   Future<Product> _textRecognition(File path) async {
-    final FirebaseVisionImage visionImage =
-    FirebaseVisionImage.fromFile(path);
+    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(path);
 
     final TextRecognizer textRecognizer =
-    FirebaseVision.instance.textRecognizer();
+        FirebaseVision.instance.textRecognizer();
 
     final VisionText visionText =
         await textRecognizer.processImage(visionImage);
@@ -134,6 +135,6 @@ class _ScanningCropImageState extends State<ScanningCropImage> {
       }
     }
 
-    return await Product.fromTextRecognition(text);
+    return await ProductFactory.fromTextRecognition(text);
   }
 }

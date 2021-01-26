@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'lists/main.dart';
-import 'comparison/main.dart';
-import 'analysis/main.dart';
-import 'scanning/main.dart';
-import 'history/main.dart';
+import './lists/main.dart';
+import './comparison/main.dart';
+import './analysis/main.dart';
+import './scanning/main.dart';
+import './history/main.dart';
 
 class Destination {
   const Destination(this.title, this.icon, this.page);
+
   final String title;
   final IconData icon;
   final StatefulWidget page;

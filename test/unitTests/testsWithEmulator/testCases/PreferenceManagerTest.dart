@@ -1,12 +1,14 @@
-import 'package:Essbar/backend/PreferenceManager.dart';
-import 'package:Essbar/backend/Product.dart';
-import 'package:Essbar/backend/database/DbTableNames.dart';
-import 'package:Essbar/backend/database/DatabaseHelper.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:Essbar/backend/Enums/PreferenceType.dart';
-import 'package:Essbar/backend/Enums/Type.dart';
-import 'package:Essbar/backend/Ingredient.dart';
 import 'dart:async';
+
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:Essbar/backend/database/DatabaseHelper.dart';
+import 'package:Essbar/backend/databaseEntities/Ingredient.dart';
+import 'package:Essbar/backend/databaseEntities/Product.dart';
+import 'package:Essbar/backend/enums/DbTableNames.dart';
+import 'package:Essbar/backend/enums/PreferenceType.dart';
+import 'package:Essbar/backend/enums/Type.dart';
+import 'package:Essbar/backend/PreferenceManager.dart';
 
 /*
 To find out how to run the tests, please read @HowToUse.txt

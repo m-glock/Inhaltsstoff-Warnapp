@@ -1,13 +1,13 @@
-import '../../../backend/Product.dart';
-import '../../../backend/Enums/ScanResult.dart';
-import '../../../backend/Ingredient.dart';
-import '../../../backend/PreferenceManager.dart';
-import '../../../backend/Enums/PreferenceType.dart';
-import '../../../frontend/customWidgets/CustomAppBar.dart';
-import '../../../frontend/customWidgets/ResultCircle.dart';
-import './comparisonCustomWidgets/ComparisonSelectedProductCard.dart';
-
 import 'package:flutter/material.dart';
+
+import '../../../backend/databaseEntities/Ingredient.dart';
+import '../../../backend/databaseEntities/Product.dart';
+import '../../../backend/enums/PreferenceType.dart';
+import '../../../backend/enums/ScanResult.dart';
+import '../../../backend/PreferenceManager.dart';
+import '../../customWidgets/CustomAppBar.dart';
+import '../../customWidgets/ResultCircle.dart';
+import './comparisonCustomWidgets/ComparisonSelectedProductCard.dart';
 
 class ComparisonViewPage extends StatefulWidget {
   const ComparisonViewPage({
@@ -318,7 +318,7 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
   }
 
   void _getNotWantedPreferences() async {
-    var notWantedPreferences =
+    List<Ingredient> notWantedPreferences =
         await PreferenceManager.getPreferencedIngredients([
       PreferenceType.NotPreferred,
       PreferenceType.NotWanted,
@@ -329,9 +329,9 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
   }
 
   void _getItemizedResults() async {
-    var resultsProductOne =
+    Map<Ingredient, ScanResult> resultsProductOne =
         await PreferenceManager.getItemizedScanResults(widget.productOne);
-    var resultsProductTwo =
+    Map<Ingredient, ScanResult> resultsProductTwo =
         await PreferenceManager.getItemizedScanResults(widget.productTwo);
 
     setState(() {
@@ -342,7 +342,7 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
   }
 
   void _getPreferredIngredients() async {
-    var preferredIngredients =
+    List<Ingredient> preferredIngredients =
         await PreferenceManager.getPreferencedIngredients(
             [PreferenceType.Preferred]);
     setState(() {
@@ -372,7 +372,7 @@ class _ComparisonViewPageState extends State<ComparisonViewPage> {
     List<String> notPreferencedIngredientsProductTwo =
         await widget.productTwo.getNotPreferredIngredientNames();
 
-    var notPreferencedIngredientsSet = new Set<String>();
+    Set<String> notPreferencedIngredientsSet = new Set<String>();
     notPreferencedIngredientsSet.addAll(notPreferencedIngredientsProductOne);
     notPreferencedIngredientsSet.addAll(notPreferencedIngredientsProductTwo);
     List<String> notPreferencedIngredientsSum =

@@ -1,7 +1,7 @@
-import 'Enums/PreferenceType.dart';
-import 'Enums/Type.dart';
-import 'Ingredient.dart';
-import 'database/DatabaseHelper.dart';
+import './database/DatabaseHelper.dart';
+import './databaseEntities/Ingredient.dart';
+import './enums/PreferenceType.dart';
+import './enums/Type.dart';
 
 class TextRecognitionParser {
   static final RegExp _patternStart = RegExp(r'[ten]+:');
@@ -20,6 +20,12 @@ class TextRecognitionParser {
     'Konservierungsstoff'
   ];
 
+  /*
+  * Parse an ingredient text and remove unnecessary words, characters and numbers,
+  * so that it leaves only the ingredient names which can be searched in the database
+  * @param text: ingredient text to parse
+  * @return a list of ingredient names
+  * */
   static Future<List<String>> parseIngredientNames(String text) async {
     String parsedText;
 
@@ -43,8 +49,8 @@ class TextRecognitionParser {
     // but do not remove other numbers such as in E150d
     parsedText = parsedText.replaceAll(RegExp(r'[0-9]+%|[0-9]+.[0-9]+%'), '');
 
-    // if text contains colon, then only the word after the colon
-    // is considered an ingredient
+    // if text contains any of the additive labels, then remove those
+    // so that only the name of the additive ingredient is left
     _additiveNames.forEach((element) {
       if (parsedText.contains(element))
         parsedText = parsedText.replaceAll(element, '');
@@ -63,24 +69,34 @@ class TextRecognitionParser {
     return ingredientNames.map((e) => e.trim()).toList();
   }
 
+  /*
+  * Transform a text of ingredients from the text recognition
+  * into a list of ingredients for the product
+  * @param text: ingredient text to parse
+  * @return a list of ingredient objects that have been parsed from the text
+  * */
   static Future<List<Ingredient>> getIngredientsFromText(String text) async {
     List<String> parsedIngredientNames = await parseIngredientNames(text);
     return await _getIngredientsForParsedText(parsedIngredientNames);
   }
 
   /*
-  * remove brackets and Word before brackets
-  * inside the brackets are the actual ingredients while the word before that
-  * is more like a product that consists of some ingredients
-  * example: Weißbrot (WEIZENMEHL, Trinkwasser, Speisesalz, Hefe)
-  * should not remove pattern such as Gelatine (Rind)
+  * Handle parentheses and possible ingredients inside.
+  * should split pattern 'Weißbrot (WEIZENMEHL, Trinkwasser, Speisesalz, Hefe)'
+  * into WEIZENMEHL, Trinkwasser, Speisesalz, Hefe (without Weißbrot)
+  * should not split/remove pattern such as Gelatine (Rind)
+  * @param text: ingredient text to parse
+  * @return the old string of ingredients with the split parentheses text
+  *         added at the end
    */
   static String _handleParentheses(String text) {
     // remove this kind of pattern and handle separately
     RegExp parenthesesPattern =
         RegExp(r'[a-zA-ZäöüÄÖÜß]+\s*?\(((?:\w+,\s*)+\w+)\)');
-    String newText = text;    
+    String newText = text;
     newText = newText.replaceAll(RegExp(r'\-'), '');
+
+    // find pattern in text and extract it
     String parenthesesText = parenthesesPattern.stringMatch(newText);
     newText = newText.replaceAll(parenthesesPattern, '').trim();
 
@@ -97,24 +113,33 @@ class TextRecognitionParser {
 
       // return original text with parsed text from parentheses
       return newText + ', ' + parenthesesText;
-    }else{
+    } else {
       return text;
     }
   }
 
-  static Future<List<Ingredient>> _getIngredientsForParsedText(List<String> ingredientNames) async {
+  /*
+  * Transform a list of ingredient names into a list of ingredient objects.
+  * @param ingredientNames: a list of ingredient names
+  * @return a list of ingredient objects either from the database if found
+  *         or new ones if not
+  * */
+  static Future<List<Ingredient>> _getIngredientsForParsedText(
+      List<String> ingredientNames) async {
     DatabaseHelper helper = DatabaseHelper.instance;
     List<Ingredient> ingredients = List();
 
-    // go through list of ingredient names and either take an existing one
-    // from the database or create a new ingredient
     for (int i = 0; i <= ingredientNames.length - 1; ++i) {
       String name = ingredientNames.elementAt(i).trim().toLowerCase();
+
+      // search for ingredient in database
       List<Map<String, dynamic>> data = await helper
           .customQuery('SELECT * FROM ingredient WHERE name LIKE \'$name\'');
       Ingredient ing = (data != null && data.isNotEmpty)
           ? Ingredient.fromMap(data[0])
           : null;
+
+      // if no match was found in the database, create a new object
       if (ing == null) {
         ing = Ingredient(ingredientNames.elementAt(i).trim(),
             PreferenceType.None, Type.General, null);

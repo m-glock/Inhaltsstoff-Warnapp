@@ -1,6 +1,7 @@
 import 'dart:io';
-import 'package:intl/intl.dart';
+
 import 'package:camera/camera.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -67,7 +68,8 @@ class _ScanningCameraState extends State {
   void initState() {
     super.initState();
 
-    _controller = CameraController(cameras[0], ResolutionPreset.veryHigh, enableAudio: false);
+    _controller = CameraController(cameras[0], ResolutionPreset.veryHigh,
+        enableAudio: false);
     _controller.initialize().then((_) {
       if (!mounted) {
         return;

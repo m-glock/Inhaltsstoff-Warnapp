@@ -1,16 +1,16 @@
 import 'package:Essbar/backend/ListManager.dart';
-import 'package:Essbar/backend/database/DbTableNames.dart';
+import 'file:///C:/Users/Mareike/Documents/Studium/Master/3.Semester-WS2021/WP5_Mobile-Applications-for-Public-Health/Inhaltsstoff-Warnapp/lib/backend/enums/DbTableNames.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:intl/intl.dart';
 import 'package:Essbar/backend/Enums/ScanResult.dart';
 import 'package:Essbar/backend/PreferenceManager.dart';
-import 'package:Essbar/backend/Product.dart';
+import 'file:///C:/Users/Mareike/Documents/Studium/Master/3.Semester-WS2021/WP5_Mobile-Applications-for-Public-Health/Inhaltsstoff-Warnapp/lib/backend/databaseEntities/Product.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:Essbar/frontend/customWidgets/preferences/PreferencesAllergensView.dart';
 import 'package:Essbar/backend/Enums/PreferenceType.dart';
 import 'package:Essbar/backend/Enums/Type.dart';
-import 'package:Essbar/backend/Ingredient.dart';
+import 'file:///C:/Users/Mareike/Documents/Studium/Master/3.Semester-WS2021/WP5_Mobile-Applications-for-Public-Health/Inhaltsstoff-Warnapp/lib/backend/databaseEntities/Ingredient.dart';
 import 'package:Essbar/backend/database/DatabaseHelper.dart';
 import 'package:Essbar/backend/FoodApiAccess.dart';
 import 'package:Essbar/backend/ListManager.dart';
@@ -41,9 +41,7 @@ class MyApp extends StatelessWidget {
         child: RaisedButton(
           child: Text('Button'),
           onPressed: () async {
-            //vars
             final dbHelper = DatabaseHelper.instance;
-            final db = await dbHelper.database;
             FoodApiAccess foodApi = FoodApiAccess.instance;
 
             // add the test at this position

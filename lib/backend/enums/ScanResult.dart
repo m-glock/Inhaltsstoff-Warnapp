@@ -1,19 +1,10 @@
 enum ScanResult { Red, Yellow, Green }
 
 extension ScanResultExtension on ScanResult {
-  String get name {
-    switch (this) {
-      case ScanResult.Red:
-        return 'Red';
-      case ScanResult.Yellow:
-        return 'Yellow';
-      case ScanResult.Green:
-        return 'Green';
-      default:
-        return null;
-    }
-  }
-
+  /*
+  * return the id that the enum has in the DB
+  * defined in assets/database/insert_into_tables_sql.txt
+  * */
   int get id {
     switch (this) {
       case ScanResult.Red:

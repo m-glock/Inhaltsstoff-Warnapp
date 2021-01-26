@@ -1,12 +1,11 @@
-import 'package:Essbar/backend/database/DatabaseHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../RadioButtonTable.dart';
-import '../../../backend/Enums/PreferenceType.dart';
-import '../../../backend/Ingredient.dart';
+import '../../../backend/databaseEntities/Ingredient.dart';
+import '../../../backend/enums/PreferenceType.dart';
 import '../../customWidgets/RadioButtonTable.dart';
 import '../../customWidgets/SearchBar.dart';
+import '../RadioButtonTable.dart';
 
 class PreferencesOtherIngredientsView extends StatefulWidget {
   PreferencesOtherIngredientsView({
@@ -32,7 +31,8 @@ class _PreferencesOtherIngredientsViewState
   void initState() {
     super.initState();
     _filteredIngredients = widget.otherIngredientPreferences.keys.toList();
-    _shownIngredients = _filteredIngredients.getRange(0, _itemsToBeLoaded).toList();
+    _shownIngredients =
+        _filteredIngredients.getRange(0, _itemsToBeLoaded).toList();
   }
 
   void _onFilterList(List<String> newFilteredList) {
@@ -57,11 +57,11 @@ class _PreferencesOtherIngredientsViewState
   }
 
   void _loadMoreItems() async {
-    final totalItems = _filteredIngredients.length;
+    final int totalItems = _filteredIngredients.length;
     int listLength = _shownIngredients.length;
     List<Ingredient> ingredientsToAdd = new List();
 
-    for (var i = 0; i < _itemsToBeLoaded; i++) {
+    for (int i = 0; i < _itemsToBeLoaded; i++) {
       int index = listLength + i;
       if (index >= totalItems) continue;
       Ingredient ing = _filteredIngredients.elementAt(index);
@@ -91,39 +91,40 @@ class _PreferencesOtherIngredientsViewState
               .map((ingredient, preference) => MapEntry(
                   ingredient.name,
                   preference == PreferenceType.None
-                      ? "egal"
+                      ? 'egal'
                       : preference == PreferenceType.NotWanted
-                          ? "nichts"
-                          : "wenig")),
-          options: ["nichts", "egal", "wenig"],
+                          ? 'nichts'
+                          : 'wenig')),
+          options: ['nichts', 'egal', 'wenig'],
           onChange: (int index, String newPreferenceValue) {
             Ingredient changedIngredient =
                 _shownOtherIngredientPreferences.keys.toList()[index];
-            PreferenceType newPreference = newPreferenceValue == "wenig"
+            PreferenceType newPreference = newPreferenceValue == 'wenig'
                 ? PreferenceType.NotPreferred
-                : newPreferenceValue == "nichts"
+                : newPreferenceValue == 'nichts'
                     ? PreferenceType.NotWanted
                     : PreferenceType.None;
             widget.onChange(changedIngredient, newPreference);
           },
         ),
-        if(_shownIngredients.length != _filteredIngredients.length) RaisedButton(
-          color: Theme.of(context).primaryColor,
-          padding: EdgeInsets.all(12),
-          child: Text(
-            'Mehr laden',
-            style: Theme.of(context).textTheme.button.merge(
-                  new TextStyle(
-                    color: Theme.of(context).primaryColorLight,
+        if (_shownIngredients.length != _filteredIngredients.length)
+          RaisedButton(
+            color: Theme.of(context).primaryColor,
+            padding: EdgeInsets.all(12),
+            child: Text(
+              'Mehr laden',
+              style: Theme.of(context).textTheme.button.merge(
+                    new TextStyle(
+                      color: Theme.of(context).primaryColorLight,
+                    ),
                   ),
-                ),
-            textAlign: TextAlign.center,
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () => _loadMoreItems(),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4.0),
+            ),
           ),
-          onPressed: () => _loadMoreItems(),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-        ),
       ],
     );
   }

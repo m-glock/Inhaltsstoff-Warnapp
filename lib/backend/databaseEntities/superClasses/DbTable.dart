@@ -1,20 +1,16 @@
-import 'DbTableNames.dart';
-
 /*
 * super class for every class that represents a database table
 * all methods should be implemented by the subclasses
 * */
-abstract class DbTable extends Comparable{
-
-  // Fields
+abstract class DbTable extends Comparable {
   int id;
 
-  // Constructor
   DbTable(int id) : id = id;
 
-  // Methods
-  DbTableNames getTableName();
+  String getTableName();
+
   Future<Map<String, dynamic>> toMap({bool withId: true});
+
   static DbTable fromMap(Map<String, dynamic> data) {}
 
   @override

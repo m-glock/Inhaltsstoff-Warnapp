@@ -1,20 +1,6 @@
-
-enum Type { Allergen, Nutriment, General}
+enum Type { Allergen, Nutriment, General }
 
 extension TypeExtension on Type {
-  String get name {
-    switch (this) {
-      case Type.Allergen:
-        return 'Allergen';
-      case Type.Nutriment:
-        return 'Nutriment';
-      case Type.General:
-        return 'General';
-      default:
-        return null;
-    }
-  }
-
   /*
   * return the id that the enum has in the DB
   * defined in assets/database/insert_into_tables_sql.txt

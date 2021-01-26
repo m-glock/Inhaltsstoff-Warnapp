@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'AnalysisRootPage.dart';
+
+import './AnalysisRootPage.dart';
 
 class AnalysisPage extends StatefulWidget {
-  const AnalysisPage({ Key key }) : super(key: key);
+  const AnalysisPage({Key key}) : super(key: key);
 
   @override
   _AnalysisPageState createState() => _AnalysisPageState();
@@ -16,7 +17,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            switch(settings.name) {
+            switch (settings.name) {
               case '/':
                 return AnalysisRootPage();
             }

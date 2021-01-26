@@ -1,9 +1,9 @@
-import '../../backend/Enums/ScanResult.dart';
-import './CircularImage.dart';
-import './ResultCircle.dart';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../../backend/enums/ScanResult.dart';
+import './CircularImage.dart';
+import './ResultCircle.dart';
 
 class ProductListItem extends StatelessWidget {
   ImageProvider image;

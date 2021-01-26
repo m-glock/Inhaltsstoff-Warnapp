@@ -1,206 +1,149 @@
-import 'dart:collection';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
-import './ListManager.dart';
+
 import 'package:http/http.dart' as http;
 
-import 'database/DbTableNames.dart';
-import 'database/DatabaseHelper.dart';
-import 'database/DbTable.dart';
-import 'Product.dart';
+import './database/DatabaseHelper.dart';
+import './databaseEntities/superClasses/DbTable.dart';
+import './databaseEntities/History.dart';
+import './databaseEntities/Product.dart';
+import './enums/DbTableNames.dart';
+import './IngredientTranslationManager.dart';
+import './ListManager.dart';
+import './ProductFactory.dart';
 
-class FoodApiAccess{
-
+class FoodApiAccess {
   final String _foodDbApiUrl = 'https://de-de.openfoodfacts.org';
   final String _taxonomyEndpoint = 'data/taxonomies';
   final String _productEndpoint = 'api/v0/product';
-  Map _allergens;
-  Map _vitamins;
-  Map _minerals;
-  Map _ingredients;
+  final IngredientTranslationManager _translationManager =
+      IngredientTranslationManager();
+
+  IngredientTranslationManager get translationManager => _translationManager;
 
   // make this a singleton class
   FoodApiAccess._privateConstructor();
+
   static final FoodApiAccess instance = FoodApiAccess._privateConstructor();
 
-  Future<Map> _getCorrespondingMap(String tag) async {
-    if(_allergens == null) _allergens = await _getAllValuesForTag('allergens');
-    if(_vitamins == null) _vitamins = await _getAllValuesForTag('vitamins');
-    if(_minerals == null) _minerals = await _getAllValuesForTag('minerals');
-    if(_ingredients == null) _ingredients = await _getAllValuesForTag('ingredients');
-
-    switch(tag){
-      case 'vitamins':
-        return _vitamins;
-      case 'allergens':
-        return _allergens;
-      case 'minerals':
-        return _minerals;
-      case 'ingredients':
-        return _ingredients;
-      default:
-        return null;
-    }
-  }
-
   /*
-  * sends an GET request to the food database API with the scanned barcode and creates a Product object containing the relevant information
+  * Sends an GET request to the food database API with the scanned barcode and
+  * creates a Product object containing the relevant information.
   * @param barcode: the scanned barcode from a product
-  * @return: an object for the scanned product with the relevant information or null if not found
+  * @return: an object for the scanned product with the relevant information
+  *           or null if not found
   * */
-  Future<Product> scanProduct(String barcode) async{
-    DatabaseHelper helper = DatabaseHelper.instance;
+  Future<Product> scanProduct(String barcode) async {
+    // check if the product has been scanned before
+    // and get it from the database instead from food API
+    Product product = await checkForProductInDb(barcode);
+    if (product != null) return product;
 
-    var history = await ListManager.instance.history;
-
-    // if Product has already been scanned before, return data from DB
-    DbTable table = await helper.read(DbTableNames.product, [barcode], whereColumn: 'barcode');
-    if(table != null){
-      Product productFromDb = table as Product;
-      productFromDb.scanDate = DateTime.now();
-      productFromDb.scanResultPromise = Product.initializeScanResult(productFromDb);
-      productFromDb.preferredIngredientsPromise = Product.initializePreferredIngredients(productFromDb);
-
-      history.addProduct(productFromDb);
-
-      String tableName = productFromDb.getTableName().name;
-      String newScanDate = productFromDb.scanDate.toIso8601String();
-      int productId = productFromDb.id;
-      await helper.customQuery('UPDATE $tableName SET scanDate = \'$newScanDate\' WHERE id = $productId');
-      return productFromDb;
-    }
-
+    // query the food api with the barcode and request product information
     String requestUrl = '$_foodDbApiUrl/$_productEndpoint/$barcode.json';
     http.Response response = await _getRequest(requestUrl);
     int status = response.statusCode;
 
     // check HTTP status
-    if (status == 404) return null;
-    else if(status != 200) throw HttpException('$status');
+    if (status == 404)
+      return null;
+    else if (status != 200) throw HttpException('$status');
+
+    // utf8 decoding for umlaute
+    Map<String, dynamic> decodedJson =
+        json.decode(utf8.decode(response.bodyBytes));
 
     // handle if product does not exist in the food API database
-    // utf8 decoding for umlaute
-    Map<String, dynamic> decodedJson = json.decode(utf8.decode(response.bodyBytes));
-    if(decodedJson['status'] == 0){
-      log('Product with Barcode $barcode does not exist in the database.');
+    if (decodedJson['status'] == 0) {
+      print('Product with Barcode $barcode does not exist in the database.');
       return null;
     }
 
     // transform json data into a product object and save it in database
-    Product product = await Product.fromApiJson(decodedJson['product']);
-    await product.saveInDatabase();
+    product = await ProductFactory.fromApiJson(decodedJson['product']);
+    product.id = await product.saveInDatabase();
 
     // save product in history
+    History history = await ListManager.instance.history;
     history.addProduct(product);
 
     return product;
   }
 
   /*
-  * get the json of all possible values of a tag
-  * @param tag: the tag name from the product json
-  * @return a map of all possible values that exist in the API for this specific tag or null if tag was not found
+  * Check if the product has been scanned before and is already saved in the database.
+  * @param barcode: the scanned barcode of a product
+  * @return the product from database if it exists, else null
   * */
-  Future<Map<dynamic, dynamic>> _getAllValuesForTag(String tag) async {
-    String requestUrl = '$_foodDbApiUrl/$_taxonomyEndpoint/$tag.json';
+  Future<Product> checkForProductInDb(String barcode) async {
+    DatabaseHelper helper = DatabaseHelper.instance;
+    History history = await ListManager.instance.history;
 
+    // query database for a product with the barcode
+    DbTable table = await helper.read(DbTableNames.product, [barcode],
+        whereColumn: 'barcode');
+
+    // product was found in the database
+    if (table != null) {
+      Product productFromDb = table as Product;
+
+      // update scan date and scan result
+      // (which might have changed since last time)
+      productFromDb.scanDate = DateTime.now();
+      productFromDb.scanResultPromise = productFromDb.initializeScanResult();
+      productFromDb.preferredIngredientsPromise =
+          productFromDb.initializePreferredIngredients();
+
+      // update product in database and add to history
+      await helper.update(productFromDb);
+      history.addProduct(productFromDb);
+
+      return productFromDb;
+    }
+
+    // product was not found in the database
+    return null;
+  }
+
+  /*
+  * Get the json of all possible values of a taxonomy of a tag from the food API.
+  * @param tag: the tag name from the product json
+  * @return a map of all possible values that exist in the API
+  *         for this specific tag or null if tag was not found
+  * */
+  Future<Map<dynamic, dynamic>> getAllValuesForTag(String tag) async {
+    // query the food api with the specified string and request taxonomy information
+    String requestUrl = '$_foodDbApiUrl/$_taxonomyEndpoint/$tag.json';
     http.Response response = await _getRequest(requestUrl);
     int status = response.statusCode;
 
     // check HTTP status
-    if (status == 404) return null;
-    else if(status != 200) throw HttpException('$status');
+    if (status == 404)
+      return null;
+    else if (status != 200) throw HttpException('$status');
 
     // utf8 decoding for umlaute
-    // if requested tag does not exist, the response body will be html and the decoding will return null
-    Map<String, dynamic> decodedJson = json.decode(utf8.decode(response.bodyBytes));
-    if(decodedJson == null) throw HttpException('404');
+    Map<String, dynamic> decodedJson =
+        json.decode(utf8.decode(response.bodyBytes));
+
+    // if requested tag does not exist, the response body will be html
+    // and the decoding will return null
+    if (decodedJson == null) throw HttpException('404');
 
     return decodedJson;
   }
 
   /*
-  * get the translated names of all possible values for a tag in a product json
-  * @param tag: the tag name from the product json
-  * @param: tagValues: a list of specific values from this tag that should be translated
-  * @param: languageCode: code for that target language of the translation
-  * @return a List of all possible values that exist in the API for this specific tag or null if tag was not found
-  * */
-  Future<List<String>> getTranslatedValuesForTag(String tag, {List<dynamic> tagValues, String languageCode:'de'}) async {
-    List<String> translatedTagValues = new List();
-    Map<dynamic, dynamic> allTagValues = await _getCorrespondingMap(tag);
-
-    if(tagValues == null){ // translate all existing tag values
-
-      for(final keyValuePair in allTagValues.entries){
-        // only use vitamins and minerals that are parents
-        if((tag == 'vitamins' || tag == 'minerals') && keyValuePair.value['children'] == null)
-          continue;
-
-        String tagValue = keyValuePair.value['name'][languageCode];
-        if(tagValue == null){
-          String tagValueEn = keyValuePair.value['name']['en'];
-          tagValue = tagValueEn != null
-              ? tagValueEn
-              : keyValuePair.key;
-        }
-
-        if(tagValue != 'None'){
-          tagValue = tagValue.substring(tagValue.indexOf(':') + 1);
-          translatedTagValues.add(tagValue);
-        }
-      }
-
-    } else { // translate only tag names in tagValues
-
-      tagValues.forEach((element) {
-        String translatedName;
-        if(allTagValues.containsKey(element)){
-          LinkedHashMap tagValueTranslations = allTagValues[element]['name'];
-
-          // get either the translation for the specified language
-          // or the english translation
-          if(languageCode == null){
-            translatedName = tagValueTranslations['en'];
-          } else {
-            translatedName = tagValueTranslations.containsKey(languageCode)
-                ? tagValueTranslations[languageCode]
-                : tagValueTranslations['en'];
-          }
-
-          // if translatedName is still null, take the original name and
-          // remove the language code and colon (i.e. 'fr:')
-          if(translatedName == null){
-            translatedName = element
-                .substring(element.indexOf(':') + 1)
-                .replaceAll('-', ' ');
-          }
-        } else {
-          String name = element.toString();
-          translatedName = name
-              .substring(name.indexOf(':') + 1)
-              .replaceAll('-', ' ');
-        }
-        translatedTagValues.add(translatedName);
-      });
-    }
-
-    return translatedTagValues;
-  }
-
-  /*
-  * builds a GET request
+  * Build a GET request to the Food API.
   * @param url: the url to send the request to
-  * @return: the http response that the GET call returned
+  * @return: the http response that the GET call returns
   * */
   Future<http.Response> _getRequest(String url) {
     return http.get(
-        url,
-        headers: <String, String>{
-          'User-Agent': 'Essbar - Android - Version 1.0',
-        },
+      url,
+      headers: <String, String>{
+        'User-Agent': 'Essbar - Android - Version 1.0',
+      },
     );
   }
-
 }

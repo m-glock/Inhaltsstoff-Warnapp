@@ -1,7 +1,7 @@
-import '../../../../backend/Enums/ScanResult.dart';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../../../../backend/enums/ScanResult.dart';
 
 class ComparisonSelectedProductCard extends StatelessWidget {
   const ComparisonSelectedProductCard({

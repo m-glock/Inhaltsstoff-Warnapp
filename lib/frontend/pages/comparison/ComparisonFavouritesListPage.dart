@@ -1,10 +1,11 @@
-import '../../../backend/Enums/ScanResult.dart';
-import '../../../backend/ListManager.dart';
-import '../../../backend/Product.dart';
-import '../../customWidgets/ProductsList.dart';
-import '../../customWidgets/CustomAppBar.dart';
-
 import 'package:flutter/material.dart';
+
+import '../../../backend/databaseEntities/FavouritesList.dart';
+import '../../../backend/databaseEntities/Product.dart';
+import '../../../backend/enums/ScanResult.dart';
+import '../../../backend/ListManager.dart';
+import '../../customWidgets/CustomAppBar.dart';
+import '../../customWidgets/ProductsList.dart';
 
 class ComparisonFavouritesListPage extends StatefulWidget {
   ComparisonFavouritesListPage({
@@ -46,7 +47,7 @@ class _ComparisonFavouritesListPageState
   }
 
   void _getFavouriteProductsAndResults() async {
-    var favouritesList = await ListManager.instance.favouritesList;
+    FavouritesList favouritesList = await ListManager.instance.favouritesList;
     List<Product> favouriteProducts = favouritesList.getProducts();
     Map<Product, ScanResult> productsResults = {
       for (Product p in favouriteProducts) p: await p.getScanResult()

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import './HistoryRootPage.dart';
 import '../scanning/ScanningResultPage.dart';
+import './HistoryRootPage.dart';
 
 class HistoryPage extends StatefulWidget {
-  const HistoryPage({ Key key }) : super(key: key);
+  const HistoryPage({Key key}) : super(key: key);
 
   @override
   _HistoryPageState createState() => _HistoryPageState();
@@ -18,7 +18,7 @@ class _HistoryPageState extends State<HistoryPage> {
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            switch(settings.name) {
+            switch (settings.name) {
               case '/':
                 return HistoryRootPage();
               case '/product':

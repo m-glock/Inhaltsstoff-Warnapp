@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'ScanningBarcodeForm.dart';
+import './ScanningBarcodeForm.dart';
 
 class ScanningBarcodeDialog extends StatelessWidget {
   final Function onCancel;
   final Function onSubmit;
 
-  const ScanningBarcodeDialog({Key key, this.onCancel, this.onSubmit,})
-      : super(key: key);
+  const ScanningBarcodeDialog({
+    Key key,
+    this.onCancel,
+    this.onSubmit,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

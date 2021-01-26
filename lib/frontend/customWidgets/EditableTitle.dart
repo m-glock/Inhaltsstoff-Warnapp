@@ -85,7 +85,7 @@ class _EditableTitleState extends State<EditableTitle> {
     super.dispose();
   }
 
-  void _setTextControllerSelection(){
+  void _setTextControllerSelection() {
     _textController.selection = TextSelection(
       baseOffset: 0,
       extentOffset: _title.length,

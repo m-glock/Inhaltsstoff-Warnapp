@@ -1,15 +1,15 @@
-import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 
-import './onboardingCustomWidgets/OnboardingTitleWidget.dart';
+import '../../../backend/databaseEntities/Ingredient.dart';
+import '../../../backend/enums/PreferenceType.dart';
+import '../../../backend/enums/Type.dart';
+import '../../../backend/PreferenceManager.dart';
 import '../../customWidgets/preferences/PreferencesAllergensView.dart';
 import '../../customWidgets/preferences/PreferencesNutrientsView.dart';
 import '../../customWidgets/preferences/PreferencesOtherIngredientsView.dart';
 import '../../customWidgets/preferences/PreferencesSummary.dart';
-import '../../../backend/PreferenceManager.dart';
-import '../../../backend/Ingredient.dart';
-import '../../../backend/Enums/Type.dart';
-import '../../../backend/Enums/PreferenceType.dart';
+import './onboardingCustomWidgets/OnboardingTitleWidget.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key key}) : super(key: key);
@@ -27,7 +27,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   Future<Map<Ingredient, PreferenceType>> getIngredients(Type type) async {
     Map<Ingredient, PreferenceType> ingredients = new Map();
-    var getAllAvailIg =
+    List<Ingredient> getAllAvailIg =
         await PreferenceManager.getAllAvailableIngredients(type);
     ingredients = Map.fromIterable(
         getAllAvailIg.where((ingredient) => ingredient.type == type),
@@ -53,9 +53,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _animateToPage(String pageName) {
-    int pageIndex = pageName == "allergens"
+    int pageIndex = pageName == 'allergens'
         ? 1
-        : pageName == "nutrients"
+        : pageName == 'nutrients'
             ? 2
             : 3;
     _introKey.currentState.animateScroll(pageIndex);
@@ -108,17 +108,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
       key: _introKey,
       pages: [
         PageViewModel(
-          title: "Willkommen",
+          title: 'Willkommen',
           bodyWidget: Column(
             children: [
               Text(
-                "Mit der Inhaltsstoff Warnapp kannst du beim Einkaufen schnell und unkompliziert erkennen, ob du ein Produkt aufgrund seiner Inhaltsstoffe essen kannst.",
+                'Mit der Inhaltsstoff Warnapp kannst du beim Einkaufen schnell und unkompliziert erkennen, ob du ein Produkt aufgrund seiner Inhaltsstoffe essen kannst.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               Padding(
                 child: Text(
-                  "Bevor es losgehen kann, erzähl uns ein bisschen über deine Lebensmittelverträglichkeiten und Ernährungspräferenzen.",
+                  'Bevor es losgehen kann, erzähl uns ein bisschen über deine Lebensmittelverträglichkeiten und Ernährungspräferenzen.',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
@@ -126,13 +126,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
             ],
           ),
-          image: _buildImage("healthy_options"),
+          image: _buildImage('healthy_options'),
           decoration: imagePageDecoration,
         ),
         PageViewModel(
           titleWidget: OnboardingTitleWidget(
-            title: "Allergien",
-            subTitle: "Hast du irgendwelche Allergien?",
+            title: 'Allergien',
+            subTitle: 'Hast du irgendwelche Allergien?',
           ),
           bodyWidget: PreferencesAllergensView(
             allergenePreferences: _allergenePreferences,
@@ -218,7 +218,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       onDone: () => _onFinishOnboarding(context),
       showSkipButton: true,
       dotsFlex: 0,
-      skip: Text('Überspringen', style: TextStyle(fontWeight: FontWeight.w600)),
+      skip: Text('Skip', style: TextStyle(fontWeight: FontWeight.w600)),
       next: Icon(Icons.arrow_forward),
       done: Text('Starten', style: TextStyle(fontWeight: FontWeight.w600)),
       dotsDecorator: DotsDecorator(

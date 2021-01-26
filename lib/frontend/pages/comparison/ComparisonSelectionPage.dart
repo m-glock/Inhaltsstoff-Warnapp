@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../backend/Product.dart';
-import './comparisonCustomWidgets/ComparisonSelectProductButtons.dart';
-import './comparisonCustomWidgets/ComparisonSelectedProductCard.dart';
+import '../../../backend/databaseEntities/Product.dart';
 import '../scanning/ScanningResultPage.dart';
+import './comparisonCustomWidgets/ComparisonSelectedProductCard.dart';
+import './comparisonCustomWidgets/ComparisonSelectProductButtons.dart';
 
 class ComparisonSelectionPage extends StatefulWidget {
   const ComparisonSelectionPage({

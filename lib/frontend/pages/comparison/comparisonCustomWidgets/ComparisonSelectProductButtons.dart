@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../backend/Product.dart';
+import '../../../../backend/databaseEntities/Product.dart';
 import '../../scanning/ScanningRootPage.dart';
 import '../ComparisonFavouritesListPage.dart';
 

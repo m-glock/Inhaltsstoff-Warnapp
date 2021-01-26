@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../CheckboxList.dart';
-import '../../../backend/Enums/PreferenceType.dart';
-import '../../../backend/Ingredient.dart';
+import '../../../backend/enums/PreferenceType.dart';
+import '../../../backend/databaseEntities/Ingredient.dart';
 import '../../customWidgets/CheckboxList.dart';
 import '../../customWidgets/SearchBar.dart';
+import '../CheckboxList.dart';
 
 class PreferencesAllergensView extends StatefulWidget {
   PreferencesAllergensView({
