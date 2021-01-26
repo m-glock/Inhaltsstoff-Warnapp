@@ -9,17 +9,17 @@ import '../../../backend/databaseEntities/Product.dart';
 import '../../../backend/ProductFactory.dart';
 import '../../customWidgets/LabelledIconButton.dart';
 
-class ScanningCropImage extends StatefulWidget {
+class ScanningCropImagePage extends StatefulWidget {
   final String imgPath;
 
-  ScanningCropImage(this.imgPath);
+  ScanningCropImagePage(this.imgPath);
 
   @override
-  _ScanningCropImageState createState() => new _ScanningCropImageState();
+  _ScanningCropImagePageState createState() => new _ScanningCropImagePageState();
 }
 
-class _ScanningCropImageState extends State<ScanningCropImage> {
-  _ScanningCropImageState();
+class _ScanningCropImagePageState extends State<ScanningCropImagePage> {
+  _ScanningCropImagePageState();
 
   final cropKey = GlobalKey<CropState>();
   File _sample;

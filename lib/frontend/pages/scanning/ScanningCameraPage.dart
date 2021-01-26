@@ -8,12 +8,12 @@ import 'package:path_provider/path_provider.dart';
 import '../../../main.dart';
 import '../../customWidgets/LabelledIconButton.dart';
 
-class ScanningCamera extends StatefulWidget {
+class ScanningCameraPage extends StatefulWidget {
   @override
-  _ScanningCameraState createState() => _ScanningCameraState();
+  _ScanningCameraPageState createState() => _ScanningCameraPageState();
 }
 
-class _ScanningCameraState extends State {
+class _ScanningCameraPageState extends State {
   CameraController _controller;
 
   @override

@@ -5,7 +5,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../Enums/Type.dart';
+import '../enums/Type.dart';
 import '../FoodApiAccess.dart';
 
 class DatabaseContainer {
